@@ -1,3 +1,4 @@
+export * from './BackButton/BackButton.js';
 export * from './Button/Button.js';
 export * from './ColorSwatch/ColorSwatch.js';
 export * from './Checkbox/Checkbox.js';
