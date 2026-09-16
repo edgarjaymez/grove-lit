@@ -4,6 +4,7 @@ export * from './Checkbox/Checkbox.js';
 export * from './Icon/Icon.js';
 export * from './IconButton/IconButton.js';
 export * from './Isotype/Isotype.js';
+export * from './MenuItem/MenuItem.js';
 export * from './TextInput/TextInput.js';
 export * from './Texture/Texture.js';
 export * from './ToDoCategoryToggler/ToDoCategoryToggler.js';

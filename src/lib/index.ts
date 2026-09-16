@@ -12,6 +12,8 @@ export { Icon } from './components/Icon/Icon.js';
 export { IconMetadata } from './components/Icon/Icon.metadata.js';
 export { Isotype } from './components/Isotype/Isotype.js';
 export { IsotypeMetadata } from './components/Isotype/Isotype.metadata.js';
+export { MenuItem } from './components/MenuItem/MenuItem.js';
+export { MenuItemMetadata } from './components/MenuItem/MenuItem.metadata.js';
 export { Texture } from './components/Texture/Texture.js';
 export { TextureMetadata } from './components/Texture/Texture.metadata.js';
 export { TextInput } from './components/TextInput/TextInput.js';
