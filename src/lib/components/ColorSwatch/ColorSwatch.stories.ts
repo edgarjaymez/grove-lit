@@ -32,7 +32,21 @@ const meta: Meta<Args> = {
 		},
 		shade: {
 			control: 'select',
-			options: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950', 'light', 'dark']
+			options: [
+				'50',
+				'100',
+				'200',
+				'300',
+				'400',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+				'950',
+				'light',
+				'dark'
+			]
 		},
 		name: { control: 'text' },
 		text: { control: 'radio', options: ['dark', 'light'] },

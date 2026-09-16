@@ -39,7 +39,8 @@ export const ColorSwatchMetadata = {
 			},
 			{
 				scenario: 'Passing a raw CSS color to background instead of color + shade props',
-				reason: 'The component resolves the background via --color-{family}-{shade} tokens for design system fidelity',
+				reason:
+					'The component resolves the background via --color-{family}-{shade} tokens for design system fidelity',
 				alternative: 'Always pass color and shade props that correspond to a real Grove color token'
 			}
 		]
@@ -65,7 +66,8 @@ export const ColorSwatchMetadata = {
 			default: 'dark',
 			purpose: {
 				dark: 'Use --color-base-dark for the name label — suitable for light swatches (shades 50–400)',
-				light: 'Use --color-base-light for the name label — suitable for dark swatches (shades 500–950)'
+				light:
+					'Use --color-base-light for the name label — suitable for dark swatches (shades 500–950)'
 			}
 		}
 	},
@@ -73,7 +75,8 @@ export const ColorSwatchMetadata = {
 	accessibility: {
 		role: 'presentation',
 		keyboardSupport: 'None — decorative display component',
-		screenReader: 'Color values are rendered as plain text and are readable by assistive technology',
+		screenReader:
+			'Color values are rendered as plain text and are readable by assistive technology',
 		wcag: 'AA',
 		notes: [
 			'The text prop must be set to ensure the color name meets AA contrast against the swatch background',

@@ -20,7 +20,12 @@ const meta: Meta<Args> = {
 				: 'var(--semantic-color-surface-ground)';
 		return html`
 			<span style="background-color: ${bg}; padding: 16px; display: inline-block">
-				<gv-isotype color=${color} size=${size} tone=${tone} label=${ifDefined(label || undefined)}></gv-isotype>
+				<gv-isotype
+					color=${color}
+					size=${size}
+					tone=${tone}
+					label=${ifDefined(label || undefined)}
+				></gv-isotype>
 			</span>
 		`;
 	},

@@ -10,7 +10,11 @@ export default defineConfig({
 	},
 	plugins: [
 		dts({
-			include: ['src/lib/index.ts', 'src/lib/components/**/*.ts', 'src/lib/styles/component-reset.ts'],
+			include: [
+				'src/lib/index.ts',
+				'src/lib/components/**/*.ts',
+				'src/lib/styles/component-reset.ts'
+			],
 			exclude: ['src/lib/components/**/*.stories.ts', 'src/lib/components/**/*.metadata.ts'],
 			outDirs: 'dist',
 			entryRoot: 'src/lib'
@@ -25,9 +29,9 @@ export default defineConfig({
 				await cp('src/lib/fonts', 'dist/fonts', { recursive: true });
 				await mkdir('dist/styles', { recursive: true });
 				const { readdir } = await import('node:fs/promises');
-				const styleFiles = (await readdir('src/lib/styles')).filter(f => f.endsWith('.css'));
+				const styleFiles = (await readdir('src/lib/styles')).filter((f) => f.endsWith('.css'));
 				await Promise.all(
-					styleFiles.map(f => copyFile(`src/lib/styles/${f}`, `dist/styles/${f}`))
+					styleFiles.map((f) => copyFile(`src/lib/styles/${f}`, `dist/styles/${f}`))
 				);
 			}
 		}

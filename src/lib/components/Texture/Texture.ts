@@ -6,22 +6,25 @@ import { componentReset } from '../../styles/component-reset.js';
 export class Texture extends LitElement {
 	@property({ type: Number }) opacity = 1;
 
-	static styles = [componentReset, css`
-		:host {
-			display: block;
-			position: absolute;
-			inset: 0;
-			pointer-events: none;
-			overflow: hidden;
-			z-index: 0;
-		}
+	static styles = [
+		componentReset,
+		css`
+			:host {
+				display: block;
+				position: absolute;
+				inset: 0;
+				pointer-events: none;
+				overflow: hidden;
+				z-index: 0;
+			}
 
-		svg {
-			display: block;
-			width: 100%;
-			height: 100%;
-		}
-	`];
+			svg {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+		`
+	];
 
 	render() {
 		return html`

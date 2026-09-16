@@ -19,19 +19,22 @@ export class Isotype extends LitElement {
 	@property({ type: String }) tone: IsotypeTone = 'light';
 	@property({ type: String }) label?: string;
 
-	static styles = [componentReset, css`
-		:host {
-			display: inline-block;
-			width: var(--gv-isotype-size, 40px);
-			height: var(--gv-isotype-size, 40px);
-		}
+	static styles = [
+		componentReset,
+		css`
+			:host {
+				display: inline-block;
+				width: var(--gv-isotype-size, 40px);
+				height: var(--gv-isotype-size, 40px);
+			}
 
-		svg {
-			display: block;
-			width: 100%;
-			height: 100%;
-		}
-	`];
+			svg {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+		`
+	];
 
 	updated(changedProperties: PropertyValues<this>) {
 		if (changedProperties.has('size')) {
