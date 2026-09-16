@@ -6,6 +6,8 @@ export type { ColorFamily, ColorShade, ColorText } from './components/ColorSwatc
 export { ColorSwatchMetadata } from './components/ColorSwatch/ColorSwatch.metadata.js';
 export { Checkbox } from './components/Checkbox/Checkbox.js';
 export { CheckboxMetadata } from './components/Checkbox/Checkbox.metadata.js';
+export { FeedbackStrip } from './components/FeedbackStrip/FeedbackStrip.js';
+export { FeedbackStripMetadata } from './components/FeedbackStrip/FeedbackStrip.metadata.js';
 export { IconButton } from './components/IconButton/IconButton.js';
 export { IconButtonMetadata } from './components/IconButton/IconButton.metadata.js';
 export { Icon } from './components/Icon/Icon.js';
