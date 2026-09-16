@@ -1,4 +1,6 @@
 export { componentReset } from './styles/component-reset.js';
+export { BackButton } from './components/BackButton/BackButton.js';
+export { BackButtonMetadata } from './components/BackButton/BackButton.metadata.js';
 export { Button } from './components/Button/Button.js';
 export { ButtonMetadata } from './components/Button/Button.metadata.js';
 export { ColorSwatch } from './components/ColorSwatch/ColorSwatch.js';
