@@ -9,5 +9,6 @@ export * from './Isotype/Isotype.js';
 export * from './MenuItem/MenuItem.js';
 export * from './TextInput/TextInput.js';
 export * from './Texture/Texture.js';
+export * from './Title/Title.js';
 export * from './ToDoCategoryToggler/ToDoCategoryToggler.js';
 export * from './ToDoListItem/ToDoListItem.js';
