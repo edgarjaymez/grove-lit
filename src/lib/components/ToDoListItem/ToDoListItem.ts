@@ -101,6 +101,9 @@ export class ToDoListItem extends LitElement {
 		);
 	}
 
+	/* eslint-disable lit-a11y/click-events-have-key-events -- the row click is a pointer
+	   convenience; the keyboard path is the focusable gv-checkbox inside it (Enter/Space), and a
+	   focusable row would add a second tab stop for the same toggle. */
 	render() {
 		return html`
 			<div class="item" @click=${this._handleItemClick}>
@@ -123,6 +126,7 @@ export class ToDoListItem extends LitElement {
 			</div>
 		`;
 	}
+	/* eslint-enable lit-a11y/click-events-have-key-events */
 }
 
 declare global {
