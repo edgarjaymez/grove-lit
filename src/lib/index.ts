@@ -28,3 +28,6 @@ export { ToDoCategoryToggler } from './components/ToDoCategoryToggler/ToDoCatego
 export { ToDoCategoryTogglerMetadata } from './components/ToDoCategoryToggler/ToDoCategoryToggler.metadata.js';
 export { ToDoListItem } from './components/ToDoListItem/ToDoListItem.js';
 export { ToDoListItemMetadata } from './components/ToDoListItem/ToDoListItem.metadata.js';
+export { Tooltip } from './components/Tooltip/Tooltip.js';
+export type { TooltipType, TooltipColor } from './components/Tooltip/Tooltip.js';
+export { TooltipMetadata } from './components/Tooltip/Tooltip.metadata.js';
