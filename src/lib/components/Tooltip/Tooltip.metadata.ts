@@ -5,11 +5,11 @@ export const TooltipMetadata = {
 		path: 'src/lib/components/Tooltip/Tooltip.ts',
 		category: 'molecules',
 		description:
-			'A floating hint bubble at summit depth, carrying the summit drop shadow as its attention cue. The simple type is a single nowrap line of icon + message; the complete type stacks an emphasized heading over a wrapping message. Accent and gray swap the surface, both text roles, and the shadow together. It is the bubble only — it does not anchor, position, open, or close itself.',
+			'A floating hint bubble at summit depth, carrying the summit drop shadow as its attention cue. The simple type is a single nowrap line of icon + message; the complete type stacks an emphasized heading over a wrapping message. Accent and gray swap the surface, both text roles, and the shadow together. The is-pressed flag drops the shadow so the bubble reads as pushed down against the surface. It is the bubble only — it does not anchor, position, open, or close itself.',
 		type: 'display',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/09/16',
-		modified: '2026/09/16'
+		modified: '2026/09/18'
 	},
 
 	usage: {
@@ -98,8 +98,11 @@ export const TooltipMetadata = {
 	},
 
 	behavior: {
-		states: ['DEFAULT'],
-		interactions: null
+		states: ['DEFAULT', 'PRESSED'],
+		interactions: {
+			'is-pressed':
+				'A presentational flag, not an interaction the bubble detects — the consumer sets it. It removes the summit drop shadow over 300ms so the bubble flattens against the surface, reading as pressed. Pair it with the press it reflects (gv-color-swatch sets it while its copy confirmation shows).'
+		}
 	},
 
 	variants: {
@@ -119,6 +122,14 @@ export const TooltipMetadata = {
 			purpose: {
 				accent: 'Brand emphasis. Default when the hint should draw the eye.',
 				gray: 'Neutral emphasis. Use for utility hints that should not compete with nearby accent UI.'
+			}
+		},
+		isPressed: {
+			options: [false, true],
+			default: false,
+			purpose: {
+				false: 'The resting bubble, floating at summit depth on its drop shadow.',
+				true: 'Shadow removed, so the bubble sits flat on the surface. Use it to echo a press the consumer just handled — not as a permanent flat style.'
 			}
 		}
 	},

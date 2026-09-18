@@ -9,7 +9,9 @@ export type TooltipColor = 'accent' | 'gray';
 
 /**
  * A floating hint bubble at summit depth, carrying the summit drop shadow as
- * the attention cue that pulls the eye to it.
+ * the attention cue that pulls the eye to it. `is-pressed` drops that shadow —
+ * the bubble reads as pushed down against the surface, which is how a consumer
+ * reflects the press that produced it.
  *
  * `gv-tooltip` is the bubble **only**: it does not anchor or position itself,
  * has no open/close state and no timers — the consumer places it.
@@ -27,6 +29,7 @@ export class Tooltip extends LitElement {
 	@property({ type: String }) icon: string | undefined;
 	@property({ type: String }) heading = '';
 	@property({ type: String }) message = '';
+	@property({ type: Boolean, attribute: 'is-pressed', reflect: true }) isPressed = false;
 
 	static styles = [
 		componentReset,
@@ -38,6 +41,7 @@ export class Tooltip extends LitElement {
 			.tooltip {
 				display: flex;
 				overflow: hidden;
+				transition: box-shadow 300ms ease-in-out;
 			}
 
 			/* ---- Simple ---- */
@@ -122,6 +126,13 @@ export class Tooltip extends LitElement {
 			.tooltip--gray .body {
 				color: var(--semantic-color-text-on-gray-summit-subtle);
 			}
+
+			/* ---- Pressed ---- */
+			/* Same specificity as the colour rules above, so source order decides —
+			   keep this last. */
+			.tooltip--pressed {
+				box-shadow: none;
+			}
 		`
 	];
 
@@ -147,7 +158,8 @@ export class Tooltip extends LitElement {
 		const classes = classMap({
 			tooltip: true,
 			[`tooltip--${type}`]: true,
-			[`tooltip--${color}`]: true
+			[`tooltip--${color}`]: true,
+			'tooltip--pressed': this.isPressed
 		});
 
 		if (type === 'complete') {

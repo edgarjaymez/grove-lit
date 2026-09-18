@@ -9,18 +9,20 @@ interface Args {
 	icon: string;
 	heading: string;
 	message: string;
+	isPressed: boolean;
 }
 
 const meta: Meta<Args> = {
 	title: 'Components/gv-tooltip',
 	tags: ['autodocs'],
-	render: ({ type, color, icon, heading, message }) => html`
+	render: ({ type, color, icon, heading, message, isPressed }) => html`
 		<gv-tooltip
 			type=${type}
 			color=${color}
 			icon=${ifDefined(icon || undefined)}
 			heading=${heading}
 			message=${message}
+			?is-pressed=${isPressed}
 		></gv-tooltip>
 	`,
 	argTypes: {
@@ -28,14 +30,16 @@ const meta: Meta<Args> = {
 		color: { control: 'select', options: ['accent', 'gray'] },
 		icon: { control: 'text' },
 		heading: { control: 'text' },
-		message: { control: 'text' }
+		message: { control: 'text' },
+		isPressed: { control: 'boolean' }
 	},
 	args: {
 		type: 'simple',
 		color: 'accent',
 		icon: 'info',
 		heading: '',
-		message: 'Copy to clipboard'
+		message: 'Copy to clipboard',
+		isPressed: false
 	}
 };
 export default meta;
@@ -56,6 +60,22 @@ export const Complete: Story = {
 		icon: 'lightbulb',
 		heading: 'Soft grid',
 		message: 'Every spacing value in Grove is a multiple of four.'
+	}
+};
+
+export const Pressed: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'is-pressed removes the summit drop shadow over 300ms, flattening the bubble against the surface so it reads as pushed down. It is presentational — the consumer sets it to echo a press it just handled, as gv-color-swatch does while its "Copied!" confirmation shows.'
+			}
+		}
+	},
+	args: {
+		icon: 'copy',
+		message: 'Copied!',
+		isPressed: true
 	}
 };
 
