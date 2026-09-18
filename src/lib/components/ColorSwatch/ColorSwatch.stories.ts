@@ -17,12 +17,15 @@ interface Args {
 	hex: string;
 }
 
-/** The hex tooltip floats 62px to the left of the column — reserve a gutter for it. */
+/**
+ * Both tooltips float to the left of the column — 62px out for "Copy", 75px for
+ * the wider "Copied!" — so reserve an 80px gutter or the confirmation clips.
+ */
 const meta: Meta<Args> = {
 	title: 'Components/gv-color-swatch',
 	tags: ['autodocs'],
 	render: ({ color, shade, name, text, oklch, hex }) => html`
-		<div style="padding-left: var(--soft-grid-64)">
+		<div style="padding-left: var(--soft-grid-80)">
 			<gv-color-swatch
 				color=${color}
 				shade=${shade}
@@ -109,6 +112,61 @@ async function exerciseCopyRow(canvasElement: HTMLElement, button: string, tip: 
 	await waitFor(() => expect(getComputedStyle(bubble).visibility).toBe('hidden'));
 }
 
+/**
+ * Storybook may run where the real clipboard is unavailable or permission-blocked,
+ * and the component swallows that by design — so the confirmation would never
+ * appear. Swap in a resolving writeText for the duration of the assertion.
+ */
+async function withStubbedClipboard(run: () => Promise<void>): Promise<string[]> {
+	const original = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
+	const writes: string[] = [];
+
+	Object.defineProperty(navigator, 'clipboard', {
+		configurable: true,
+		value: {
+			writeText: async (text: string) => {
+				writes.push(text);
+			}
+		}
+	});
+
+	try {
+		await run();
+	} finally {
+		if (original) Object.defineProperty(navigator, 'clipboard', original);
+		else Reflect.deleteProperty(navigator, 'clipboard');
+	}
+
+	return writes;
+}
+
+/** Copy a row, assert it confirms, then assert the hold returns it to default. */
+async function exerciseCopiedState(canvasElement: HTMLElement, button: string, tip: string) {
+	const shadow = await swatchShadow(canvasElement);
+	const trigger = required<HTMLButtonElement>(shadow, button);
+	const bubble = required(shadow, tip);
+
+	const writes = await withStubbedClipboard(async () => {
+		trigger.focus();
+		await waitFor(() => expect(getComputedStyle(bubble).visibility).toBe('visible'));
+		await expect(bubble.getAttribute('message')).toBe('Copy');
+
+		trigger.click();
+
+		await waitFor(() => expect(bubble.getAttribute('message')).toBe('Copied!'));
+		await expect(bubble.hasAttribute('is-pressed')).toBe(true);
+	});
+
+	await expect(writes).toHaveLength(1);
+
+	// Figma holds the confirmation for 3s, then returns the swatch to default —
+	// the bubble goes down rather than reverting to the "Copy" hint in place.
+	await waitFor(() => expect(getComputedStyle(bubble).visibility).toBe('hidden'), {
+		timeout: 4000
+	});
+	await expect(bubble.getAttribute('message')).toBe('Copied!');
+}
+
 export const Default: Story = {};
 
 export const DarkShade: Story = {
@@ -171,7 +229,7 @@ export const OklchCopyFocused: Story = {
 		docs: {
 			description: {
 				story:
-					'Keyboard path for the OKLCH row: focusing the button reveals the accent bubble beside it, activating it copies the DTCG colour object, and blurring hides the bubble again. Hovering the row does the same with a pointer. A successful copy logs gv-copy in the Actions panel — the clipboard write is guarded, so a blocked clipboard simply produces no event.'
+					'Keyboard path for the OKLCH row: focusing the button reveals the accent bubble off the left edge of the column, activating it copies the DTCG colour object, and blurring hides the bubble again. Hovering the row does the same with a pointer. A successful copy logs gv-copy in the Actions panel — the clipboard write is guarded, so a blocked clipboard simply produces no event.'
 			}
 		}
 	},
@@ -191,5 +249,33 @@ export const HexCopyFocused: Story = {
 	},
 	play: async ({ canvasElement }) => {
 		await exerciseCopyRow(canvasElement, '.hex-value', '.tip--hex');
+	}
+};
+
+export const OklchCopied: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'The full confirmation cycle on the OKLCH row. A successful copy flips the accent bubble to "Copied!" and sets is-pressed, dropping its summit shadow so it reads as pushed down against the surface. The bubble is wider in this state and grows leftward, ending 8px clear of the column either way. Three seconds later the swatch returns to its default state — the bubble fades out still reading "Copied!" rather than reverting to the hint in place, and stays down until the pointer or focus leaves and comes back.'
+			}
+		}
+	},
+	play: async ({ canvasElement }) => {
+		await exerciseCopiedState(canvasElement, '.oklch-group', '.tip--oklch');
+	}
+};
+
+export const HexCopied: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'The same confirmation cycle on the hex row, in gray. Copying the plain #rrggbb string flips the bubble to "Copied!", drops its shadow, and dismisses it after the three-second hold.'
+			}
+		}
+	},
+	play: async ({ canvasElement }) => {
+		await exerciseCopiedState(canvasElement, '.hex-value', '.tip--hex');
 	}
 };
