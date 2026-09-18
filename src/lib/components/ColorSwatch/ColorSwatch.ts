@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Tooltip/Tooltip.js';
 import { componentReset } from '../../styles/component-reset.js';
 
@@ -34,6 +35,13 @@ export interface ColorSwatchCopyDetail {
 	space: ColorSpace;
 	value: string;
 }
+
+/**
+ * How long the "Copied!" confirmation holds before the swatch returns to its
+ * default state. Figma pins an AFTER_TIMEOUT of 3s on both copied variants,
+ * each routed back to the default variant — not back to the "Copy" hint.
+ */
+const COPIED_HOLD_MS = 3000;
 
 /** Leading numeric part of a CSS component token — "145deg" -> 145, "93%" -> 93. */
 const LEADING_NUMBER = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?/i;
@@ -79,6 +87,18 @@ export class ColorSwatch extends LitElement {
 	@property({ type: String }) text: ColorText = 'dark';
 	@property({ type: String }) oklch = '';
 	@property({ type: String }) hex = '';
+
+	/** Which row is showing its "Copied!" confirmation, if any. */
+	@state() private copied: ColorSpace | null = null;
+	/**
+	 * Which row has had its bubble dismissed by the hold expiring. Suppresses the
+	 * hover reveal so the swatch stays in its default state until the pointer (or
+	 * focus) leaves and comes back — otherwise the CSS reveal would immediately
+	 * pop "Copy" back up under a pointer that never moved.
+	 */
+	@state() private dismissed: ColorSpace | null = null;
+
+	private resetTimer?: ReturnType<typeof setTimeout>;
 
 	static styles = [
 		componentReset,
@@ -167,25 +187,36 @@ export class ColorSwatch extends LitElement {
 				cursor: pointer;
 			}
 
-			/* visibility: hidden also keeps the bubble out of the a11y tree. */
+			/* visibility: hidden also keeps the bubble out of the a11y tree.
+			   Figma returns a copied swatch to its default state with a 0.3s
+			   EASE_OUT, which is the direction this base rule animates. */
 			.tip {
 				opacity: 0;
 				visibility: hidden;
 				pointer-events: none;
+				transition:
+					opacity 300ms ease-out,
+					visibility 0s linear 300ms;
+			}
+
+			/* Both bubbles hang off the left edge of the column with their right
+			   edge 8px clear of it, so each grows leftward as its text widens —
+			   "Copy" is 54px, "Copied!" 67px, and both end at the same -8px. */
+			.tip--oklch,
+			.tip--hex {
+				position: absolute;
+				right: calc(100% + var(--soft-grid-8));
 			}
 
 			.tip--oklch {
-				position: absolute;
-				left: calc(var(--soft-grid-80) + var(--soft-grid-10));
 				top: var(--soft-grid-6);
 			}
 
 			.tip--hex {
-				position: absolute;
-				left: calc(-1 * (var(--soft-grid-56) + var(--soft-grid-6)));
 				top: calc(var(--soft-grid-32) + var(--soft-grid-2));
 			}
 
+			/* Revealing is the 0.3s EASE_IN_AND_OUT half of the same pair. */
 			.oklch-group:hover ~ .tip--oklch,
 			.oklch-group:focus-visible ~ .tip--oklch,
 			.oklch-group:focus-within ~ .tip--oklch,
@@ -194,6 +225,33 @@ export class ColorSwatch extends LitElement {
 			.hex-value:focus-within ~ .tip--hex {
 				opacity: 1;
 				visibility: visible;
+				transition:
+					opacity 300ms ease-in-out,
+					visibility 0s;
+			}
+
+			/* Once the hold expires the swatch is back to its default state, so the
+			   bubble stays down even though the pointer never left. Identical
+			   specificity to the reveal above — source order decides, keep last. */
+			.color-spaces[data-dismissed='oklch'] .tip--oklch,
+			.color-spaces[data-dismissed='hex'] .tip--hex {
+				opacity: 0;
+				visibility: hidden;
+				transition:
+					opacity 300ms ease-out,
+					visibility 0s linear 300ms;
+			}
+
+			.sr-only {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				margin: -1px;
+				padding: 0;
+				overflow: hidden;
+				clip-path: inset(50%);
+				white-space: nowrap;
+				border: 0;
 			}
 		`
 	];
@@ -229,6 +287,8 @@ export class ColorSwatch extends LitElement {
 			return;
 		}
 
+		this.confirm(space);
+
 		this.dispatchEvent(
 			new CustomEvent<ColorSwatchCopyDetail>('gv-copy', {
 				detail: { space, value },
@@ -236,6 +296,42 @@ export class ColorSwatch extends LitElement {
 				composed: true
 			})
 		);
+	}
+
+	/**
+	 * Flip the row's bubble to its confirmation, then dismiss it once the hold
+	 * expires. `copied` is deliberately left set when the timer fires so the
+	 * bubble fades out still reading "Copied!" rather than flickering back to
+	 * "Copy" mid-fade; both fields clear together in `reset`.
+	 */
+	private confirm(space: ColorSpace) {
+		this.copied = space;
+		this.dismissed = null;
+
+		clearTimeout(this.resetTimer);
+		this.resetTimer = setTimeout(() => {
+			this.dismissed = space;
+		}, COPIED_HOLD_MS);
+	}
+
+	/**
+	 * Entering or leaving the column returns the swatch to its default state,
+	 * re-arming the hover reveal. Entry resets too, not just exit: a pointer that
+	 * leaves while the clipboard write is still in flight would otherwise come
+	 * back to a stale confirmation, or to a `dismissed` flag that swallows the
+	 * next reveal entirely. Focus mirrors the pointer for keyboard parity.
+	 */
+	private reset() {
+		clearTimeout(this.resetTimer);
+		this.resetTimer = undefined;
+		this.copied = null;
+		this.dismissed = null;
+	}
+
+	disconnectedCallback() {
+		clearTimeout(this.resetTimer);
+		this.resetTimer = undefined;
+		super.disconnectedCallback();
 	}
 
 	private onCopyOklch() {
@@ -255,7 +351,14 @@ export class ColorSwatch extends LitElement {
 				>
 					<p class="name name--${this.text}">${this.name}</p>
 				</div>
-				<div class="color-spaces">
+				<div
+					class="color-spaces"
+					data-dismissed=${ifDefined(this.dismissed ?? undefined)}
+					@pointerenter=${this.reset}
+					@pointerleave=${this.reset}
+					@focusin=${this.reset}
+					@focusout=${this.reset}
+				>
 					<div class="oklch-row">
 						<button
 							type="button"
@@ -273,7 +376,8 @@ export class ColorSwatch extends LitElement {
 							type="simple"
 							color="accent"
 							icon="copy"
-							message="Copy"
+							?is-pressed=${this.copied === 'oklch'}
+							message=${this.copied === 'oklch' ? 'Copied!' : 'Copy'}
 						></gv-tooltip>
 					</div>
 					<button
@@ -291,9 +395,13 @@ export class ColorSwatch extends LitElement {
 						type="simple"
 						color="gray"
 						icon="copy"
-						message="Copy"
+						?is-pressed=${this.copied === 'hex'}
+						message=${this.copied === 'hex' ? 'Copied!' : 'Copy'}
 					></gv-tooltip>
 				</div>
+				<p class="sr-only" role="status" aria-live="polite">
+					${this.copied ? `Copied ${this.copied} value` : ''}
+				</p>
 			</div>
 		`;
 	}
