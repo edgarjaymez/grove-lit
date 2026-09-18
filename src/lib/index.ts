@@ -4,7 +4,13 @@ export { BackButtonMetadata } from './components/BackButton/BackButton.metadata.
 export { Button } from './components/Button/Button.js';
 export { ButtonMetadata } from './components/Button/Button.metadata.js';
 export { ColorSwatch } from './components/ColorSwatch/ColorSwatch.js';
-export type { ColorFamily, ColorShade, ColorText } from './components/ColorSwatch/ColorSwatch.js';
+export type {
+	ColorFamily,
+	ColorShade,
+	ColorText,
+	ColorSpace,
+	ColorSwatchCopyDetail
+} from './components/ColorSwatch/ColorSwatch.js';
 export { ColorSwatchMetadata } from './components/ColorSwatch/ColorSwatch.metadata.js';
 export { Checkbox } from './components/Checkbox/Checkbox.js';
 export { CheckboxMetadata } from './components/Checkbox/Checkbox.metadata.js';
