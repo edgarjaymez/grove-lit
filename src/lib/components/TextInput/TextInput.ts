@@ -36,7 +36,6 @@ export class TextInput extends LitElement {
 				padding: var(--soft-grid-8) var(--soft-grid-12);
 				font: var(--typography-single-line-subtle-base);
 				letter-spacing: var(--letter-spacing-base);
-				outline: none;
 				cursor: text;
 				transition:
 					background 300ms ease-in-out,
@@ -44,10 +43,13 @@ export class TextInput extends LitElement {
 					color 300ms ease-in-out;
 			}
 
+			/* Resting underlines use the summit border: the input's boundary must hold 3:1 against
+			   both its fill and Ground in both themes (WCAG 1.4.11). */
+
 			/* ---- brand ---- */
 			.text-input--brand {
 				background: var(--semantic-color-surface-brand-terrace);
-				border-bottom-color: var(--semantic-color-border-around-brand-terrace);
+				border-bottom-color: var(--semantic-color-border-around-brand-summit);
 				color: var(--semantic-color-text-on-brand-terrace-base);
 			}
 			.text-input--brand::placeholder {
@@ -75,7 +77,7 @@ export class TextInput extends LitElement {
 			/* ---- gray ---- */
 			.text-input--gray {
 				background: var(--semantic-color-surface-ground);
-				border-bottom-color: var(--semantic-color-border-around-ground);
+				border-bottom-color: var(--semantic-color-border-around-gray-summit);
 				color: var(--semantic-color-text-on-gray-terrace-base);
 			}
 			.text-input--gray::placeholder {
@@ -100,22 +102,32 @@ export class TextInput extends LitElement {
 				color: var(--semantic-color-text-on-gray-summit-subtle);
 			}
 
-			/* ---- error (overrides color track) ---- */
+			/* ---- error (overrides color track) ----
+			   Every state re-declares fill, text and placeholder: the track's hover and focus rules
+			   have the same specificity and would otherwise repaint an errored field. */
 			.text-input--error {
 				background: var(--semantic-color-surface-danger-terrace);
-				border-bottom-color: var(--semantic-color-border-around-danger-terrace);
+				border-bottom-color: var(--semantic-color-border-around-danger-summit);
 				color: var(--semantic-color-text-on-danger-terrace-base);
 			}
 			.text-input--error::placeholder {
 				color: var(--semantic-color-text-on-danger-terrace-subtle);
 			}
 			.text-input--error:not(.text-input--disabled):hover {
-				border-bottom-color: var(--semantic-color-border-around-danger-summit);
+				background: var(--semantic-color-surface-danger-terrace);
+				border-bottom-color: var(--semantic-color-border-around-danger-aurora);
+				color: var(--semantic-color-text-on-danger-terrace-base);
 			}
 			.text-input--error:not(.text-input--disabled):focus,
 			.text-input--error:not(.text-input--disabled):active {
 				background: var(--semantic-color-surface-danger-terrace);
 				border-bottom-color: var(--semantic-color-border-around-danger-summit);
+				color: var(--semantic-color-text-on-danger-terrace-base);
+			}
+			.text-input--error:not(.text-input--disabled):hover::placeholder,
+			.text-input--error:not(.text-input--disabled):focus::placeholder,
+			.text-input--error:not(.text-input--disabled):active::placeholder {
+				color: var(--semantic-color-text-on-danger-terrace-subtle);
 			}
 
 			/* ---- disabled (static, track-agnostic; rendered as readonly + aria-disabled) ---- */

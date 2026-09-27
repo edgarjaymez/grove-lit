@@ -6,9 +6,9 @@ export const CheckboxMetadata = {
 			'A toggle input that represents a binary checked/unchecked state. Renders as a square button with a brand-green fill and white checkmark when checked. Supports default (24px) and xl (28px) sizes.',
 		type: 'input',
 		path: 'src/lib/components/Checkbox/Checkbox.ts',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/05/20',
-		modified: '2026/05/30'
+		modified: '2026/09/27'
 	},
 
 	usage: {
@@ -87,8 +87,8 @@ export const CheckboxMetadata = {
 		interactions: {
 			click: 'Toggles checked state; dispatches a change CustomEvent with detail: boolean',
 			hover:
-				'Unchecked: border darkens. Checked: background shifts from brand/summit to brand/600 (intermediate hover tone)',
-			active: 'Checked: background shifts to brand/aurora (brand/700)',
+				'Unchecked: border shifts to gray/aurora. Checked: background and edge shift from brand/summit to brand/aurora — the same as active until Grove has a press-state token',
+			active: 'Checked: background and edge shift to brand/aurora',
 			focus: 'Visible focus ring applied by global surface-scoped CSS — do not override',
 			disabled: '50% opacity; cursor changes to not-allowed; toggle is blocked'
 		}

@@ -24,7 +24,7 @@ export class Checkbox extends LitElement {
 				width: 24px;
 				height: 24px;
 				border-radius: var(--border-radius-sm);
-				border: var(--border-width-base) solid var(--color-gray-800);
+				border: var(--border-width-base) solid var(--semantic-color-border-around-gray-summit);
 				background: var(--semantic-color-surface-ground);
 				color: transparent;
 				cursor: pointer;
@@ -39,9 +39,11 @@ export class Checkbox extends LitElement {
 				height: 28px;
 			}
 
+			/* The edge carries border-around, not the fill: at night the brand fill alone is
+			   under 3:1 against Ground, and the edge is what keeps the box visible. */
 			.checkbox[aria-checked='true'] {
 				background: var(--semantic-color-surface-brand-summit);
-				border-color: var(--semantic-color-surface-brand-summit);
+				border-color: var(--semantic-color-border-around-brand-summit);
 				color: var(--semantic-color-text-on-brand-summit-base);
 			}
 
@@ -49,27 +51,23 @@ export class Checkbox extends LitElement {
 				border-color: var(--semantic-color-border-around-gray-aurora);
 			}
 
-			.checkbox:hover[aria-checked='true']:not([disabled]) {
-				background: var(--color-brand-600);
-				border-color: var(--color-brand-600);
-				color: var(--semantic-color-text-on-brand-aurora-base);
-			}
-
+			/* Hover and press share Aurora until Grove has a dedicated press-state token. */
+			.checkbox:hover[aria-checked='true']:not([disabled]),
 			.checkbox:active[aria-checked='true']:not([disabled]) {
 				background: var(--semantic-color-surface-brand-aurora);
-				border-color: var(--semantic-color-surface-brand-aurora);
+				border-color: var(--semantic-color-border-around-brand-aurora);
 				color: var(--semantic-color-text-on-brand-aurora-base);
 			}
 
 			.checkbox[disabled] {
-				background: var(--color-gray-50);
-				border-color: var(--color-gray-800);
+				background: var(--semantic-color-surface-gray-terrace);
+				border-color: var(--semantic-color-border-around-gray-summit);
 				cursor: not-allowed;
 				opacity: 0.5;
 			}
 
 			.checkbox[disabled][aria-checked='true'] {
-				color: var(--semantic-color-text-on-gray-summit-subtle);
+				color: var(--semantic-color-text-on-gray-terrace-base);
 			}
 
 			.check {

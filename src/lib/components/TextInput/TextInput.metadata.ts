@@ -6,9 +6,9 @@ export const TextInputMetadata = {
 			'Single-line text field with bottom-border styling. Supports brand and gray color tracks, error state, and disabled state. Renders a native <input> element for full browser and assistive-technology compatibility.',
 		type: 'input',
 		path: 'src/lib/components/TextInput/TextInput.ts',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/05/20',
-		modified: '2026/06/24'
+		modified: '2026/09/27'
 	},
 
 	usage: {
@@ -95,12 +95,12 @@ export const TextInputMetadata = {
 			hover:
 				'Field elevates to the aurora surface — background, bottom-border, and text all step to the aurora track (light text on a dark surface). Applies to both color tracks.',
 			focus:
-				'Background transitions to summit surface; border stays at summit weight; global focus ring applied by surface-scoped CSS',
+				'Background and text step to the summit track; the underline is already the summit border at rest; the native focus indicator shows',
 			active: 'Same visual treatment as focus — active and focus share identical surface tokens',
 			disabled:
 				'Track-agnostic gray-terrace surface, border, and text (regardless of color prop). Cursor changes to not-allowed. Rendered as readonly + aria-disabled (not native disabled) so the field stays focusable and announced, but not editable.',
 			error:
-				'Danger-terrace surface and border, regardless of color prop. Hover steps border to danger-summit. Focus keeps danger-terrace surface.',
+				'Danger-terrace surface and text over a danger-summit underline, regardless of color prop. Hover keeps the surface and text and steps the underline to danger-aurora. Focus keeps the surface, text and underline, so the native focus indicator is the focus cue.',
 			input:
 				'Dispatches an input CustomEvent (detail: string) on every keystroke and a change CustomEvent on blur. Placeholder-vs-typed-value color is handled natively (::placeholder vs the input color).'
 		}
@@ -147,7 +147,7 @@ export const TextInputMetadata = {
 		screenReader:
 			'Associates accessible name via <label for> or aria-label; announces aria-invalid when error=true; links error message via aria-describedby',
 		focusManagement:
-			'Focus ring applied by global surface-scoped CSS; component declares outline: none to suppress browser default and avoid double-ring',
+			'The component declares no focus styles, so the browser’s native focus indicator shows on the inner <input> — it adapts to dark mode and forced colors. In the error state it is the only focus cue.',
 		wcag: 'AA',
 		notes: [
 			'Always pair with a <label> element or aria-label prop — use input-id (not id) on the custom element to set the inner <input> id for <label for="..."> association',
