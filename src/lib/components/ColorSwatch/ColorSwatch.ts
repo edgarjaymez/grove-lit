@@ -26,7 +26,8 @@ export type ColorShade =
 	| '900'
 	| '950'
 	| 'light'
-	| 'dark';
+	| 'dark'
+	| 'night';
 export type ColorText = 'dark' | 'light';
 export type ColorSpace = 'oklch' | 'hex';
 
