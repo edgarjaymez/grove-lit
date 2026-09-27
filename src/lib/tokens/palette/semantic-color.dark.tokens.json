@@ -1,260 +1,260 @@
 {
 	"semanticColor": {
 		"surface": {
-			"ground": { "$value": "{color.base.light}" },
+			"ground": { "$value": "{color.base.night}" },
 			"brand": {
-				"terrace": { "$value": "{color.brand.100}" },
-				"path": { "$value": "{color.brand.200}" },
-				"summit": { "$value": "{color.brand.500}" },
-				"aurora": { "$value": "{color.brand.700}" }
+				"terrace": { "$value": "{color.brand.900}" },
+				"path": { "$value": "{color.brand.800}" },
+				"summit": { "$value": "{color.brand.600}" },
+				"aurora": { "$value": "{color.brand.500}" }
 			},
 			"accent": {
-				"terrace": { "$value": "{color.accent.100}" },
-				"summit": { "$value": "{color.accent.500}" },
-				"aurora": { "$value": "{color.accent.700}" }
+				"terrace": { "$value": "{color.accent.900}" },
+				"summit": { "$value": "{color.accent.600}" },
+				"aurora": { "$value": "{color.accent.500}" }
 			},
 			"gray": {
-				"terrace": { "$value": "{color.gray.100}" },
-				"path": { "$value": "{color.gray.200}" },
-				"summit": { "$value": "{color.gray.500}" },
-				"aurora": { "$value": "{color.gray.700}" }
+				"terrace": { "$value": "{color.gray.900}" },
+				"path": { "$value": "{color.gray.800}" },
+				"summit": { "$value": "{color.gray.600}" },
+				"aurora": { "$value": "{color.gray.500}" }
 			},
 			"information": {
-				"terrace": { "$value": "{color.information.100}" },
-				"summit": { "$value": "{color.information.500}" },
-				"aurora": { "$value": "{color.information.700}" }
+				"terrace": { "$value": "{color.information.900}" },
+				"summit": { "$value": "{color.information.600}" },
+				"aurora": { "$value": "{color.information.500}" }
 			},
 			"danger": {
-				"terrace": { "$value": "{color.danger.100}" },
-				"summit": { "$value": "{color.danger.500}" },
-				"aurora": { "$value": "{color.danger.700}" }
+				"terrace": { "$value": "{color.danger.900}" },
+				"summit": { "$value": "{color.danger.600}" },
+				"aurora": { "$value": "{color.danger.500}" }
 			},
 			"success": {
-				"terrace": { "$value": "{color.success.100}" },
-				"summit": { "$value": "{color.success.500}" },
-				"aurora": { "$value": "{color.success.700}" }
+				"terrace": { "$value": "{color.success.900}" },
+				"summit": { "$value": "{color.success.600}" },
+				"aurora": { "$value": "{color.success.500}" }
 			}
 		},
 		"textOn": {
 			"ground": {
-				"base": { "$value": "{color.base.dark}" },
-				"subtle": { "$value": "{color.gray.700}" },
-				"emphasis": { "$value": "{color.brand.500}" },
-				"unvisitedLink": { "$value": "{color.accent.500}" },
-				"visitedLink": { "$value": "{color.information.500}" }
+				"base": { "$value": "{color.gray.50}" },
+				"subtle": { "$value": "{color.gray.100}" },
+				"emphasis": { "$value": "{color.brand.100}" },
+				"unvisitedLink": { "$value": "{color.accent.100}" },
+				"visitedLink": { "$value": "{color.information.100}" }
 			},
 			"brand": {
 				"terrace": {
-					"base": { "$value": "{color.brand.950}" },
-					"subtle": { "$value": "{color.brand.800}" },
-					"emphasis": { "$value": "{color.base.dark}" },
-					"unvisitedLink": { "$value": "{color.accent.800}" },
-					"visitedLink": { "$value": "{color.information.800}" }
+					"base": { "$value": "{color.brand.50}" },
+					"subtle": { "$value": "{color.brand.100}" },
+					"emphasis": { "$value": "{color.base.light}" },
+					"unvisitedLink": { "$value": "{color.accent.100}" },
+					"visitedLink": { "$value": "{color.information.100}" }
 				},
 				"path": {
-					"base": { "$value": "{color.brand.950}" },
-					"subtle": { "$value": "{color.brand.900}" },
-					"unvisitedLink": { "$value": "{color.accent.900}" },
-					"visitedLink": { "$value": "{color.information.900}" }
+					"base": { "$value": "{color.brand.50}" },
+					"subtle": { "$value": "{color.brand.100}" },
+					"unvisitedLink": { "$value": "{color.accent.100}" },
+					"visitedLink": { "$value": "{color.information.100}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.brand.50}" },
-					"subtle": { "$value": "{color.brand.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.brand.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.brand.50}" },
-					"subtle": { "$value": "{color.brand.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.brand.50}" }
 				}
 			},
 			"accent": {
 				"terrace": {
-					"base": { "$value": "{color.accent.950}" },
-					"subtle": { "$value": "{color.accent.800}" },
-					"emphasis": { "$value": "{color.base.dark}" },
-					"unvisitedLink": { "$value": "{color.brand.800}" },
-					"visitedLink": { "$value": "{color.information.800}" }
+					"base": { "$value": "{color.accent.50}" },
+					"subtle": { "$value": "{color.accent.100}" },
+					"emphasis": { "$value": "{color.base.light}" },
+					"unvisitedLink": { "$value": "{color.brand.100}" },
+					"visitedLink": { "$value": "{color.information.100}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.accent.50}" },
-					"subtle": { "$value": "{color.accent.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.accent.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.accent.50}" },
-					"subtle": { "$value": "{color.accent.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.accent.50}" }
 				}
 			},
 			"gray": {
 				"terrace": {
-					"base": { "$value": "{color.gray.950}" },
-					"subtle": { "$value": "{color.gray.800}" },
-					"emphasis": { "$value": "{color.base.dark}" },
-					"unvisitedLink": { "$value": "{color.accent.800}" },
-					"visitedLink": { "$value": "{color.information.800}" }
+					"base": { "$value": "{color.gray.50}" },
+					"subtle": { "$value": "{color.gray.100}" },
+					"emphasis": { "$value": "{color.base.light}" },
+					"unvisitedLink": { "$value": "{color.accent.100}" },
+					"visitedLink": { "$value": "{color.information.100}" }
 				},
 				"path": {
-					"base": { "$value": "{color.gray.950}" },
-					"subtle": { "$value": "{color.gray.900}" },
-					"unvisitedLink": { "$value": "{color.accent.950}" },
-					"visitedLink": { "$value": "{color.information.950}" }
+					"base": { "$value": "{color.gray.50}" },
+					"subtle": { "$value": "{color.gray.100}" },
+					"unvisitedLink": { "$value": "{color.accent.100}" },
+					"visitedLink": { "$value": "{color.information.100}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.gray.50}" },
-					"subtle": { "$value": "{color.gray.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.gray.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.gray.50}" },
-					"subtle": { "$value": "{color.gray.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.gray.50}" }
 				}
 			},
 			"information": {
 				"terrace": {
-					"base": { "$value": "{color.information.950}" },
-					"subtle": { "$value": "{color.information.800}" },
-					"emphasis": { "$value": "{color.base.dark}" },
-					"unvisitedLink": { "$value": "{color.accent.800}" },
-					"visitedLink": { "$value": "{color.brand.800}" }
+					"base": { "$value": "{color.information.50}" },
+					"subtle": { "$value": "{color.information.100}" },
+					"emphasis": { "$value": "{color.base.light}" },
+					"unvisitedLink": { "$value": "{color.accent.100}" },
+					"visitedLink": { "$value": "{color.brand.100}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.information.50}" },
-					"subtle": { "$value": "{color.information.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.information.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.information.50}" },
-					"subtle": { "$value": "{color.information.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.information.50}" }
 				}
 			},
 			"danger": {
 				"terrace": {
-					"base": { "$value": "{color.danger.950}" },
-					"subtle": { "$value": "{color.danger.800}" },
-					"emphasis": { "$value": "{color.base.dark}" },
-					"unvisitedLink": { "$value": "{color.accent.800}" },
-					"visitedLink": { "$value": "{color.information.800}" }
+					"base": { "$value": "{color.danger.50}" },
+					"subtle": { "$value": "{color.danger.100}" },
+					"emphasis": { "$value": "{color.base.light}" },
+					"unvisitedLink": { "$value": "{color.accent.100}" },
+					"visitedLink": { "$value": "{color.information.100}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.danger.50}" },
-					"subtle": { "$value": "{color.danger.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.danger.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.danger.50}" },
-					"subtle": { "$value": "{color.danger.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.danger.50}" }
 				}
 			},
 			"success": {
 				"terrace": {
-					"base": { "$value": "{color.success.950}" },
-					"subtle": { "$value": "{color.success.800}" },
-					"emphasis": { "$value": "{color.base.dark}" },
-					"unvisitedLink": { "$value": "{color.accent.800}" },
-					"visitedLink": { "$value": "{color.information.800}" }
+					"base": { "$value": "{color.success.50}" },
+					"subtle": { "$value": "{color.success.100}" },
+					"emphasis": { "$value": "{color.base.light}" },
+					"unvisitedLink": { "$value": "{color.accent.100}" },
+					"visitedLink": { "$value": "{color.information.100}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.success.50}" },
-					"subtle": { "$value": "{color.success.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.success.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.success.50}" },
-					"subtle": { "$value": "{color.success.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.success.50}" }
 				}
 			}
 		},
 		"borderAround": {
-			"ground": { "$value": "{color.gray.100}" },
+			"ground": { "$value": "{color.gray.900}" },
 			"brand": {
-				"terrace": { "$value": "{color.brand.200}" },
-				"path": { "$value": "{color.brand.300}" },
-				"summit": { "$value": "{color.brand.700}" },
-				"aurora": { "$value": "{color.brand.900}" }
+				"terrace": { "$value": "{color.brand.700}" },
+				"path": { "$value": "{color.brand.600}" },
+				"summit": { "$value": "{color.brand.400}" },
+				"aurora": { "$value": "{color.brand.300}" }
 			},
 			"accent": {
-				"terrace": { "$value": "{color.accent.200}" },
-				"summit": { "$value": "{color.accent.700}" },
-				"aurora": { "$value": "{color.accent.900}" }
+				"terrace": { "$value": "{color.accent.700}" },
+				"summit": { "$value": "{color.accent.400}" },
+				"aurora": { "$value": "{color.accent.300}" }
 			},
 			"gray": {
-				"terrace": { "$value": "{color.gray.200}" },
-				"path": { "$value": "{color.gray.300}" },
-				"summit": { "$value": "{color.gray.700}" },
-				"aurora": { "$value": "{color.gray.900}" }
+				"terrace": { "$value": "{color.gray.700}" },
+				"path": { "$value": "{color.gray.600}" },
+				"summit": { "$value": "{color.gray.400}" },
+				"aurora": { "$value": "{color.gray.300}" }
 			},
 			"information": {
-				"terrace": { "$value": "{color.information.200}" },
-				"summit": { "$value": "{color.information.700}" },
-				"aurora": { "$value": "{color.information.900}" }
+				"terrace": { "$value": "{color.information.700}" },
+				"summit": { "$value": "{color.information.400}" },
+				"aurora": { "$value": "{color.information.300}" }
 			},
 			"danger": {
-				"terrace": { "$value": "{color.danger.200}" },
-				"summit": { "$value": "{color.danger.700}" },
-				"aurora": { "$value": "{color.danger.900}" }
+				"terrace": { "$value": "{color.danger.700}" },
+				"summit": { "$value": "{color.danger.400}" },
+				"aurora": { "$value": "{color.danger.300}" }
 			},
 			"success": {
-				"terrace": { "$value": "{color.success.200}" },
-				"summit": { "$value": "{color.success.700}" },
-				"aurora": { "$value": "{color.success.900}" }
+				"terrace": { "$value": "{color.success.700}" },
+				"summit": { "$value": "{color.success.400}" },
+				"aurora": { "$value": "{color.success.300}" }
 			}
 		},
 		"dividerOn": {
-			"ground": { "$value": "{color.gray.200}" },
+			"ground": { "$value": "{color.gray.700}" },
 			"brand": {
-				"terrace": { "$value": "{color.brand.300}" },
-				"path": { "$value": "{color.brand.400}" },
-				"summit": { "$value": "{color.brand.50}" },
-				"aurora": { "$value": "{color.brand.100}" }
+				"terrace": { "$value": "{color.brand.600}" },
+				"path": { "$value": "{color.brand.500}" },
+				"summit": { "$value": "{color.brand.100}" },
+				"aurora": { "$value": "{color.brand.50}" }
 			},
 			"accent": {
-				"terrace": { "$value": "{color.accent.300}" },
-				"summit": { "$value": "{color.accent.50}" },
-				"aurora": { "$value": "{color.accent.100}" }
+				"terrace": { "$value": "{color.accent.600}" },
+				"summit": { "$value": "{color.accent.100}" },
+				"aurora": { "$value": "{color.accent.50}" }
 			},
 			"gray": {
-				"terrace": { "$value": "{color.gray.300}" },
-				"path": { "$value": "{color.gray.400}" },
-				"summit": { "$value": "{color.gray.50}" },
-				"aurora": { "$value": "{color.gray.100}" }
+				"terrace": { "$value": "{color.gray.600}" },
+				"path": { "$value": "{color.gray.500}" },
+				"summit": { "$value": "{color.gray.100}" },
+				"aurora": { "$value": "{color.gray.50}" }
 			},
 			"information": {
-				"terrace": { "$value": "{color.information.300}" },
-				"summit": { "$value": "{color.information.50}" },
-				"aurora": { "$value": "{color.information.100}" }
+				"terrace": { "$value": "{color.information.600}" },
+				"summit": { "$value": "{color.information.100}" },
+				"aurora": { "$value": "{color.information.50}" }
 			},
 			"danger": {
-				"terrace": { "$value": "{color.danger.300}" },
-				"summit": { "$value": "{color.danger.50}" },
-				"aurora": { "$value": "{color.danger.100}" }
+				"terrace": { "$value": "{color.danger.600}" },
+				"summit": { "$value": "{color.danger.100}" },
+				"aurora": { "$value": "{color.danger.50}" }
 			},
 			"success": {
-				"terrace": { "$value": "{color.success.300}" },
-				"summit": { "$value": "{color.success.50}" },
-				"aurora": { "$value": "{color.success.100}" }
+				"terrace": { "$value": "{color.success.600}" },
+				"summit": { "$value": "{color.success.100}" },
+				"aurora": { "$value": "{color.success.50}" }
 			}
 		},
 		"selectedTextOn": {
-			"ground": { "$value": "{color.accent.100}" },
+			"ground": { "$value": "{color.accent.800}" },
 			"brand": {
-				"terrace": { "$value": "{color.accent.500}" },
-				"summit": { "$value": "{color.accent.100}" },
-				"aurora": { "$value": "{color.accent.100}" }
+				"terrace": { "$value": "{color.accent.700}" },
+				"summit": { "$value": "{color.accent.800}" },
+				"aurora": { "$value": "{color.accent.800}" }
 			},
 			"accent": {
-				"terrace": { "$value": "{color.brand.500}" },
-				"aurora": { "$value": "{color.brand.100}" }
+				"terrace": { "$value": "{color.brand.700}" },
+				"aurora": { "$value": "{color.brand.800}" }
 			},
 			"gray": {
-				"terrace": { "$value": "{color.accent.500}" },
-				"summit": { "$value": "{color.accent.100}" },
-				"aurora": { "$value": "{color.accent.100}" }
+				"terrace": { "$value": "{color.accent.700}" },
+				"summit": { "$value": "{color.accent.800}" },
+				"aurora": { "$value": "{color.accent.800}" }
 			},
 			"information": {
-				"terrace": { "$value": "{color.accent.500}" },
-				"aurora": { "$value": "{color.accent.100}" }
+				"terrace": { "$value": "{color.accent.700}" },
+				"aurora": { "$value": "{color.accent.800}" }
 			},
 			"danger": {
-				"terrace": { "$value": "{color.accent.500}" },
-				"aurora": { "$value": "{color.accent.100}" }
+				"terrace": { "$value": "{color.accent.700}" },
+				"aurora": { "$value": "{color.accent.800}" }
 			},
 			"success": {
-				"terrace": { "$value": "{color.accent.500}" },
-				"aurora": { "$value": "{color.accent.100}" }
+				"terrace": { "$value": "{color.accent.700}" },
+				"aurora": { "$value": "{color.accent.800}" }
 			}
 		}
 	}

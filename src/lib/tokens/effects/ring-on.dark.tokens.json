@@ -26,7 +26,7 @@
 					"spread": "{dimensions.offset.spread}"
 				},
 				{
-					"color": "{color.accent.500}",
+					"color": "{color.accent.300}",
 					"offsetX": "{dimensions.base.offsetX}",
 					"offsetY": "{dimensions.base.offsetY}",
 					"blur": "{dimensions.base.blur}",
@@ -45,7 +45,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.accent.500}",
+						"color": "{color.accent.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",
@@ -63,7 +63,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.accent.500}",
+						"color": "{color.accent.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",
@@ -101,7 +101,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.brand.500}",
+						"color": "{color.brand.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",
@@ -139,7 +139,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.accent.500}",
+						"color": "{color.accent.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",
@@ -157,7 +157,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.accent.500}",
+						"color": "{color.accent.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",
@@ -195,7 +195,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.accent.500}",
+						"color": "{color.accent.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",
@@ -233,7 +233,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.accent.500}",
+						"color": "{color.accent.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",
@@ -271,7 +271,7 @@
 						"spread": "{dimensions.offset.spread}"
 					},
 					{
-						"color": "{color.accent.500}",
+						"color": "{color.accent.300}",
 						"offsetX": "{dimensions.base.offsetX}",
 						"offsetY": "{dimensions.base.offsetY}",
 						"blur": "{dimensions.base.blur}",

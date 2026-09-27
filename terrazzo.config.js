@@ -1,6 +1,19 @@
 import { defineConfig } from '@terrazzo/cli';
 import css from '@terrazzo/plugin-css';
 
+/*
+ * Theme cascade. Every permutation below re-declares the full token set at the same specificity
+ * (0,1,0), so source order decides — and that shapes three selectors:
+ *
+ * - The OS-dark blocks select `:root:where(:not([data-theme="light"]))`. `:where()` adds no
+ *   specificity, so `<html data-theme="light">` opts out of OS dark instead of losing to it (a
+ *   plain `:root` there beat the earlier `[data-theme="light"]` block on every dark-OS machine).
+ * - A nested `[data-theme="light"]` island only gets mobile values from its base block, so each
+ *   breakpoint re-declares the breakpoint-dependent tokens (`grid.**`) for light islands too.
+ * - Print always renders light — pages and `[data-theme]` islands alike, `color-scheme` included.
+ */
+const OS_DARK_ROOT = ':root:where(:not([data-theme="light"]))';
+
 export default defineConfig({
 	tokens: ['./src/lib/tokens/main.resolver.json'],
 	outDir: './src/lib/tokens',
@@ -41,7 +54,7 @@ export default defineConfig({
 					input: { theme: 'dark' },
 					prepare: (css) =>
 						`@media (prefers-color-scheme: dark) {
-							:root {
+							${OS_DARK_ROOT} {
 								color-scheme: dark;
 								${css}
 							}
@@ -68,13 +81,24 @@ export default defineConfig({
 					input: { breakpoint: 'tablet', theme: 'dark' },
 					prepare: (css) =>
 						`@media (width >= 768px) and (prefers-color-scheme: dark) {
-							:root {
+							${OS_DARK_ROOT} {
 								${css}
 							}
 						}
 
 						@media (width >= 768px) {
 							[data-theme="dark"] {
+								${css}
+							}
+						}`
+				},
+				// Breakpoint: tablet + light island (grid only — colors come from the base light block)
+				{
+					input: { breakpoint: 'tablet', theme: 'light' },
+					include: ['grid.**'],
+					prepare: (css) =>
+						`@media (width >= 768px) {
+							[data-theme="light"] {
 								${css}
 							}
 						}`
@@ -95,13 +119,24 @@ export default defineConfig({
 					input: { breakpoint: 'laptop', theme: 'dark' },
 					prepare: (css) =>
 						`@media (width >= 1280px) and (prefers-color-scheme: dark) {
-							:root {
+							${OS_DARK_ROOT} {
 								${css}
 							}
 						}
 
 						@media (width >= 1280px) {
 							[data-theme="dark"] {
+								${css}
+							}
+						}`
+				},
+				// Breakpoint: laptop + light island (grid only)
+				{
+					input: { breakpoint: 'laptop', theme: 'light' },
+					include: ['grid.**'],
+					prepare: (css) =>
+						`@media (width >= 1280px) {
+							[data-theme="light"] {
 								${css}
 							}
 						}`
@@ -122,7 +157,7 @@ export default defineConfig({
 					input: { breakpoint: 'desktop', theme: 'dark' },
 					prepare: (css) =>
 						`@media (width >= 1536px) and (prefers-color-scheme: dark) {
-							:root {
+							${OS_DARK_ROOT} {
 								${css}
 							}
 						}
@@ -133,13 +168,25 @@ export default defineConfig({
 							}
 						}`
 				},
+				// Breakpoint: desktop + light island (grid only)
+				{
+					input: { breakpoint: 'desktop', theme: 'light' },
+					include: ['grid.**'],
+					prepare: (css) =>
+						`@media (width >= 1536px) {
+							[data-theme="light"] {
+								${css}
+							}
+						}`
+				},
 
-				// Media: print
+				// Media: print — always light, for pages and theme islands alike
 				{
 					input: { media: 'print' },
 					prepare: (css) =>
 						`@media print {
-							:root {
+							:root, [data-theme] {
+								color-scheme: light;
 								${css}
 							}
 						}`
@@ -149,7 +196,7 @@ export default defineConfig({
 					input: { media: 'print', breakpoint: 'tablet' },
 					prepare: (css) =>
 						`@media print and (width >= 768px) {
-							:root {
+							:root, [data-theme] {
 								${css}
 							}
 						}`
@@ -159,7 +206,7 @@ export default defineConfig({
 					input: { media: 'print', breakpoint: 'laptop' },
 					prepare: (css) =>
 						`@media print and (width >= 1280px) {
-							:root {
+							:root, [data-theme] {
 								${css}
 							}
 						}`
@@ -169,7 +216,7 @@ export default defineConfig({
 					input: { media: 'print', breakpoint: 'desktop' },
 					prepare: (css) =>
 						`@media print and (width >= 1536px) {
-							:root {
+							:root, [data-theme] {
 								${css}
 							}
 						}`
