@@ -1,6 +1,6 @@
 # Grove Design System
 
-**Version 1.0 — Light Mode**
+**Version 1.1 — Light & Dark**
 
 ---
 
@@ -17,6 +17,8 @@
 9. [Border Width & Radius](#border-width--radius)
 10. [Shadows](#shadows)
 11. [Token Reference](#token-reference)
+12. [Composition Examples](#composition-examples)
+13. [Dark Theme — The Grove at Night](#dark-theme--the-grove-at-night)
 
 ---
 
@@ -50,12 +52,13 @@ Write like helping a colleague, not instructing a stranger. Use "you" freely. Sh
 
 ### Primary Colors
 
-| Role      | Name        | Hex       | Description                                                          |
-| --------- | ----------- | --------- | -------------------------------------------------------------------- |
-| Brand     | Grove Grass | `#416943` | Earthy, mossy green. Maturity, groundedness, organic sophistication. |
-| Accent    | Grove Prune | `#7F3999` | Rich purple. Used sparingly for high-priority actions and links.     |
-| Ground    | Parchment   | `#FAF8F2` | Warm off-white. The surface everything sits on.                      |
-| Dark Base | Obsidian    | `#0B0B0B` | Near-black. Primary text on light surfaces.                          |
+| Role         | Name        | Hex       | Description                                                          |
+| ------------ | ----------- | --------- | -------------------------------------------------------------------- |
+| Brand        | Grove Grass | `#416943` | Earthy, mossy green. Maturity, groundedness, organic sophistication. |
+| Accent       | Grove Prune | `#7F3999` | Rich purple. Used sparingly for high-priority actions and links.     |
+| Ground       | Parchment   | `#FAF8F2` | Warm off-white. The surface everything sits on.                      |
+| Dark Base    | Obsidian    | `#0B0B0B` | Near-black. Primary text on light surfaces.                          |
+| Night Ground | Nightwood   | `#090F0B` | Green-tinted near-black. The surface everything sits on at night.    |
 
 ### What Grove Is Not
 
@@ -111,17 +114,17 @@ Gray is the workhorse. Brand is used intentionally and sparingly to preserve its
 
 **Primitives** are the raw numbered values (`--color-brand-500`, `--color-gray-200`). They carry no meaning beyond their hue and lightness.
 
-**Semantic tokens** are named by role (`--semantic-color-surface-brand-terrace`, `--semantic-color-text-on-gray-ground-base`). They encode the design decision.
+**Semantic tokens** are named by role (`--semantic-color-surface-brand-terrace`, `--semantic-color-text-on-ground-base`). They encode the design decision.
 
 | Use case                           | Token type   | Example                                       |
 | ---------------------------------- | ------------ | --------------------------------------------- |
 | SVG illustrations, isotypes, icons | Primitive    | `--color-brand-500`                           |
 | Component backgrounds              | **Semantic** | `--semantic-color-surface-brand-terrace`      |
 | Text on surfaces                   | **Semantic** | `--semantic-color-text-on-brand-terrace-base` |
-| Borders and dividers               | **Semantic** | `--semantic-color-border-on-ground`           |
-| Shadows                            | **Semantic** | `--drop-shadow-brand-summit`                  |
+| Borders and dividers               | **Semantic** | `--semantic-color-border-around-ground`       |
+| Shadows                            | **Semantic** | `--drop-shadow-under-brand-summit`            |
 
-> **Rule:** If you find yourself picking a primitive for a UI element, stop and find the semantic token. Primitives are not responsive to dark mode; semantic tokens are.
+> **Rule:** If you find yourself picking a primitive for a UI element, stop and find the semantic token. Primitives are not responsive to dark mode; semantic tokens are. An SVG that must use primitives follows the theme by pairing both tones in `light-dark()`, as `gv-isotype` does — see [Dark Theme](#dark-theme--the-grove-at-night).
 
 ### Cross-references
 
@@ -140,6 +143,7 @@ Primitive colors are the raw palette. All semantic colors derive from these prim
 | ------------ | --------- | --------- |
 | `base/light` | `#FAF8F2` | Parchment |
 | `base/dark`  | `#0B0B0B` | Obsidian  |
+| `base/night` | `#090F0B` | Nightwood |
 
 #### Brand (Green)
 
@@ -245,7 +249,7 @@ Primitive colors are the raw palette. All semantic colors derive from these prim
 
 Free color picking leads to arbitrary compositions — a green card inside an orange section inside a purple page, with no systemic logic. Grove solves this with a **track + depth** model: you choose a color family (track) and a depth level, and the system provides exactly one valid surface color for that combination. This eliminates guesswork and ensures every surface composition is deliberate.
 
-The depth axis (Ground → Terrace → Path → Summit) maps to perceived visual weight: lighter is flatter, darker is more prominent. The progression is always forward — a nested element must be darker than its parent within the same track, or start a new track from a lower depth.
+The depth axis (Ground → Terrace → Path → Summit) maps to perceived visual weight: the further a surface sits from Ground, the more prominent it is. By day that means darker; at night, lighter (see [Dark Theme](#dark-theme--the-grove-at-night)). The progression is always forward — a nested element must sit further from Ground than its parent within the same track, or start a new track from a lower depth.
 
 ### Aurora
 
@@ -303,13 +307,13 @@ There are six tracks:
 
 ### Depths
 
-| Depth       | Token Value  | Role                                                            |
-| ----------- | ------------ | --------------------------------------------------------------- |
-| **Ground**  | `base/light` | The base surface. Where everything begins.                      |
-| **Terrace** | `100`        | Light surface. Containers, cards, sections.                     |
-| **Path**    | `200`        | Mid surface. Elements inside containers. _Brand and Gray only._ |
-| **Summit**  | `500`        | Dark surface. High-priority interactive elements.               |
-| **Aurora**  | `700`        | Hover state for Summit. Not a container.                        |
+| Depth       | Light        | Dark         | Role                                                          |
+| ----------- | ------------ | ------------ | ------------------------------------------------------------- |
+| **Ground**  | `base/light` | `base/night` | The base surface. Where everything begins.                    |
+| **Terrace** | `100`        | `900`        | Containers, cards, sections.                                  |
+| **Path**    | `200`        | `800`        | Elements inside containers. _Brand and Gray only._            |
+| **Summit**  | `500`        | `600`        | The most prominent depth. High-priority interactive elements. |
+| **Aurora**  | `700`        | `500`        | Hover state for Summit. Not a container.                      |
 
 ### Track Definitions (Light Mode)
 
@@ -893,7 +897,7 @@ Available tracks: `brand`, `accent`, `gray`, `information`, `danger`, `success`
 | Terrace | 1     | 16px / 16px | 32px | 4px    | 4%      |
 | Terrace | 2     | 4px / 4px   | 16px | 2px    | 8%      |
 
-All other tracks follow the same structure with their own hue.
+All other tracks follow the same structure with their own hue. At night, shadows become a moonlit rim — see [Dark Theme](#dark-theme--the-grove-at-night).
 
 ---
 
@@ -904,7 +908,7 @@ All other tracks follow the same structure with their own hue.
 | Collection       | Modes                         | Description                                 |
 | ---------------- | ----------------------------- | ------------------------------------------- |
 | `color`          | Value                         | Primitive color palette                     |
-| `semantic-color` | Light, Dark\*                 | Surface, text-on, border-around, divider-on |
+| `semantic-color` | Light, Dark                   | Surface, text-on, border-around, divider-on |
 | `typography`     | Digital, Print                | Font size, line height, letter spacing      |
 | `font-family`    | —                             | Typeface definitions                        |
 | `font-weight`    | Value                         | Weight names                                |
@@ -912,9 +916,7 @@ All other tracks follow the same structure with their own hue.
 | `grid`           | Base, Tablet, Laptop, Desktop | Layout grid                                 |
 | `border-radius`  | —                             | Corner radius scale                         |
 | `border-width`   | —                             | Stroke width scale                          |
-| `shadow`         | —                             | Shadow definitions                          |
-
-\*Dark mode values are placeholders. Structure is ready for integration.
+| `shadow`         | Light, Dark                   | Drop shadows and focus rings                |
 
 ### Naming Convention
 
@@ -933,16 +935,18 @@ All other tracks follow the same structure with their own hue.
 ### File Structure
 
 ```
-{collection}_{mode}.tokens.json
+src/lib/tokens/{group}/{collection}.{mode}.tokens.json
 ```
 
 **Examples:**
 
-- `color_tokens.json`
-- `semantic-color_light_tokens.json`
-- `semantic-color_dark_tokens.json`
-- `typography_digital_tokens.json`
-- `grid_tablet_tokens.json`
+- `palette/color.tokens.json`
+- `palette/semantic-color.light.tokens.json`
+- `palette/semantic-color.dark.tokens.json`
+- `text/font-size.digital.tokens.json`
+- `spacing/grid.tablet.tokens.json`
+
+`main.resolver.json` combines them through two modifiers — `theme` (light, dark) and `breakpoint` — and Terrazzo compiles the result into `tokens.css` (`pnpm build-tokens`). Never edit `tokens.css` by hand.
 
 ---
 
@@ -1026,16 +1030,93 @@ Ground (surface/ground)
 
 ---
 
-## Appendix: Dark Mode
+## Dark Theme — The Grove at Night
 
-_Dark mode token values are currently placeholders._
+At night the grove keeps its shape: the same tracks, depths, text roles and composition rules. Only the values move. Ground sinks to Nightwood, depth rises toward the light, and text is lit like moonlight on parchment.
 
-The structure is identical to light mode. When dark mode values are finalized:
+### Turning It On
 
-1. Update `semantic-color_dark_tokens.json` with correct mappings
-2. Surface depths may map to different primitive values
-3. Text-on values will adjust for light text on dark surfaces
-4. Composition rules remain unchanged
+- **Automatic.** The dark theme follows `prefers-color-scheme`. Importing `tokens.css` is all it takes.
+- **Pinned.** Set `data-theme="light"` or `data-theme="dark"` on `<html>` to override the operating system. `color-scheme` follows the theme, so native controls, scrollbars and `light-dark()` match it.
+- **Theme islands.** `data-theme` on any other element makes it a fresh Ground in that theme: `globals.css` repaints its surface and resets its text colour, and breakpoint grid values still apply inside it.
+- **Print** is always light, islands included.
+
+### Principles
+
+1. **Match each role's contrast, not its step number.** Mirroring `100` ↔ `900` doesn't work. The lightness ramp is asymmetric, and light text on a dark surface needs a bigger lightness gap for the same perceived contrast. Steps `300`–`400` carry text in neither theme.
+2. **Depth rises toward the light.** The further a surface sits from Ground, the more prominent it is. By day that is darker; at night it is lighter — on the brand track, Ground L 0.16 → Terrace 0.28 → Path 0.33 → Summit 0.43 → Aurora 0.48. Aurora still means hover and press, so at night a touched surface brightens.
+3. **Body text sits near APCA Lc 90 on every surface.** Chalk (`gray/50`) on Nightwood; Parchment (`base/light`) on the mid-tone Summit and Aurora solids. Parchment on Nightwood would reach Lc 103 and glare.
+4. **One solid-text rule for both themes.** On Summit and Aurora, base is `base/light` and subtle is `{track}/50`, by day and at night.
+5. **Tint the darks.** Nightwood is a green-tinted near-black, never pure black, so the night keeps its woodland colour.
+6. **A moonlit rim instead of a cast shadow.** Shadows barely read on a dark ground. At night a raised surface gets a 1px rim in its own colour, one step lighter, plus a soft same-hue glow (Summit) or a deep, soft shadow (floating Terrace).
+7. **Hue identity is kept.** Every family keeps its hue; only lightness moves.
+
+### Mapping
+
+`X` is the track. ★ marks a value that changed in light mode too.
+
+| Role                                                            | Light                                                     | Dark                                                      |
+| --------------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| `surface/ground`                                                | `base/light` (Parchment)                                  | `base/night` (Nightwood)                                  |
+| `surface/X/{terrace, path, summit, aurora}`                     | `100` / `200` / `500` / `700`                             | `900` / `800` / `600` / `500`                             |
+| `text-on/ground/{base, subtle, emphasis}`                       | `base/dark` / `gray/700` / `brand/500`                    | `gray/50` / `gray/100` / `brand/100`                      |
+| `text-on/ground/{unvisited-link, visited-link}`                 | `accent/500` / `information/500`                          | `accent/100` / `information/100`                          |
+| `text-on/X/{terrace, path}/{base, subtle}`                      | `X/950` / `X/800` (Path: `X/900`)                         | `X/50` / `X/100`                                          |
+| `text-on/X/terrace/emphasis`                                    | `base/dark`                                               | `base/light`                                              |
+| `text-on/X/{terrace, path}/{unvisited-link, visited-link}` ¹    | `accent/800` / `information/800` (Path: `900`–`950`)      | `accent/100` / `information/100`                          |
+| ★ `text-on/X/{summit, aurora}/{base, subtle}`                   | `base/light` / `X/50` (was `X/50` / `X/100`)              | `base/light` / `X/50`                                     |
+| `border-around/{ground, X/terrace, X/path, X/summit, X/aurora}` | `gray/100` / `200` / `300` / `700` / `900`                | `gray/900` / `700` / `600` / `400` / `300`                |
+| `divider-on/{ground, X/terrace, X/path, X/summit, X/aurora}`    | `gray/200` / `300` / `400` / `50` / `100`                 | `gray/700` / `600` / `500` / `100` / `50`                 |
+| `selected-text-on/{ground, X/terrace, X/summit, X/aurora}` ²    | `accent/100` / `accent/500` / `accent/100` / `accent/100` | `accent/800` / `accent/700` / `accent/800` / `accent/800` |
+| `ring-on` colour — Ground, Terrace, Path / Summit ²             | `accent/500` / `accent/100`                               | `accent/300` / `accent/100`                               |
+
+¹ Where a track is itself a link colour, that link borrows brand instead: the accent track's unvisited link and the information track's visited link (`brand/800` by day, `brand/100` at night).
+² The accent track uses `brand` in place of `accent`.
+
+#### Shadows at night
+
+| Depth   | Layer      | Offset X/Y | Blur | Spread | Colour               |
+| ------- | ---------- | ---------- | ---- | ------ | -------------------- |
+| Summit  | 1 — rim    | 0 / 0      | 0    | 1px    | `{track}/500` at 60% |
+| Summit  | 2 — glow   | 0 / 0      | 16px | 0      | `{track}/500` at 25% |
+| Terrace | 1 — rim    | 0 / 0      | 0    | 1px    | `{track}/800` at 80% |
+| Terrace | 2 — shadow | 0 / 16px   | 32px | 4px    | `base/dark` at 60%   |
+
+The same two-layer tokens, so hover-lift and pressed-drop behave exactly as they do by day.
+
+### Contrast
+
+WCAG 3's contrast method is still undecided — its Working Draft (10 September 2026) reads "@@[contrast measure to be determined]", and APCA was taken out of the draft in 2023. Until that settles, Grove gates on what can be measured today: **WCAG 2.2 AA** plus **APCA** at the ARC Bronze floors (`apca-w3` 0.1.9).
+
+| Pair                                                                                     | Floor           |
+| ---------------------------------------------------------------------------------------- | --------------- |
+| Body text — base on Ground or a Terrace, including Terrace text drawn straight on Ground | Lc 75 and 4.5:1 |
+| Every other text role                                                                    | Lc 60 and 4.5:1 |
+| Focus-ring colour against its surface                                                    | 3:1 (SC 1.4.11) |
+| Text-input underline against its fill and against Ground                                 | 3:1 (SC 1.4.11) |
+
+`src/lib/tokens/contrast.test.ts` checks every pair in both themes on each `pnpm test`, reading the built `tokens.css`, and fails when that file is out of date with the JSON sources.
+
+- **Large display type.** APCA suggests Lc 90 as a maximum for very large, bold text and large areas of colour — one more reason Ground text at night is Chalk, not Parchment.
+- **Links in running text** are not distinct enough from body text to rely on colour alone (WCAG 1.4.1; technique G183 needs 3:1 against the surrounding text). Underline them.
+- **Input boundaries.** A text input's resting underline uses `border-around/{track}/summit`, which holds 3:1 against both the fill and Ground in both themes. `border-around/{track}/terrace` stays for decorative edges.
+
+### SVG Primitives
+
+Illustrations and isotypes may use primitives (see [When to Use Primitives vs Semantic Tokens](#when-to-use-primitives-vs-semantic-tokens)), but primitives don't change with the theme. Pair both tones in `light-dark()` so the artwork follows it. `gv-isotype`'s default `tone="auto"` does exactly that, and falls back to the light tone where `light-dark()` isn't supported.
+
+### Theme Legend
+
+The night keeps Grove's woodland story, told through the druid's grove of D&D lore:
+
+| Token                                                     | Reads as                                                                                     |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Nightwood** (`base/night`)                              | The druid's grove after dusk — dark, but still green; never the void.                        |
+| **Chalk and Parchment**                                   | Moonlight: soft enough to read by, never glaring.                                            |
+| **Orchid focus ring** (`accent/300`)                      | _Faerie Fire_, the druid spell that outlines what it touches in blue, green or violet light. |
+| **Lilac and Sky links** (`accent/100`, `information/100`) | Faerie light: violet for the path not yet walked, blue-white for the path already taken.     |
+| **Aurora hover** (`{track}/500`)                          | Grove Grass waking under your hand — at night, a touched surface brightens.                  |
+| **Selection**                                             | A violet haze over the chosen words.                                                         |
 
 ---
 
