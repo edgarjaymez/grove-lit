@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const IconMetadata = {
 	component: {
 		name: 'Icon',
@@ -6,9 +8,14 @@ export const IconMetadata = {
 			'Phosphor icon rendered as an SVG via @phosphor-icons/webcomponents, supports regular and filled weights',
 		type: 'display',
 		path: 'src/lib/components/Icon/Icon.ts',
-		version: '2.0.0',
+		version: '2.1.0',
 		created: '2026/02/15',
-		modified: '2026/05/31'
+		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: 'name',
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -35,6 +42,12 @@ export const IconMetadata = {
 				name: 'fill-on-hover',
 				description: 'Transitions from regular to filled on hover — use for interactive affordance',
 				composition: `<gv-icon name="tree" fill-in-hover></gv-icon>`
+			},
+			{
+				name: 'standalone-meaningful',
+				description:
+					'A glyph that carries meaning with no adjacent text, such as a status mark in a table cell: label names it',
+				composition: `<gv-icon name="warning-circle" is-filled label="Warning"></gv-icon>`
 			}
 		],
 		antiPatterns: [
@@ -54,9 +67,16 @@ export const IconMetadata = {
 			{
 				scenario: 'Forgetting to register the named icon in the consuming app',
 				reason:
-					'gv-icon only emits the <ph-{name}> tag; the SVG comes from @phosphor-icons/webcomponents, which the app must import',
+					'gv-icon only emits the <ph-{name}> tag; the SVG comes from @phosphor-icons/webcomponents, which the app must import. Outside production builds, a glyph still unregistered 2 s after the page loads logs one console warning with the import to add.',
 				alternative:
-					'Import the icon you use, e.g. `import \'@phosphor-icons/webcomponents/PhTree\'` for name="tree"'
+					'Import the icon you use, e.g. `import \'@phosphor-icons/webcomponents/PhTree\'` for name="tree", plus the default and fixed glyphs listed in the `phosphor` field of each component you place'
+			},
+			{
+				scenario: 'Putting aria-label on gv-icon, or a label on an icon inside a named control',
+				reason:
+					'aria-label on the host names nothing unless the page also sets a role; inside a button or link the control already carries the name, so a labelled glyph is announced twice',
+				alternative:
+					'Use label for a glyph that means something on its own; leave it unset inside a named control'
 			}
 		]
 	},
@@ -92,14 +112,16 @@ export const IconMetadata = {
 	},
 
 	accessibility: {
-		role: 'presentation',
-		keyboardSupport: 'None — decorative by default',
+		role: 'img when label is set; otherwise none (the glyph is aria-hidden)',
+		keyboardSupport: 'None — not focusable',
 		screenReader:
-			'Hidden from assistive technology when used inside a labelled parent (Button, IconButton). Add aria-label on the parent if the icon is the sole accessible label.',
+			'Decorative and hidden from assistive technology unless label is set. With label, the glyph is exactly one image named by it, for every weight and while hovered. An empty or blank label counts as none.',
 		wcag: 'AA',
 		notes: [
-			'Do not put meaningful text alternatives on the Icon itself — label the interactive parent instead',
-			'The icon renders as a decorative SVG; the name string is not read aloud by screen readers'
+			'label, like gv-isotype’s, is the accessible name only; it is never shown.',
+			'Leave label unset inside a named control (button, link, menu item): the control carries the meaning.',
+			'Use label rather than aria-label on gv-icon. The component never touches host attributes, so a page’s own aria-hidden on the host still hides the glyph, and a page’s own role="img" + aria-label still work.',
+			'The name string is never read aloud; only label is.'
 		]
 	},
 
@@ -111,4 +133,4 @@ export const IconMetadata = {
 			skip: 'Do not render a raw <span> or <i> with a font class — always use this component to ensure correct sizing, color inheritance, and fill behavior'
 		}
 	}
-};
+} satisfies ComponentMetadata;

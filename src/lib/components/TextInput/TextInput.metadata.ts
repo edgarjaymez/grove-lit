@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const TextInputMetadata = {
 	component: {
 		name: 'TextInput',
@@ -9,6 +11,11 @@ export const TextInputMetadata = {
 		version: '1.2.0',
 		created: '2026/05/20',
 		modified: '2026/09/27'
+	},
+	phosphor: {
+		prop: null,
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -177,4 +184,4 @@ export const TextInputMetadata = {
 		context:
 			'Use for any single-line text entry in a form or UI. Default color=brand fits most surfaces. Switch to color=gray when the parent background is brand-colored or the field should feel neutral. Set error=true with a linked aria-describedby message for validation feedback. Always wrap with a <label> or provide aria-label.'
 	}
-};
+} satisfies ComponentMetadata;

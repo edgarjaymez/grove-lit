@@ -1,12 +1,22 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const ToDoListItemMetadata = {
 	component: {
 		name: 'ToDoListItem',
-		customElement: 'gv-todo-list-item',
+		tag: 'gv-todo-list-item',
 		path: 'src/lib/components/ToDoListItem/ToDoListItem.ts',
 		category: 'molecules',
 		description:
 			'A to-do list entry composed of an interactive checkbox and a two-line label (heading + a category row with a leading Phosphor icon). Toggling the checkbox marks the item as done, applying strikethrough styling to both text lines; the category icon switches from filled (active) to outline (done).',
-		type: 'interactive'
+		type: 'interactive',
+		version: '2.0.0',
+		created: '2026/05/31',
+		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: 'tree',
+		fixed: []
 	},
 
 	usage: {
@@ -78,7 +88,7 @@ export const ToDoListItemMetadata = {
 				name: 'Icon',
 				customElement: 'gv-icon',
 				source: '../Icon/Icon.js',
-				role: 'Leading category glyph; filled when active, outline when done. Hidden when icon="". The host app must import the Phosphor icon used (e.g. @phosphor-icons/webcomponents/PhTree).'
+				role: 'Leading category glyph; filled when active, outline when done. Hidden when icon="". The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.'
 			}
 		],
 		commonPartners: [
@@ -131,4 +141,4 @@ export const ToDoListItemMetadata = {
 		context:
 			'Use when building a task list or checklist where each row needs an interactive checkbox, a primary task name, and a secondary category/subtitle. Prefer this over composing a raw gv-checkbox with text manually.'
 	}
-};
+} satisfies ComponentMetadata;

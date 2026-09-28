@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const ColorSwatchMetadata = {
 	component: {
 		name: 'ColorSwatch',
@@ -10,6 +12,11 @@ export const ColorSwatchMetadata = {
 		version: '1.2.0',
 		created: '2026/05/31',
 		modified: '2026/09/18'
+	},
+	phosphor: {
+		prop: null,
+		default: null,
+		fixed: ['copy']
 	},
 
 	usage: {
@@ -94,7 +101,7 @@ export const ColorSwatchMetadata = {
 		parentConstraints: [
 			'Should be placed inside a surface that loads tokens.css — the component relies on CSS custom properties from the Grove token system',
 			'Both tooltips are pinned outside the left edge of the 9rem column, right-aligned 8px clear of it — keep a left gutter of at least 80px so the wider "Copied!" bubble is not clipped by a scroll container',
-			'The consuming app must import the Phosphor copy glyph (@phosphor-icons/webcomponents/PhCopy) for the tooltip icon to render'
+			'The consuming app must register the fixed glyph listed in the phosphor field (copy, @phosphor-icons/webcomponents/PhCopy) for the tooltip icon to render'
 		]
 	},
 
@@ -169,4 +176,4 @@ export const ColorSwatchMetadata = {
 			skip: 'Do not use in production UI — it documents a token rather than participating in a layout, and its only interaction is copying its own values.'
 		}
 	}
-};
+} satisfies ComponentMetadata;

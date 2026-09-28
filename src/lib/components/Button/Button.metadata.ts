@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const ButtonMetadata = {
 	component: {
 		name: 'Button',
@@ -9,6 +11,11 @@ export const ButtonMetadata = {
 		version: '1.1.1',
 		created: '2026/03/08',
 		modified: '2026/05/30'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -137,6 +144,7 @@ export const ButtonMetadata = {
 			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
 		wcag: 'AA',
 		notes: [
+			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',
 			'text prop is the accessible name — keep it descriptive and action-oriented',
 			'Disabled state uses the HTML disabled attribute; pointer events are blocked natively',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
@@ -149,4 +157,4 @@ export const ButtonMetadata = {
 		context:
 			'Use for any user-initiated action. Choose style and color based on visual hierarchy: filled accent for primary, tonal for secondary, outlined/ghost for tertiary. Add icon for reinforcement, never as the sole label.'
 	}
-};
+} satisfies ComponentMetadata;

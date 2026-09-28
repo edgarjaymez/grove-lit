@@ -48,8 +48,8 @@ import '@edgarjaymez/grove/fonts.css';`}</code>
 		</pre>
 	</div>
 	<p className="grove-section-body">
-		Icons are powered by <code>@phosphor-icons/webcomponents</code>. Install it and import the
-		icons you use — <code>gv-icon</code> renders them by name:
+		Icons are powered by <code>@phosphor-icons/webcomponents</code>. Install it and import each
+		glyph you use, one module per glyph. <code>gv-icon</code> renders them by name:
 	</p>
 	<div className="grove-install">
 		<pre className="grove-code">
@@ -58,6 +58,29 @@ import '@edgarjaymez/grove/fonts.css';`}</code>
 import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 		</pre>
 	</div>
+	<p className="grove-section-body">
+		Some components render glyphs you never name. Import these too for the components you place
+		(each component's metadata lists them in its <code>phosphor</code> field):
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`// Always rendered
+import '@phosphor-icons/webcomponents/PhCheckCircle'; // gv-feedback-strip type="success"
+import '@phosphor-icons/webcomponents/PhWarningCircle'; // gv-feedback-strip type="danger"
+import '@phosphor-icons/webcomponents/PhInfo'; // gv-feedback-strip type="information"
+import '@phosphor-icons/webcomponents/PhCopy'; // gv-color-swatch
+// Defaults, when you leave out the icon attribute
+import '@phosphor-icons/webcomponents/PhArrowLeft'; // gv-back-button
+import '@phosphor-icons/webcomponents/PhTree'; // gv-icon-button, gv-todo-category-toggler, gv-todo-list-item
+import '@phosphor-icons/webcomponents/PhHouse'; // gv-menu-item
+import '@phosphor-icons/webcomponents/PhPalette'; // gv-title`}</code>
+		</pre>
+	</div>
+	<p className="grove-section-body">
+		Importing the package root registers all 1,512 glyphs. It works, but ships every one of them.
+		If you miss one, the glyph renders nothing, and outside production builds the console logs one
+		warning naming the import to add.
+	</p>
 </div>
 
 <div className="grove-section">

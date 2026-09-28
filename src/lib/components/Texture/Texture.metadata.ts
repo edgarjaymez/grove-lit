@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const TextureMetadata = {
 	component: {
 		name: 'Texture',
@@ -9,6 +11,11 @@ export const TextureMetadata = {
 		version: '1.2.0',
 		created: '2026/02/18',
 		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: null,
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -162,4 +169,4 @@ export const TextureMetadata = {
 			skip: 'Content-heavy surfaces where the grain could reduce legibility of small text or fine graphics'
 		}
 	}
-};
+} satisfies ComponentMetadata;

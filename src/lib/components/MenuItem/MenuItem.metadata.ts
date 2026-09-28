@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const MenuItemMetadata = {
 	component: {
 		name: 'MenuItem',
@@ -10,6 +12,11 @@ export const MenuItemMetadata = {
 		version: '1.1.0',
 		created: '2026/09/16',
 		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: 'house',
+		fixed: []
 	},
 
 	usage: {
@@ -111,7 +118,7 @@ export const MenuItemMetadata = {
 			{
 				name: 'Icon',
 				source: '../Icon/Icon.js',
-				role: 'Decorative leading glyph rendered with fill-in-hover; regular weight at rest, fill weight on hover and when active. The host app must import the Phosphor icon used (e.g. @phosphor-icons/webcomponents/PhHouse). Hidden when icon="".'
+				role: 'Decorative leading glyph rendered with fill-in-hover; regular weight at rest, fill weight on hover and when active. The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute. Hidden when icon="".'
 			}
 		],
 		commonPartners: ['Icon'],
@@ -182,4 +189,4 @@ export const MenuItemMetadata = {
 		context:
 			'Use for entries in a documentation or app sidebar where each row is a link with an icon and a label. Pick size="md" for top-level entries and size="sm" for the nested level, and set is-active on the entry matching the current route. Always place it inside a container that paints var(--semantic-color-surface-brand-terrace).'
 	}
-};
+} satisfies ComponentMetadata;

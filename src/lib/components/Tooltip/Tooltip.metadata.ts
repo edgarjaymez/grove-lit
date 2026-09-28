@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const TooltipMetadata = {
 	component: {
 		name: 'Tooltip',
@@ -10,6 +12,11 @@ export const TooltipMetadata = {
 		version: '1.1.0',
 		created: '2026/09/16',
 		modified: '2026/09/18'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -146,7 +153,7 @@ export const TooltipMetadata = {
 			'The consumer must wire aria-describedby from the trigger to the tooltip id — the component cannot do it.',
 			'The decorative gv-icon is aria-hidden="true"; never put meaning in the icon alone.',
 			'Never pass a title attribute — it is a global HTML attribute and would render a native browser tooltip on the host.',
-			'The consuming app must import the Phosphor glyph it names, e.g. @phosphor-icons/webcomponents/PhCopy for icon="copy".',
+			'The consuming app must register the glyph it names (see the phosphor field), e.g. @phosphor-icons/webcomponents/PhCopy for icon="copy".',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
@@ -159,4 +166,4 @@ export const TooltipMetadata = {
 			skip: 'When you need anchoring, hover timing, or open/close behavior — gv-tooltip provides none of it. Also skip for persistent page-level status, which is gv-feedback-strip.'
 		}
 	}
-};
+} satisfies ComponentMetadata;

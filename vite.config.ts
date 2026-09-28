@@ -17,6 +17,13 @@ const emulateMedia: BrowserCommand<[MediaEmulation]> = async (ctx, media) => {
 	await ctx.page.emulateMedia(media);
 };
 
+/** Playwright's ARIA snapshot of an element in the test page: what the accessibility tree exposes. */
+const ariaSnapshot: BrowserCommand<[selector: string]> = async (ctx, selector) => {
+	if (ctx.provider.name !== 'playwright')
+		throw new Error('ariaSnapshot needs the playwright provider');
+	return ctx.iframe.locator(selector).ariaSnapshot();
+};
+
 /**
  * Every story runs once per Grove theme. OS dark leaves `data-theme` off and sets the browser's colour
  * scheme, so the `prefers-color-scheme` block of tokens.css is what gets tested.
@@ -118,7 +125,13 @@ export default defineConfig({
 				extends: './vite.config.ts',
 				// Pre-bundled up front so a test importing a new directive doesn't trigger a mid-run reload.
 				optimizeDeps: {
-					include: ['lit', 'lit/decorators.js', 'lit/directives/*.js', 'lit/static-html.js']
+					include: [
+						'lit',
+						'lit/decorators.js',
+						'lit/directives/*.js',
+						'lit/static-html.js',
+						'@phosphor-icons/webcomponents/*'
+					]
 				},
 				test: {
 					name: 'browser',
@@ -129,7 +142,7 @@ export default defineConfig({
 						headless: true,
 						provider: playwright(),
 						instances: [{ browser: 'chromium' }],
-						commands: { emulateMedia }
+						commands: { emulateMedia, ariaSnapshot }
 					}
 				}
 			},

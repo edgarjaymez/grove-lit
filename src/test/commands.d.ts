@@ -6,5 +6,7 @@ declare module 'vitest/browser' {
 			reducedMotion?: 'reduce' | 'no-preference';
 			colorScheme?: 'light' | 'dark';
 		}) => Promise<void>;
+		/** The YAML ARIA snapshot Playwright computes for the first element matching `selector`. */
+		ariaSnapshot: (selector: string) => Promise<string>;
 	}
 }

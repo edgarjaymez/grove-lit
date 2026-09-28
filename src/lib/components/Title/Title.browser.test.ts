@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { html, render } from 'lit';
-import '@phosphor-icons/webcomponents/PhPalette';
 import './Title.js';
 import type { Title } from './Title.js';
 

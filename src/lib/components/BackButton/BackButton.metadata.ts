@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const BackButtonMetadata = {
 	component: {
 		name: 'BackButton',
@@ -10,6 +12,11 @@ export const BackButtonMetadata = {
 		version: '1.0.0',
 		created: '2026/09/16',
 		modified: '2026/09/16'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: 'arrow-left',
+		fixed: []
 	},
 
 	usage: {
@@ -29,7 +36,7 @@ export const BackButtonMetadata = {
 			{
 				name: 'custom-icon',
 				description:
-					'Use a different Phosphor glyph; the consumer must import the matching icon component',
+					'Use a different Phosphor glyph; the consumer must import the matching icon component (see the phosphor field)',
 				composition: '<gv-back-button icon="caret-left"></gv-back-button>'
 			},
 			{
@@ -77,7 +84,7 @@ export const BackButtonMetadata = {
 				name: 'Icon',
 				customElement: 'gv-icon',
 				source: '../Icon/Icon.js',
-				role: 'Renders the glyph (regular weight at rest, fill weight on hover via the parent-driven custom-property swap); aria-hidden since the button carries the accessible name. The host app must import the Phosphor icon used (e.g. @phosphor-icons/webcomponents/PhArrowLeft).'
+				role: 'Renders the glyph (regular weight at rest, fill weight on hover via the parent-driven custom-property swap); aria-hidden since the button carries the accessible name. The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.'
 			}
 		],
 		commonPartners: [],
@@ -126,4 +133,4 @@ export const BackButtonMetadata = {
 		context:
 			'Use for a square "go back" control that calls window.history.back(). Prefer over gv-icon-button for navigation-back use cases — gv-icon-button is pill-shaped, shadowed, tops out at a 20px icon, and its metadata forbids navigation use.'
 	}
-};
+} satisfies ComponentMetadata;

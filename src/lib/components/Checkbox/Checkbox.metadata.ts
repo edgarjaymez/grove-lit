@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const CheckboxMetadata = {
 	component: {
 		name: 'Checkbox',
@@ -9,6 +11,11 @@ export const CheckboxMetadata = {
 		version: '1.1.0',
 		created: '2026/05/20',
 		modified: '2026/09/27'
+	},
+	phosphor: {
+		prop: null,
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -138,4 +145,4 @@ export const CheckboxMetadata = {
 		context:
 			'Use when the user needs to select or deselect a binary option, especially in lists or forms. For a single on/off toggle (like a feature switch), prefer a Toggle component. Always pair with a label for accessibility. Use xl responsive size for touch-heavy or mobile-first contexts.'
 	}
-};
+} satisfies ComponentMetadata;

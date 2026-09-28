@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const ToDoCategoryTogglerMetadata = {
 	component: {
 		name: 'ToDoCategoryToggler',
@@ -9,6 +11,11 @@ export const ToDoCategoryTogglerMetadata = {
 		version: '1.1.0',
 		created: '2026/02/18',
 		modified: '2026/06/24'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: 'tree',
+		fixed: []
 	},
 
 	usage: {
@@ -131,6 +138,7 @@ export const ToDoCategoryTogglerMetadata = {
 			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
 		wcag: 'AA',
 		notes: [
+			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',
 			'aria-pressed is set automatically from isSelected — do not set it manually',
 			'disabled prop sets the HTML disabled attribute; browser blocks pointer events natively',
 			'State changes dispatch a gv-toggle CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("gv-toggle", (e) => use(e.detail))',
@@ -157,4 +165,4 @@ export const ToDoCategoryTogglerMetadata = {
 		context:
 			'Use when the UI needs a compact, color-coded toggle button for filtering or selecting a task category. Choose the color track that matches the surrounding design language — brand (green) for primary, accent (purple) for secondary, information (blue) for informational, gray for neutral. Pass a Phosphor icon name to the optional icon prop to show a filled glyph in the header (e.g. icon="tree"); omit it to leave the icon slot empty. Always listen to the gv-toggle CustomEvent to react to state changes.'
 	}
-};
+} satisfies ComponentMetadata;

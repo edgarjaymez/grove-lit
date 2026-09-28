@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const TitleMetadata = {
 	component: {
 		name: 'Title',
@@ -10,6 +12,11 @@ export const TitleMetadata = {
 		version: '1.1.0',
 		created: '2026/09/16',
 		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: 'palette',
+		fixed: []
 	},
 
 	usage: {
@@ -66,7 +73,7 @@ export const TitleMetadata = {
 				name: 'Icon',
 				customElement: 'gv-icon',
 				source: '../Icon/Icon.js',
-				role: 'Leading filled glyph, aria-hidden. Hidden when icon="". The host app must import the Phosphor icon used (e.g. @phosphor-icons/webcomponents/PhPalette).'
+				role: 'Leading filled glyph, aria-hidden. Hidden when icon="". The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.'
 			}
 		],
 		commonPartners: [],
@@ -111,4 +118,4 @@ export const TitleMetadata = {
 		context:
 			'Use as static page or section chrome when a title needs a leading icon on the ground surface — e.g. a documentation page header. Set `level` to match the real document heading hierarchy, and pass icon="" to omit the icon when none is needed.'
 	}
-};
+} satisfies ComponentMetadata;

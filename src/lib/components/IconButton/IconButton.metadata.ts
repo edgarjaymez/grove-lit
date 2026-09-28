@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const IconButtonMetadata = {
 	component: {
 		name: 'IconButton',
@@ -8,6 +10,11 @@ export const IconButtonMetadata = {
 		version: '1.0.0',
 		created: '2026/03/07',
 		modified: '2026/05/30'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: 'tree',
+		fixed: []
 	},
 
 	usage: {
@@ -126,6 +133,7 @@ export const IconButtonMetadata = {
 			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
 		wcag: 'AA',
 		notes: [
+			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',
 			'aria-label is required on every instance — treat it as a required prop',
 			'Disabled state uses both the HTML disabled attribute and aria-disabled for maximum AT compatibility',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
@@ -138,4 +146,4 @@ export const IconButtonMetadata = {
 		context:
 			'Use when an action is well-understood from its icon alone and a text label would clutter the UI. Always pair with aria-label.'
 	}
-};
+} satisfies ComponentMetadata;

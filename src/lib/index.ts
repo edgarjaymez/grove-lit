@@ -1,6 +1,7 @@
 export { componentReset } from './styles/component-reset.js';
 export { visuallyHidden } from './styles/visually-hidden.js';
 export type { GroveEventMap } from './events.js';
+export type { ComponentMetadata, PhosphorGlyphs } from './components/metadata.js';
 export { BackButton } from './components/BackButton/BackButton.js';
 export { BackButtonMetadata } from './components/BackButton/BackButton.metadata.js';
 export { Button } from './components/Button/Button.js';

@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const FeedbackStripMetadata = {
 	component: {
 		name: 'FeedbackStrip',
@@ -10,6 +12,11 @@ export const FeedbackStripMetadata = {
 		version: '1.1.0',
 		created: '2026/09/16',
 		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: null,
+		default: null,
+		fixed: ['check-circle', 'warning-circle', 'info']
 	},
 
 	usage: {
@@ -127,7 +134,7 @@ export const FeedbackStripMetadata = {
 				name: 'Icon',
 				customElement: 'gv-icon',
 				source: '../Icon/Icon.js',
-				role: 'Filled status glyph, fixed per type (check-circle / warning-circle / info), aria-hidden and sized by the header font. The host app must import the Phosphor elements: PhCheckCircle, PhWarningCircle, PhInfo.'
+				role: 'Filled status glyph, fixed per type (check-circle / warning-circle / info), aria-hidden and sized by the header font. The host app must register the fixed glyphs listed in the phosphor field (PhCheckCircle, PhWarningCircle, PhInfo).'
 			}
 		],
 		commonPartners: [],
@@ -211,4 +218,4 @@ export const FeedbackStripMetadata = {
 			skip: 'Skip it when the feedback must be dismissible, floats over content (toast), needs actions or links inside it, or attaches to a single form field — none of which this component supports.'
 		}
 	}
-};
+} satisfies ComponentMetadata;
