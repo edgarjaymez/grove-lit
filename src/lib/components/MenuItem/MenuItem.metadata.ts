@@ -7,9 +7,9 @@ export const MenuItemMetadata = {
 		description:
 			'A sidebar/docs navigation item rendered as a native anchor with a leading Phosphor icon and a wrapping label. Two sizes model the two navigation levels: md for primary entries and sm for sub-entries. The item is transparent — its parent paints the brand terrace surface — and it has four visual states driven by hover and the is-active attribute.',
 		type: 'navigation',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/09/16',
-		modified: '2026/09/16'
+		modified: '2026/09/28'
 	},
 
 	usage: {
@@ -17,9 +17,10 @@ export const MenuItemMetadata = {
 			'docs-sidebar-navigation',
 			'primary-nav-item',
 			'sub-navigation-item',
-			'table-of-contents-link'
+			'table-of-contents-link',
+			'language-switcher'
 		],
-		requiredProps: ['label'],
+		requiredProps: ['label', 'href'],
 		commonPatterns: [
 			{
 				name: 'primary-nav-item',
@@ -53,6 +54,15 @@ export const MenuItemMetadata = {
   <gv-menu-item label="Components" href="/components" icon="cube" is-active></gv-menu-item>
   <gv-menu-item size="sm" label="Button" href="/components/button" icon="cursor-click"></gv-menu-item>
 </nav>`
+			},
+			{
+				name: 'language-switcher',
+				description:
+					'Links to the same page in other languages. lang on each item marks the language of its label (the shadow link inherits it); hreflang names the language of the destination',
+				composition: `<nav aria-label="Language" style="background: var(--semantic-color-surface-brand-terrace);">
+  <gv-menu-item lang="en" hreflang="en" href="/" label="English" icon="" is-active></gv-menu-item>
+  <gv-menu-item lang="es" hreflang="es" href="/es/" label="Español" icon=""></gv-menu-item>
+</nav>`
 			}
 		],
 		antiPatterns: [
@@ -79,6 +89,18 @@ export const MenuItemMetadata = {
 				scenario: 'Truncating the label with an ellipsis',
 				reason: 'The label is specified to wrap; truncation hides navigation targets.',
 				alternative: 'Let the label wrap, or widen the container'
+			},
+			{
+				scenario: 'Omitting href',
+				reason:
+					'The <a> then has no href, so it is neither a link nor focusable, and nothing announces it as navigation.',
+				alternative: 'Always pass the destination in href'
+			},
+			{
+				scenario: 'Putting lang only on a wrapper around both links, or leaving it off',
+				reason:
+					"Each language-switcher link's text is in its own language; one lang for the whole list mispronounces every label but one.",
+				alternative: 'Set lang on each gv-menu-item'
 			}
 		]
 	},
@@ -115,7 +137,7 @@ export const MenuItemMetadata = {
 			default: 'md',
 			purpose: {
 				md: 'Primary navigation level — base typography scale (20px/24px)',
-				sm: 'Secondary navigation level (sub-item) — subtle typography scale (16px/20px)'
+				sm: 'Secondary navigation level (sub-item) — subtle typography scale (16px/20px type) in a 24px minimum row'
 			}
 		}
 	},
@@ -135,7 +157,9 @@ export const MenuItemMetadata = {
 			'The icon is decorative (aria-hidden="true") — never rely on it to convey the destination.',
 			'The label wraps rather than truncating, so long navigation targets stay fully readable.',
 			'parentConstraints: the parent must paint the brand terrace surface; the text-on-brand-terrace color family only meets contrast on that surface.',
-			'The component declares no focus-ring CSS — the global surface-scoped *:focus-visible system supplies the ring.'
+			'The component declares no focus-ring CSS — the global surface-scoped *:focus-visible system supplies the ring.',
+			"Every row is at least 24 CSS px tall (`min-block-size: var(--soft-grid-24)`), so it meets WCAG 2.2 SC 2.5.8 without relying on the parent's spacing.",
+			"Put lang on the element when the label is in another language: the shadow link inherits the host's language (WCAG 3.1.2). hreflang is advisory metadata about the destination and is rendered only when href is set."
 		]
 	},
 
@@ -150,7 +174,9 @@ export const MenuItemMetadata = {
 			'sub item',
 			'link',
 			'current page',
-			'active link'
+			'active link',
+			'language-switcher',
+			'hreflang'
 		],
 		context:
 			'Use for entries in a documentation or app sidebar where each row is a link with an icon and a label. Pick size="md" for top-level entries and size="sm" for the nested level, and set is-active on the entry matching the current route. Always place it inside a container that paints var(--semantic-color-surface-brand-terrace).'
