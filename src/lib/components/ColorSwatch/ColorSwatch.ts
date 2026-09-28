@@ -4,6 +4,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Tooltip/Tooltip.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 import { visuallyHidden } from '../../styles/visually-hidden.js';
 
 export type ColorFamily =
@@ -107,6 +108,7 @@ export class ColorSwatch extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		visuallyHidden,
 		css`
 			:host {
@@ -356,7 +358,7 @@ export class ColorSwatch extends LitElement {
 					<div class="oklch-row">
 						<button
 							type="button"
-							class="oklch-group"
+							class="oklch-group gv-focusable"
 							aria-label="Copy oklch value"
 							aria-describedby="oklch-tip"
 							@click=${this.onCopyOklch}
@@ -376,7 +378,7 @@ export class ColorSwatch extends LitElement {
 					</div>
 					<button
 						type="button"
-						class="hex-value"
+						class="hex-value gv-focusable"
 						aria-label="Copy hex value"
 						aria-describedby="hex-tip"
 						@click=${this.onCopyHex}

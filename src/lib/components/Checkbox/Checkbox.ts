@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 
 type CheckboxResponsive = 'default' | 'xl';
 
@@ -17,6 +18,7 @@ export class Checkbox extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			.checkbox {
 				position: relative;
@@ -100,7 +102,7 @@ export class Checkbox extends LitElement {
 				role="checkbox"
 				aria-checked=${this.checked ? 'true' : 'false'}
 				?disabled=${this.disabled}
-				class=${classMap({ checkbox: true, xl: this.responsive === 'xl' })}
+				class=${classMap({ checkbox: true, 'gv-focusable': true, xl: this.responsive === 'xl' })}
 				@click=${this._toggle}
 			>
 				${this.checked

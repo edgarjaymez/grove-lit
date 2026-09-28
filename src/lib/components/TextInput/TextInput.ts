@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 
 type InputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number';
 type InputColor = 'brand' | 'gray';
@@ -27,6 +28,7 @@ export class TextInput extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			:host {
 				display: block;
@@ -169,6 +171,7 @@ export class TextInput extends LitElement {
 			<input
 				class=${classMap({
 					'text-input': true,
+					'gv-focusable': true,
 					[`text-input--${this.color}`]: true,
 					'text-input--error': this.error,
 					'text-input--disabled': this.disabled

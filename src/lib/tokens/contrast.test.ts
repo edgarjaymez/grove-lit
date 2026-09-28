@@ -248,6 +248,20 @@ describe.each(Object.entries(THEMES))('%s theme', (_theme, tokens) => {
 		expect(failures).toEqual([]);
 	});
 
+	// Advisory, not a gate (#22 OD6): over an aurora highlight a control keeps its resting surface's
+	// ring, so record how each ring's stroke reads against its track's aurora fill.
+	it('records each ring against its track aurora (advisory)', async ({ annotate }) => {
+		const rows = RINGS.flatMap((ring) => {
+			const track = ring.match(/^--ring-on-([a-z]+)-(?:terrace|path|summit)$/)?.[1];
+			if (!track) return [];
+			const [, stroke] = layers(resolve(tokens, `var(${ring})`)).map((l) => toRgb(colourOf(l)));
+			const cr = ratio(stroke, rgb(`--semantic-color-surface-${track}-aurora`));
+			return [`${ring} over ${track}-aurora: ${cr.toFixed(2)}:1${cr < 3 ? ' (below 3:1)' : ''}`];
+		});
+		expect(rows.length).toBeGreaterThan(0);
+		await annotate(rows.join('\n'));
+	});
+
 	it('keeps the text-input underline at 3:1 against its fill and against Ground (SC 1.4.11)', () => {
 		const failures = Object.entries(INPUT_FILLS).flatMap(([track, fill]) => {
 			const underline = `--semantic-color-border-around-${track}-summit`;

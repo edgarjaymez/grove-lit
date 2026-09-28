@@ -4,3 +4,8 @@ body,
 	background-color: var(--semantic-color-surface-ground);
 	color: var(--semantic-color-text-on-ground-base);
 }
+
+/* ...and its focus ring: controls inside fall back to the Ground ring of the island's own theme. */
+[data-theme] {
+	--gv-focus-ring: initial;
+}

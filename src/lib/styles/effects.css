@@ -49,12 +49,3 @@
 .drop-shadow-under-success-summit {
 	box-shadow: var(--drop-shadow-under-success-summit);
 }
-
-/* Focus Ring --------- */
-
-/* Ground —-- */
-.surface-ground *:focus {
-	box-shadow: var(--ring-on-ground);
-}
-
-/* Terrace —-- */

@@ -8,9 +8,9 @@ export const CheckboxMetadata = {
 			'A toggle input that represents a binary checked/unchecked state. Renders as a square button with a brand-green fill and white checkmark when checked. Supports default (24px) and xl (28px) sizes.',
 		type: 'input',
 		path: 'src/lib/components/Checkbox/Checkbox.ts',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/05/20',
-		modified: '2026/09/27'
+		modified: '2026/09/28'
 	},
 	phosphor: {
 		prop: null,
@@ -77,7 +77,7 @@ export const CheckboxMetadata = {
 				reason:
 					'Hover and focus are CSS pseudo-class states, not props — forcing them creates incorrect behavior',
 				alternative:
-					'Let CSS handle :hover; focus ring is managed by the global surface-scoped system'
+					"Let CSS handle :hover; the focus ring comes from the surrounding surface's --gv-focus-ring"
 			}
 		]
 	},
@@ -97,7 +97,8 @@ export const CheckboxMetadata = {
 			hover:
 				'Unchecked: border shifts to gray/aurora. Checked: background and edge shift from brand/summit to brand/aurora — the same as active until Grove has a press-state token',
 			active: 'Checked: background and edge shift to brand/aurora',
-			focus: 'Visible focus ring applied by global surface-scoped CSS — do not override',
+			focus:
+				"Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else the Ground ring; a system-colour outline under forced colours",
 			disabled: '50% opacity; cursor changes to not-allowed; toggle is blocked'
 		}
 	},
@@ -119,7 +120,7 @@ export const CheckboxMetadata = {
 		screenReader:
 			'Announces as checkbox with aria-checked=true/false reflecting current state; updates on toggle',
 		focusManagement:
-			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
+			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
 			'Always wrap in a <label> or use aria-label/aria-labelledby for an accessible name',

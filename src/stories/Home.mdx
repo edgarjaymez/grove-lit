@@ -220,8 +220,10 @@ form.addEventListener('gv-input', (e) => e.detail); // string, from any gv-text-
 		<div className="grove-pillar">
 			<h3 className="grove-pillar-title">Focus by surface</h3>
 			<p className="grove-pillar-desc">
-				Focus rings are applied globally via surface-scoped CSS. Components never declare their own
-				— it's handled automatically.
+				Every control draws the ring of the surface it sits on. Paint a section with a{' '}
+				<code>gv-surface-*</code> class from <code>grove.css</code>, or set{' '}
+				<code>--gv-focus-ring</code> next to your own background; with neither, controls use the
+				Ground ring.
 			</p>
 		</div>
 	</div>

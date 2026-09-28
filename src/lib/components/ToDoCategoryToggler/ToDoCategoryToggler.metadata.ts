@@ -8,9 +8,9 @@ export const ToDoCategoryTogglerMetadata = {
 			'A color-coded toggle button that displays a task count and category label. Pressing it toggles a selected state and dispatches a gv-toggle CustomEvent. Used in dashboards and overview surfaces to filter or highlight task categories.',
 		type: 'interactive',
 		path: 'src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/02/18',
-		modified: '2026/06/24'
+		modified: '2026/09/28'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -104,10 +104,11 @@ export const ToDoCategoryTogglerMetadata = {
 			hover:
 				'No surface change on hover — the toggler shows only its two states (Terrace when off, Summit when on)',
 			active:
-				'No dedicated pressed surface (deferred to a maintainer); active/pressed is conveyed by the global default focus ring',
+				'No dedicated pressed surface (deferred to a maintainer). Pressed and focus are separate states: the focus ring shows keyboard focus only',
 			selected:
 				'Toggled-on state: Summit surface with summit-level drop shadow; count uses summit-base, label and icon use summit-subtle',
-			focus: 'Visible focus ring applied by global surface-scoped CSS — do not override',
+			focus:
+				"Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else the Ground ring; a system-colour outline under forced colours",
 			disabled: '50% opacity; cursor changes to not-allowed; toggle blocked'
 		},
 
@@ -135,7 +136,7 @@ export const ToDoCategoryTogglerMetadata = {
 		screenReader:
 			'Announces as a button with aria-pressed="true/false" reflecting current state; updates on toggle',
 		focusManagement:
-			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
+			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
 			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',

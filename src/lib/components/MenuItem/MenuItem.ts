@@ -4,6 +4,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 import { SlotContent } from '../../utils/slot-content.js';
 import { linkAttribute } from '../../utils/link-attributes.js';
 
@@ -40,6 +41,7 @@ export class MenuItem extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			:host {
 				display: block;
@@ -47,6 +49,7 @@ export class MenuItem extends LitElement {
 
 			/* Transparent row — the parent paints the brand terrace surface. */
 			.item {
+				--_ring-default: var(--ring-on-brand-terrace);
 				display: flex;
 				align-items: center;
 				width: 100%;
@@ -107,6 +110,7 @@ export class MenuItem extends LitElement {
 			<a
 				class=${classMap({
 					item: true,
+					'gv-focusable': true,
 					[`item--${this.size}`]: true,
 					'item--active': this.isActive
 				})}

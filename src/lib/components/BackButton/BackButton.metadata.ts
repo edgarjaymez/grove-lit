@@ -9,9 +9,9 @@ export const BackButtonMetadata = {
 		description:
 			'A square gray tile with a title-scale icon (default arrow-left) that navigates back one entry in browser history when activated. The icon fills on hover; the tile grows taller at wide viewports via an internal padding step.',
 		type: 'interactive',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/09/16',
-		modified: '2026/09/16'
+		modified: '2026/09/28'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -113,7 +113,7 @@ export const BackButtonMetadata = {
 		focusManagement: 'Focus is native to the button element; no focus is managed programmatically',
 		wcag: 'AA',
 		notes: [
-			'No focus-ring CSS is declared in the component — the global surface-scoped focus system applies the ring automatically based on the parent surface',
+			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 			"Under Astro's <ClientRouter />, window.history.back() is intercepted by the router and rendered as a client-side view transition rather than a full page navigation — no Astro-specific code is required in this component",
 			'There is no fallback behavior when there is no previous history entry (out of scope per the SDD spec)',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'

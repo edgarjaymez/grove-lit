@@ -214,7 +214,7 @@ export const FeedbackStripMetadata = {
 			'An unknown type value falls back to success for styling, icon, and (with live unset) role.',
 			'The decorative icon carries aria-hidden="true"; colour is never the only carrier of meaning because the heading text states the outcome.',
 			'summit text-on tokens are contrast-verified against their summit surfaces for both base (heading) and subtle (message) roles.',
-			'No focus styles are declared in the component — Grove focus rings are handled by the global surface-scoped CSS.'
+			'The strip is not focusable, so it draws no focus ring.'
 		]
 	},
 

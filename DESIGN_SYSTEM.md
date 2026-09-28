@@ -1144,6 +1144,25 @@ With `prefers-reduced-motion: reduce`, every transition and animation inside a G
 
 A component that needs a gentler alternative instead of no transition at all declares its own `!important` rule on a class selector inside `@media (prefers-reduced-motion: reduce)`. It is more specific than the reset's `*`, so it wins.
 
+### Focus
+
+Every focusable Grove control draws the focus ring of the **surface it sits on**, on `:focus-visible`, around the element inside its shadow root that takes focus. The ring is a `--ring-on-*` token: a 4px gap in the surface colour, then a 4px ring, at 3:1 or more against the surface in both themes.
+
+| Surface the control sits on | Ring                                       |
+| --------------------------- | ------------------------------------------ |
+| Ground                      | `--ring-on-ground`                         |
+| `{track}` Terrace           | `--ring-on-{track}-terrace`                |
+| Brand or Gray Path          | `--ring-on-{brand\|gray}-path`             |
+| `{track}` Summit            | `--ring-on-{track}-summit`                 |
+| Aurora                      | the ring of the resting surface underneath |
+
+- **Declaring a surface.** Paint a section with a `.gv-surface-{surface}` class from `grove.css` (background, text and ring together), or set `--gv-focus-ring: var(--ring-on-…)` next to your own background. Surface names follow the `GroveSurface` type in token spelling. The property inherits into every Grove control inside, nested components included, and the innermost declaration wins.
+- **Defaults.** With no declaration, controls use the Ground ring; `gv-menu-item` uses the Brand Terrace ring its parent paints. A `[data-theme]` island starts again from its own Ground ring.
+- **Aurora.** Aurora is a transient highlight, so its classes don't declare a ring. Over an aurora section a control keeps the resting surface's ring. The terrace and path rings fall below 3:1 against their track's aurora fill (recorded, not gated, in `contrast.test.ts`).
+- **Drop shadows.** Controls with a drop shadow keep it: the ring is drawn over it.
+- **Forced colours.** The ring is a box-shadow, which forced colours remove; a transparent outline in the same rule then shows in the system colour.
+- **Never suppress it.** No component sets `outline: none`, and a test enforces it. Custom components can adopt the `focusRing` fragment and the `gv-focusable` class.
+
 ### Content and Slots
 
 Text-bearing components take their text as content, projected through a `<slot>`, so it is in the server HTML and names the control it sits in. The string property is the fallback.

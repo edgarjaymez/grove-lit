@@ -8,6 +8,7 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 interface MediaEmulation {
 	reducedMotion?: 'reduce' | 'no-preference';
 	colorScheme?: 'light' | 'dark';
+	forcedColors?: 'active' | 'none';
 }
 
 /** Emulates user-preference media features for the page the browser tests run in. */
@@ -72,7 +73,9 @@ export default defineConfig({
 				'src/lib/events.ts',
 				'src/lib/components/**/*.ts',
 				'src/lib/styles/component-reset.ts',
-				'src/lib/styles/visually-hidden.ts'
+				'src/lib/styles/visually-hidden.ts',
+				'src/lib/styles/focus-ring.ts',
+				'src/lib/surfaces.ts'
 			],
 			exclude: ['src/lib/components/**/*.stories.ts', 'src/lib/components/**/*.test.ts'],
 			outDirs: 'dist',

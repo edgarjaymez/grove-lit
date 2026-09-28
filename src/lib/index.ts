@@ -1,5 +1,8 @@
 export { componentReset } from './styles/component-reset.js';
 export { visuallyHidden } from './styles/visually-hidden.js';
+export { focusRing } from './styles/focus-ring.js';
+export { GROVE_SURFACES, isAurora } from './surfaces.js';
+export type { GroveSurface, GroveTrack } from './surfaces.js';
 export type { GroveEventMap } from './events.js';
 export type { ComponentMetadata, PhosphorGlyphs } from './components/metadata.js';
 export { BackButton } from './components/BackButton/BackButton.js';

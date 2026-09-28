@@ -9,9 +9,9 @@ export const ColorSwatchMetadata = {
 		description:
 			'Displays a primitive color token as a labeled swatch with a color preview, an OKLCH value and a hex value. Both value rows are copy buttons: the OKLCH row copies the DTCG (W3C Design Tokens) colour object, the hex row copies the plain #rrggbb string, and each reveals a gv-tooltip on hover and on focus. A successful copy flips that tooltip to "Copied!" and drops its shadow so the bubble reads as pressed, then dismisses it after three seconds. Used in design system documentation and Storybook color pages.',
 		type: 'documentation',
-		version: '1.2.0',
+		version: '1.3.0',
 		created: '2026/05/31',
-		modified: '2026/09/18'
+		modified: '2026/09/28'
 	},
 	phosphor: {
 		prop: null,
@@ -144,7 +144,7 @@ export const ColorSwatchMetadata = {
 		screenReader:
 			'Each copy button is labelled "Copy oklch value" / "Copy hex value" and described by its tooltip via aria-describedby. The color values themselves are rendered as plain text inside the buttons and are read as the button content. A hidden tooltip is visibility: hidden, so it is not exposed until revealed. A successful copy is announced through a visually hidden role="status" live region ("Copied oklch value" / "Copied hex value"), because the visible "Copied!" confirmation lives inside a tooltip that a screen reader user may never have revealed.',
 		focusManagement:
-			'Focus stays on the activated button after a copy — nothing is moved or opened. The three-second hold dismisses the bubble without touching focus, so a keyboard user is never moved out from under their own cursor. The global surface-scoped focus-ring system supplies the ring; the component declares none.',
+			'Focus stays on the activated button after a copy — nothing is moved or opened. The three-second hold dismisses the bubble without touching focus, so a keyboard user is never moved out from under their own cursor. Each copy button draws the Grove focus ring on :focus-visible.',
 		wcag: 'AA',
 		notes: [
 			'The text prop must be set to ensure the color name meets AA contrast against the swatch background',

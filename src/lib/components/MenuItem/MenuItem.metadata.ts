@@ -168,7 +168,7 @@ export const MenuItemMetadata = {
 		screenReader:
 			'The accessible name is the label text; the icon is aria-hidden="true" and is not announced. When active, aria-current="page" announces the entry as the current page.',
 		focusManagement:
-			'The internal anchor receives focus; the focus ring comes from the global surface-scoped system and is never declared in the component.',
+			"The internal anchor receives focus and draws the Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else --ring-on-brand-terrace, the surface its parent paints.",
 		wcag: 'AA',
 		notes: [
 			'The anchor carries aria-current="page" only while is-active is set; the attribute is absent otherwise.',
@@ -176,7 +176,7 @@ export const MenuItemMetadata = {
 			'The icon is decorative (aria-hidden="true") — never rely on it to convey the destination.',
 			'The label wraps rather than truncating, so long navigation targets stay fully readable.',
 			'parentConstraints: the parent must paint the brand terrace surface; the text-on-brand-terrace color family only meets contrast on that surface.',
-			'The component declares no focus-ring CSS — the global surface-scoped *:focus-visible system supplies the ring.',
+			'Under forced colours a system-colour outline replaces the ring.',
 			"Every row is at least 24 CSS px tall (`min-block-size: var(--soft-grid-24)`), so it meets WCAG 2.2 SC 2.5.8 without relying on the parent's spacing.",
 			"Put lang on the element when the label is in another language: the shadow link inherits the host's language (WCAG 3.1.2). hreflang is advisory metadata about the destination and is rendered only when href is set.",
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'

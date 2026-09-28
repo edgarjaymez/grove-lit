@@ -109,7 +109,8 @@ export const ButtonMetadata = {
 			click: 'Triggers onclick handler',
 			hover: 'Background transitions to aurora surface level; icon switches to filled variant',
 			active: 'Background stays at aurora level; drop shadow removed',
-			focus: 'Visible focus ring applied by global surface-scoped CSS — do not override',
+			focus:
+				"Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else the Ground ring; a system-colour outline under forced colours",
 			disabled: '50% opacity; cursor changes to not-allowed; pointer events blocked'
 		}
 	},
@@ -153,7 +154,7 @@ export const ButtonMetadata = {
 		keyboardSupport: 'Native browser support — Space/Enter to activate',
 		screenReader: 'Announces button role with visible text content as the accessible name',
 		focusManagement:
-			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
+			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
 			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',

@@ -4,6 +4,7 @@ import '../src/lib/tokens/tokens.css';
 import '../src/lib/styles/globals.css';
 import '../src/lib/styles/typography.css';
 import '../src/lib/styles/effects.css';
+import '../src/lib/styles/surfaces.css';
 import '../src/lib/styles/a11y.css';
 import '../src/lib/fonts/fonts.css';
 import '@phosphor-icons/webcomponents';
