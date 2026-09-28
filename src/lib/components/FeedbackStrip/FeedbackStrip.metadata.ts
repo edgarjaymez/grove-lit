@@ -9,7 +9,7 @@ export const FeedbackStripMetadata = {
 		description:
 			'A full-width status strip: a summit-depth colored band with a filled Phosphor status icon, a subheading-scale heading, and an indented message. Three semantic types — success, danger, information — each swapping surface, block borders, both text colors and the icon. The live region follows the type (polite, or assertive for danger) unless live chooses the announcement separately.',
 		type: 'display',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/09/16',
 		modified: '2026/09/28'
 	},
@@ -28,6 +28,13 @@ export const FeedbackStripMetadata = {
 		],
 		requiredProps: ['heading'],
 		commonPatterns: [
+			{
+				name: 'slotted-content',
+				description:
+					'Pass heading and message as slotted content, for inline emphasis; the props are the fallbacks.',
+				composition:
+					'<gv-feedback-strip type="success"><span slot="heading">Changes saved</span><span slot="message">Your <strong>profile</strong> was updated.</span></gv-feedback-strip>'
+			},
 			{
 				name: 'success-confirmation',
 				description: 'Confirm a completed action with a heading and a supporting message.',
@@ -91,9 +98,9 @@ export const FeedbackStripMetadata = {
 				alternative: 'Render and remove the element from the DOM under application control'
 			},
 			{
-				scenario: 'Putting links, buttons, or other interactive content in the message',
+				scenario: 'Putting buttons, form controls or other interactive content in a slot',
 				reason:
-					'The component exposes string props only (no slots) and declares no focus or hover styles; interactive children would be unstyled and unreachable.',
+					'Slots take text and phrasing content only. A projected control would take part in a surrounding form alongside the strip, and the strip styles no focus or hover state for it.',
 				alternative: 'Place an action next to the strip, outside the component'
 			},
 			{
@@ -128,7 +135,19 @@ export const FeedbackStripMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: 'heading',
+				description: 'The strip heading. Phrasing content only.',
+				fallback: 'heading'
+			},
+			{
+				name: 'message',
+				description:
+					'The message line; may carry inline links. With neither the slot nor message, the row is not rendered.',
+				fallback: 'message'
+			}
+		],
 		nestedComponents: [
 			{
 				name: 'Icon',

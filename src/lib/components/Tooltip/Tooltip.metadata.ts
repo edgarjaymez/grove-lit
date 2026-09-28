@@ -9,9 +9,9 @@ export const TooltipMetadata = {
 		description:
 			'A floating hint bubble at summit depth, carrying the summit drop shadow as its attention cue. The simple type is a single nowrap line of icon + message; the complete type stacks an emphasized heading over a wrapping message. Accent and gray swap the surface, both text roles, and the shadow together. The is-pressed flag drops the shadow so the bubble reads as pushed down against the surface. It is the bubble only — it does not anchor, position, open, or close itself.',
 		type: 'display',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/09/16',
-		modified: '2026/09/18'
+		modified: '2026/09/28'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -29,6 +29,12 @@ export const TooltipMetadata = {
 		],
 		requiredProps: ['message'],
 		commonPatterns: [
+			{
+				name: 'slotted-content',
+				description: 'Pass heading and message as slotted content; the props are the fallbacks.',
+				composition:
+					'<gv-tooltip type="complete"><span slot="heading">Heads up</span><span slot="message">Values copy as <code>oklch()</code>.</span></gv-tooltip>'
+			},
 			{
 				name: 'simple-hint',
 				description:
@@ -95,7 +101,18 @@ export const TooltipMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: 'heading',
+				description: 'The heading of the complete type. Phrasing content only.',
+				fallback: 'heading'
+			},
+			{
+				name: 'message',
+				description: 'The message, or the body of the complete type. Phrasing content only.',
+				fallback: 'message'
+			}
+		],
 		nestedComponents: [{ name: 'Icon', source: '../Icon/Icon.js' }],
 		commonPartners: ['ColorSwatch', 'IconButton', 'Button', 'TextInput'],
 		parentConstraints: [

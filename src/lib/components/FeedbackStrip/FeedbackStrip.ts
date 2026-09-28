@@ -4,6 +4,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { SlotContent } from '../../utils/slot-content.js';
 
 export type FeedbackStripType = 'success' | 'danger' | 'information';
 /** How the strip announces itself; `off` renders no live region. */
@@ -27,9 +28,14 @@ const REGIONS = {
  *
  * The consuming app must import the Phosphor icons it renders:
  * `PhCheckCircle`, `PhWarningCircle`, `PhInfo`.
+ *
+ * @slot heading - The strip heading. Falls back to `heading` when empty.
+ * @slot message - The message line. Falls back to `message`; with neither, the row is not rendered.
  */
 @customElement('gv-feedback-strip')
 export class FeedbackStrip extends LitElement {
+	private readonly _slots = new SlotContent(this, ['heading', 'message']);
+
 	@property({ type: String, reflect: true }) type: FeedbackStripType = 'success';
 	@property({ type: String }) heading = '';
 	@property({ type: String }) message = '';
@@ -113,6 +119,8 @@ export class FeedbackStrip extends LitElement {
 		const t: FeedbackStripType = Object.hasOwn(TYPES, this.type) ? this.type : 'success';
 		const live = this.live && Object.hasOwn(REGIONS, this.live) ? this.live : TYPES[t].live;
 		const region = REGIONS[live];
+		const heading = this._slots.has('heading') ? nothing : this.heading;
+		const message = this._slots.has('message') ? nothing : this.message;
 
 		return html`
 			<div
@@ -122,10 +130,12 @@ export class FeedbackStrip extends LitElement {
 			>
 				<div class="header">
 					<gv-icon name=${TYPES[t].icon} is-filled aria-hidden="true"></gv-icon>
-					<p class="heading">${this.heading}</p>
+					<p class="heading"><slot name="heading"></slot>${heading}</p>
 				</div>
-				${this.message
-					? html`<div class="body"><p class="message">${this.message}</p></div>`
+				${this.message || this._slots.has('message')
+					? html`<div class="body">
+							<p class="message"><slot name="message"></slot>${message}</p>
+						</div>`
 					: nothing}
 			</div>
 		`;

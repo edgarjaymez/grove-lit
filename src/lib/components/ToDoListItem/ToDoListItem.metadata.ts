@@ -76,7 +76,7 @@ export const ToDoListItemMetadata = {
 	},
 
 	composition: {
-		slots: {},
+		slots: null,
 		nestedComponents: [
 			{
 				name: 'Checkbox',

@@ -95,3 +95,19 @@ export const WithoutIcon: Story = {
 		message: 'Read only'
 	}
 };
+
+/** Heading and message as content. */
+export const Slotted: Story = {
+	args: { type: 'complete' },
+	render: ({ type, color, icon, isPressed }) => html`
+		<gv-tooltip
+			type=${type}
+			color=${color}
+			icon=${ifDefined(icon || undefined)}
+			?is-pressed=${isPressed}
+		>
+			<span slot="heading">Heads up</span>
+			<span slot="message">Values copy as <code>oklch()</code>.</span>
+		</gv-tooltip>
+	`
+};

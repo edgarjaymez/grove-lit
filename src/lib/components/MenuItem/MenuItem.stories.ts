@@ -91,3 +91,12 @@ export const LanguageSwitcher: Story = {
 		</nav>
 	`
 };
+
+/** The label as content. */
+export const Slotted: Story = {
+	render: ({ href, icon, size, isActive }) => html`
+		<gv-menu-item href=${ifDefined(href)} icon=${icon} size=${size} ?is-active=${isActive}
+			>Work</gv-menu-item
+		>
+	`
+};

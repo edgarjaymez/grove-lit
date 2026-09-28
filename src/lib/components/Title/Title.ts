@@ -3,6 +3,7 @@ import { html as staticHtml, unsafeStatic } from 'lit/static-html.js';
 import { customElement, property } from 'lit/decorators.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { SlotContent } from '../../utils/slot-content.js';
 
 type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -10,9 +11,13 @@ type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
  * A static title block: a filled Phosphor icon beside a title-scale heading, on the ground surface.
  *
  * Non-interactive page chrome — renders a real heading element whose level is a prop (default `h2`).
+ *
+ * @slot - The heading text, rendered inside the `h{level}`. Falls back to `heading` when empty.
  */
 @customElement('gv-title')
 export class Title extends LitElement {
+	private readonly _slots = new SlotContent(this, ['']);
+
 	@property({ type: String }) heading = '';
 	@property({ type: Number }) level: HeadingLevel = 2;
 	@property({ type: String }) icon = 'palette';
@@ -68,7 +73,7 @@ export class Title extends LitElement {
 								aria-hidden="true"
 							></gv-icon>`
 				}
-				<${tag} class="title__heading">${this.heading}</${tag}>
+				<${tag} class="title__heading"><slot></slot>${this._slots.has() ? nothing : this.heading}</${tag}>
 			</div>
 		`;
 	}

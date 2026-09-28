@@ -70,3 +70,9 @@ export const NarrowNoIcon: Story = {
 	decorators: [NARROW],
 	play: ({ canvasElement }) => assertNothingClipped(canvasElement)
 };
+
+/** The heading as content; `level` still picks the heading element. */
+export const Slotted: Story = {
+	render: ({ level, icon }) =>
+		html`<gv-title level=${level} icon=${icon}>Getting started</gv-title>`
+};

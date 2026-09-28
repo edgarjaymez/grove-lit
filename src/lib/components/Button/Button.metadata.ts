@@ -8,9 +8,9 @@ export const ButtonMetadata = {
 			'Primary interactive element for triggering actions. Supports visual hierarchy through style and color variants, optional leading icon, and three sizes.',
 		type: 'interactive',
 		path: 'src/lib/components/Button/Button.ts',
-		version: '1.1.1',
+		version: '1.2.0',
 		created: '2026/03/08',
-		modified: '2026/05/30'
+		modified: '2026/09/28'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -31,6 +31,12 @@ export const ButtonMetadata = {
 		requiredProps: ['text'],
 
 		commonPatterns: [
+			{
+				name: 'slotted-text',
+				description:
+					'Pass the text as content; it names the button and is in the server HTML. The text prop is the fallback when the slot is empty.',
+				composition: '<gv-button variant="filled">Save changes</gv-button>'
+			},
 			{
 				name: 'page-level-cta',
 				description: 'Primary action on a landing section or hero — highest visual prominence',
@@ -84,7 +90,13 @@ export const ButtonMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: '',
+				description: 'The button text. Text and phrasing content only, never a form control.',
+				fallback: 'text'
+			}
+		],
 		nestedComponents: [{ name: 'Icon', source: '../Icon/Icon.js' }],
 		commonPartners: ['IconButton', 'Input', 'Modal', 'Card', 'Form'],
 		parentConstraints: null

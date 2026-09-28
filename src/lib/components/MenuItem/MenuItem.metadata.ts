@@ -9,7 +9,7 @@ export const MenuItemMetadata = {
 		description:
 			'A sidebar/docs navigation item rendered as a native anchor with a leading Phosphor icon and a wrapping label. Two sizes model the two navigation levels: md for primary entries and sm for sub-entries. The item is transparent — its parent paints the brand terrace surface — and it has four visual states driven by hover and the is-active attribute.',
 		type: 'navigation',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/09/16',
 		modified: '2026/09/28'
 	},
@@ -29,6 +29,11 @@ export const MenuItemMetadata = {
 		],
 		requiredProps: ['label', 'href'],
 		commonPatterns: [
+			{
+				name: 'slotted-label',
+				description: 'Pass the label as content; label is the fallback.',
+				composition: '<gv-menu-item href="/work/">Work</gv-menu-item>'
+			},
 			{
 				name: 'primary-nav-item',
 				description: 'A top-level sidebar entry linking to a docs page',
@@ -113,7 +118,14 @@ export const MenuItemMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: '',
+				description:
+					'The link label. Phrasing content only, never a link or control: it is already inside the <a>.',
+				fallback: 'label'
+			}
+		],
 		nestedComponents: [
 			{
 				name: 'Icon',

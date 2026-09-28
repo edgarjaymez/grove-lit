@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import './Button.js';
 
 interface Args {
@@ -57,3 +58,17 @@ export const Large: Story = { args: { size: 'lg' } };
 export const Small: Story = { args: { size: 'sm' } };
 export const WithIcon: Story = { args: { icon: 'tree' } };
 export const Disabled: Story = { args: { disabled: true } };
+
+/** The text as content: it names the button and is in the server HTML. */
+export const Slotted: Story = {
+	render: ({ variant, color, size, icon, disabled }) => html`
+		<gv-button
+			variant=${variant}
+			color=${color}
+			size=${size}
+			icon=${ifDefined(icon || undefined)}
+			?disabled=${disabled}
+			>Save changes</gv-button
+		>
+	`
+};

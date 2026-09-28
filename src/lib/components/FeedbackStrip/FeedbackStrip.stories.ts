@@ -120,3 +120,13 @@ export const Announce: Story = {
 		`;
 	}
 };
+
+/** Heading and message as content, with inline emphasis. */
+export const Slotted: Story = {
+	render: ({ type, live }) => html`
+		<gv-feedback-strip type=${type} live=${ifDefined(live || undefined)}>
+			<span slot="heading">Changes saved</span>
+			<span slot="message">Your <strong>profile</strong> was updated.</span>
+		</gv-feedback-strip>
+	`
+};

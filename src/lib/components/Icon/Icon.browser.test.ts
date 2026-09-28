@@ -124,11 +124,10 @@ describe('consumers expose no glyph (#24 FR-10 to FR-12)', () => {
 			<gv-todo-category-toggler label="Category" count="3"></gv-todo-category-toggler>
 			<gv-todo-list-item heading="Water the tree" category="Garden"></gv-todo-list-item>
 		`);
-		// Before the fix gv-button and gv-icon-button each held an unnamed image. gv-button's name is
-		// #50's to fix; here it only has to stay as it was.
+		// Before the fix gv-button and gv-icon-button each held an unnamed image. gv-button is named by
+		// its slotted text (#34).
 		expect((await tree()).split('\n')).toEqual([
-			'- text: Plant',
-			'- button',
+			'- button "Plant"',
 			'- button "Plant a tree"',
 			'- button "3 Category"',
 			'- checkbox',

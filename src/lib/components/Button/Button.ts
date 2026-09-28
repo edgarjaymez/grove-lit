@@ -4,14 +4,20 @@ import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { SlotContent } from '../../utils/slot-content.js';
 
 type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost';
 type ButtonColor = 'accent' | 'gray';
 type ButtonSize = 'lg' | 'md' | 'sm';
 type ButtonType = 'button' | 'submit' | 'reset';
 
+/**
+ * @slot - The button text. Falls back to `text` when empty.
+ */
 @customElement('gv-button')
 export class Button extends LitElement {
+	private readonly _slots = new SlotContent(this, ['']);
+
 	@property({ type: String }) text = '';
 	@property({ type: String }) variant: ButtonVariant = 'filled';
 	@property({ type: String }) color: ButtonColor = 'accent';
@@ -250,7 +256,7 @@ export class Button extends LitElement {
 				aria-label=${this.ariaLabel ?? nothing}
 			>
 				${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}
-				${this.text}
+				<slot></slot>${this._slots.has() ? nothing : this.text}
 			</button>
 		`;
 	}

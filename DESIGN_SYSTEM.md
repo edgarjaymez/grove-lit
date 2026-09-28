@@ -1144,6 +1144,33 @@ With `prefers-reduced-motion: reduce`, every transition and animation inside a G
 
 A component that needs a gentler alternative instead of no transition at all declares its own `!important` rule on a class selector inside `@media (prefers-reduced-motion: reduce)`. It is more specific than the reset's `*`, so it wins.
 
+### Content and Slots
+
+Text-bearing components take their text as content, projected through a `<slot>`, so it is in the server HTML and names the control it sits in. The string property is the fallback.
+
+| Component           | Slot                           | Fallback property    |
+| ------------------- | ------------------------------ | -------------------- |
+| `gv-button`         | default                        | `text`               |
+| `gv-title`          | default, inside the `h{level}` | `heading`            |
+| `gv-menu-item`      | default, inside the link       | `label`              |
+| `gv-feedback-strip` | `heading`, `message`           | `heading`, `message` |
+| `gv-tooltip`        | `heading`, `message`           | `heading`, `message` |
+
+```html
+<gv-button>Save changes</gv-button>
+<gv-title level="1">Getting started</gv-title>
+<gv-feedback-strip type="success">
+	<span slot="heading">Changes saved</span>
+	<span slot="message">Your <strong>profile</strong> was updated.</span>
+</gv-feedback-strip>
+```
+
+- **Precedence.** Slotted content wins. With nothing slotted, the property renders, and removing the content brings the property back. Whitespace and comments between the tags don't count as content, so `<gv-button text="Save">` with a line break before its closing tag still shows "Save".
+- **Phrasing content only.** Slots take text and inline elements (`strong`, `em`, `code`, `a` where the component isn't already a link). Never a form control: a projected `<input>` or `<button>` would take part in a surrounding form alongside the component. Outside production builds, the component logs one console warning when a slot holds one.
+- **Structure stays with the component.** `gv-title`'s heading element still comes from `level`, and `gv-menu-item`'s link from `href`.
+- **Declared.** Each component lists its slots in its metadata (`composition.slots`) and in `custom-elements.json`. A test fails if a component renders a slot it doesn't declare.
+- **Before upgrade.** Slotted content is plain light DOM, so it renders before the element is defined and with JavaScript off. Rendering the component's own markup on the server (Declarative Shadow DOM) is a separate, later spec.
+
 ---
 
 _Grove Design System — Where living systems take root._

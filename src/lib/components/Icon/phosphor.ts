@@ -1,7 +1,5 @@
 // DOM-free helpers for gv-icon's registration check, kept apart so node tests can reach them.
 
-declare const process: { env: { NODE_ENV?: string } };
-
 /** How long a missing glyph may take to register, after the page has loaded, before it is reported. */
 export const GRACE_MS = 2000;
 
@@ -32,18 +30,7 @@ export const claimReport = (tag: string) => {
 /** Test hook: forget which tags were reported. */
 export const resetReports = () => reported.clear();
 
-/**
- * The check is off only when the consumer's bundler has replaced `process.env.NODE_ENV` with
- * "production". Grove's own library build leaves the expression alone, and an unbundled page (a CDN
- * import) has no `process`, so both keep the warning.
- */
-export const warningsEnabled = () => {
-	try {
-		return process.env.NODE_ENV !== 'production';
-	} catch {
-		return true;
-	}
-};
+export { warningsEnabled } from '../../utils/dev.js';
 
 export const missingGlyphMessage = ({
 	name,

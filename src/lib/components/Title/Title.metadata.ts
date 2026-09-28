@@ -9,7 +9,7 @@ export const TitleMetadata = {
 		description:
 			'A static title block: a filled Phosphor icon beside a title-scale heading, painted on the ground surface. Non-interactive page chrome — renders a real heading element whose level is a prop (default h2).',
 		type: 'display',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/09/16',
 		modified: '2026/09/28'
 	},
@@ -23,6 +23,12 @@ export const TitleMetadata = {
 		useCases: ['page-title', 'section-heading', 'documentation-title', 'page-chrome'],
 		requiredProps: [],
 		commonPatterns: [
+			{
+				name: 'slotted-heading',
+				description:
+					'Pass the heading as content; level still sets the heading element. The heading prop is the fallback.',
+				composition: '<gv-title level="1">Getting started</gv-title>'
+			},
 			{
 				name: 'basic-title',
 				description: 'Render a page title with the default palette icon and h2 level',
@@ -67,7 +73,14 @@ export const TitleMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: '',
+				description:
+					'The heading text, rendered inside the h{level}. Phrasing content only: the level still comes from level.',
+				fallback: 'heading'
+			}
+		],
 		nestedComponents: [
 			{
 				name: 'Icon',

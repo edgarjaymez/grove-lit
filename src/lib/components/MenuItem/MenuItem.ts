@@ -4,6 +4,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { SlotContent } from '../../utils/slot-content.js';
 import { linkAttribute } from '../../utils/link-attributes.js';
 
 type MenuItemSize = 'md' | 'sm';
@@ -23,9 +24,13 @@ type MenuItemSize = 'md' | 'sm';
  * When the label itself is in another language, put `lang` on the element
  * (`<gv-menu-item lang="es" hreflang="es" …>`): the shadow link inherits the host's language, so
  * screen readers switch voice (WCAG 3.1.2). `lang` is deliberately not a property.
+ *
+ * @slot - The link label. Falls back to `label` when empty.
  */
 @customElement('gv-menu-item')
 export class MenuItem extends LitElement {
+	private readonly _slots = new SlotContent(this, ['']);
+
 	@property({ type: String }) label = '';
 	@property({ type: String }) href?: string;
 	@property({ type: String }) hreflang?: string;
@@ -112,7 +117,7 @@ export class MenuItem extends LitElement {
 				${this.icon
 					? html`<gv-icon name=${this.icon} fill-in-hover aria-hidden="true"></gv-icon>`
 					: nothing}
-				<span class="label">${this.label}</span>
+				<span class="label"><slot></slot>${this._slots.has() ? nothing : this.label}</span>
 			</a>
 		`;
 	}

@@ -8,6 +8,15 @@ export interface PhosphorGlyphs {
 	fixed: readonly string[];
 }
 
+/** A slot a component projects light-DOM content through. */
+export interface GroveSlot {
+	/** The slot name; '' is the default slot. */
+	name: string;
+	description: string;
+	/** The property rendered when the slot is empty, or null. */
+	fallback: string | null;
+}
+
 /** The shape every `*Metadata` export satisfies. Sections beyond these stay free-form. */
 export interface ComponentMetadata {
 	component: {
@@ -22,5 +31,10 @@ export interface ComponentMetadata {
 		modified: string;
 	};
 	phosphor: PhosphorGlyphs;
+	composition: {
+		/** Every slot the component renders; null when it projects nothing. */
+		slots: readonly GroveSlot[] | null;
+		[key: string]: unknown;
+	};
 	[section: string]: unknown;
 }

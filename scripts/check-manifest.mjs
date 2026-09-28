@@ -2,7 +2,8 @@
 // - a @customElement tag missing from the manifest;
 // - an `attribute: '…'` mapping missing from that element's attributes;
 // - a dispatched CustomEvent without a typed @fires tag (CustomEvent<…>);
-// - a metadata composition snippet using an attribute the manifest does not declare for that tag.
+// - a metadata composition snippet using an attribute the manifest does not declare for that tag;
+// - metadata composition.slots that differ from the element's @slot tags.
 import { globSync, readFileSync } from 'node:fs';
 
 const manifest = JSON.parse(readFileSync('dist/custom-elements.json', 'utf-8'));
@@ -15,6 +16,12 @@ const declarations = new Map(
 const GLOBAL =
 	/^(class|id|style|slot|hidden|lang|dir|title|role|tabindex|part|inert|aria-[a-z-]+|data-[a-z0-9-]+)$/;
 const problems = [];
+
+/** The tag a metadata file describes, from the component module next to it. */
+const tagOf = (file) =>
+	readFileSync(file.replace('.metadata.ts', '.ts'), 'utf-8').match(
+		/@customElement\('([a-z0-9-]+)'\)/
+	)?.[1];
 
 const sources = globSync('src/lib/components/*/*.ts').filter(
 	(f) => !/\.(stories|metadata|test|browser\.test)\.ts$/.test(f)
@@ -43,6 +50,17 @@ for (const file of sources) {
 
 for (const file of globSync('src/lib/components/*/*.metadata.ts')) {
 	const text = readFileSync(file, 'utf-8');
+	const tag = text.match(/tag: '(gv-[a-z0-9-]+)'/)?.[1] ?? tagOf(file);
+	const slotsBlock = text.match(/slots: (null|\[[\s\S]*?\n\t\t\])/)?.[1];
+	const declared =
+		slotsBlock && slotsBlock !== 'null'
+			? [...slotsBlock.matchAll(/name: '([a-z0-9-]*)'/g)].map(([, n]) => n).sort()
+			: [];
+	const manifestSlots = (declarations.get(tag)?.slots ?? []).map((slot) => slot.name).sort();
+	if (JSON.stringify(declared) !== JSON.stringify(manifestSlots))
+		problems.push(
+			`${file}: composition.slots [${declared.map((n) => `"${n}"`)}] differ from <${tag}>'s @slot tags [${manifestSlots.map((n) => `"${n}"`)}]`
+		);
 	for (const [, tag, attrs] of text.matchAll(/<(gv-[a-z0-9-]+)\b((?:"[^"]*"|'[^']*'|[^>"'])*)>/g)) {
 		const declaration = declarations.get(tag);
 		if (!declaration) {
