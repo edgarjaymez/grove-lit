@@ -65,7 +65,10 @@ for (const story of stories) {
 		walk(document.querySelector('#storybook-root'));
 		return [...new Set(problems)];
 	});
-	for (const problem of bad) failures.push(`${story.id} · ${problem}`);
+	// A story tagged missing-glyph renders an unregistered Phosphor tag on purpose.
+	const expected = (problem) =>
+		story.tags?.includes('missing-glyph') && /^ph-[a-z0-9-]+ \(undefined\)$/.test(problem);
+	for (const problem of bad.filter((p) => !expected(p))) failures.push(`${story.id} · ${problem}`);
 }
 
 await browser.close();

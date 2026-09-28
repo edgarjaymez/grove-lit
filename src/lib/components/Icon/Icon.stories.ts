@@ -61,5 +61,6 @@ export const Labelled: Story = {
  * missing-glyph warning here: the console logs it once, 2 s after load, with the import to add.
  */
 export const Unregistered: Story = {
+	tags: ['missing-glyph'],
 	args: { name: 'not-a-phosphor-glyph' }
 };
