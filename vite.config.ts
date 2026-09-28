@@ -2,6 +2,19 @@ import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vitest/config';
 import dts from 'unplugin-dts/vite';
 import { playwright } from '@vitest/browser-playwright';
+import type { BrowserCommand } from 'vitest/node';
+
+interface MediaEmulation {
+	reducedMotion?: 'reduce' | 'no-preference';
+	colorScheme?: 'light' | 'dark';
+}
+
+/** Emulates user-preference media features for the page the browser tests run in. */
+const emulateMedia: BrowserCommand<[MediaEmulation]> = async (ctx, media) => {
+	if (ctx.provider.name !== 'playwright')
+		throw new Error('emulateMedia needs the playwright provider');
+	await ctx.page.emulateMedia(media);
+};
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
 
@@ -69,6 +82,10 @@ export default defineConfig({
 			},
 			{
 				extends: './vite.config.ts',
+				// Pre-bundled up front so a test importing a new directive doesn't trigger a mid-run reload.
+				optimizeDeps: {
+					include: ['lit', 'lit/decorators.js', 'lit/directives/*.js', 'lit/static-html.js']
+				},
 				test: {
 					name: 'browser',
 					include: ['src/**/*.browser.test.ts'],
@@ -77,7 +94,8 @@ export default defineConfig({
 						enabled: true,
 						headless: true,
 						provider: playwright(),
-						instances: [{ browser: 'chromium' }]
+						instances: [{ browser: 'chromium' }],
+						commands: { emulateMedia }
 					}
 				}
 			}
