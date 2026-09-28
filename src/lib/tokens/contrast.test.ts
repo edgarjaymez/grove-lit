@@ -3,7 +3,13 @@
  *
  * WCAG 3 has no contrast measure yet (its Working Draft still reads "@@[contrast measure to be
  * determined]"), so this gates on what can be measured today: WCAG 2.2 AA ratios plus APCA ARC
- * Bronze floors, with apca-w3 0.1.9 inlined so the numbers never move under a dependency bump.
+ * Bronze floors as a supplementary measure. APCA is not a W3C standard.
+ *
+ * APCA comes from the unmodified `apca-w3` package by Andrew Somers (Myndex), © 2019-2022, under
+ * the "W3 License for Compliant Code Only": it is used as published, its polarity (negative Lc for
+ * light text on a dark background) is kept, and a newer non-breaking release is adopted when one
+ * ships. The reference values below flag any change in the numbers. Its dependency `colorparsley`
+ * (AGPL-3.0) is test-only and never reaches `dist/`.
  *
  * Colours come from the sRGB baseline blocks (the first `:root` and the first `[data-theme="dark"]`),
  * resolved inside their own block and rounded to 8-bit, as displayed. `tokens.css` is Terrazzo output
@@ -12,6 +18,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { APCAcontrast, sRGBtoY } from 'apca-w3';
 import semanticLight from './palette/semantic-color.light.tokens.json';
 import semanticDark from './palette/semantic-color.dark.tokens.json';
 import ringLight from './effects/ring-on.light.tokens.json';
@@ -124,21 +131,8 @@ function ratio(a: Rgb, b: Rgb): number {
 	return (hi + 0.05) / (lo + 0.05);
 }
 
-/** APCA lightness contrast, unsigned: apca-w3 0.1.9 `sRGBtoY` + `APCAcontrast`, constants verbatim. */
-function apca(text: Rgb, bg: Rgb): number {
-	const y = ([r, g, b]: Rgb) =>
-		0.2126729 * (r / 255) ** 2.4 + 0.7151522 * (g / 255) ** 2.4 + 0.072175 * (b / 255) ** 2.4;
-	const soft = (v: number) => (v > 0.022 ? v : v + (0.022 - v) ** 1.414);
-	const txtY = soft(y(text));
-	const bgY = soft(y(bg));
-	if (Math.abs(bgY - txtY) < 0.0005) return 0;
-	if (bgY > txtY) {
-		const sapc = (bgY ** 0.56 - txtY ** 0.57) * 1.14;
-		return sapc < 0.1 ? 0 : (sapc - 0.027) * 100;
-	}
-	const sapc = (bgY ** 0.65 - txtY ** 0.62) * 1.14;
-	return sapc > -0.1 ? 0 : -(sapc + 0.027) * 100;
-}
+/** Signed APCA Lc from the unmodified apca-w3: text first, then background (polarity matters). */
+const lc = (text: Rgb, bg: Rgb) => APCAcontrast(sRGBtoY(text), sRGBtoY(bg));
 
 // ---- token JSON ----------------------------------------------------------------------------------
 
@@ -212,9 +206,9 @@ describe('colour maths', () => {
 	it('reproduces known values', () => {
 		expect(hex(toRgb(parseOklch('oklch(48% 0.075 145)')))).toBe('#416943'); // brand-500
 		// apca-w3 0.1.9 reference values
-		expect(apca([0, 0, 0], [255, 255, 255])).toBeCloseTo(106.0407, 3);
-		expect(apca([255, 255, 255], [0, 0, 0])).toBeCloseTo(107.8847, 3);
-		expect(apca([136, 136, 136], [255, 255, 255])).toBeCloseTo(63.0565, 3);
+		expect(lc([0, 0, 0], [255, 255, 255])).toBeCloseTo(106.0407, 3);
+		expect(lc([255, 255, 255], [0, 0, 0])).toBeCloseTo(-107.8847, 3);
+		expect(lc([136, 136, 136], [255, 255, 255])).toBeCloseTo(63.0565, 3);
 		expect(ratio([0, 0, 0], [255, 255, 255])).toBeCloseTo(21, 6);
 	});
 });
@@ -235,11 +229,12 @@ describe.each(Object.entries(THEMES))('%s theme', (_theme, tokens) => {
 
 	it('keeps every text-on pair readable: APCA Bronze and WCAG 2.2 AA (4.5:1)', () => {
 		const failures = PAIRS.flatMap(({ text, surface, minLc }) => {
-			const lc = apca(rgb(text), rgb(surface));
+			// The floor compares the magnitude; the message keeps the sign.
+			const signed = lc(rgb(text), rgb(surface));
 			const cr = ratio(rgb(text), rgb(surface));
-			return lc >= minLc && cr >= 4.5
+			return Math.abs(signed) >= minLc && cr >= 4.5
 				? []
-				: [`${text} on ${surface}: Lc ${lc.toFixed(1)} (needs ${minLc}), ${cr.toFixed(2)}:1`];
+				: [`${text} on ${surface}: Lc ${signed.toFixed(1)} (needs ${minLc}), ${cr.toFixed(2)}:1`];
 		});
 		expect(failures).toEqual([]);
 	});

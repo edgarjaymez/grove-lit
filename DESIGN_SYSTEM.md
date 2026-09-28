@@ -1089,6 +1089,8 @@ The same two-layer tokens, so hover-lift and pressed-drop behave exactly as they
 
 WCAG 3's contrast method is still undecided — its Working Draft (10 September 2026) reads "@@[contrast measure to be determined]", and APCA was taken out of the draft in 2023. Until that settles, Grove gates on what can be measured today: **WCAG 2.2 AA** plus **APCA** at the ARC Bronze floors (`apca-w3` 0.1.9).
 
+APCA is a supplementary measure, not a W3C standard. It comes from the unmodified `apca-w3` package by Andrew Somers (Myndex), used under its W3 License for Compliant Code Only. Its dependency `colorparsley` is AGPL-3.0, used only by the tests and never shipped in the package.
+
 | Pair                                                                                     | Floor           |
 | ---------------------------------------------------------------------------------------- | --------------- |
 | Body text — base on Ground or a Terrace, including Terrace text drawn straight on Ground | Lc 75 and 4.5:1 |
