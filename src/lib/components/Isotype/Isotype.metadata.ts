@@ -2,12 +2,13 @@ export const IsotypeMetadata = {
 	component: {
 		name: 'Isotype',
 		category: 'atoms',
-		description: 'Brand logo mark rendered as an inline SVG, adapts fill to surface tone',
+		description:
+			'Brand logo mark rendered as an inline SVG; its fill follows the theme or a pinned tone',
 		type: 'display',
 		path: 'src/lib/components/Isotype/Isotype.ts',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/02/15',
-		modified: '2026/05/30'
+		modified: '2026/09/27'
 	},
 
 	usage: {
@@ -18,16 +19,17 @@ export const IsotypeMetadata = {
 			'loading-screen',
 			'favicon-substitute'
 		],
-		requiredProps: ['color', 'size', 'tone'],
+		requiredProps: ['color', 'size'],
 		commonPatterns: [
 			{
-				name: 'brand-on-light',
-				description: 'Brand color isotype on a light or ground surface',
-				composition: `<gv-isotype color="brand" size="176" tone="light"></gv-isotype>`
+				name: 'brand-follows-theme',
+				description:
+					'Default tone="auto" on Ground, Terrace or Path: the 500-level fill by day, the 50-level fill at night',
+				composition: `<gv-isotype color="brand" size="176"></gv-isotype>`
 			},
 			{
-				name: 'brand-on-dark',
-				description: 'Brand isotype on a dark surface',
+				name: 'brand-on-summit',
+				description: 'Brand isotype on a Summit or Aurora surface, which is dark in both themes',
 				composition: `<gv-isotype color="brand" size="176" tone="dark"></gv-isotype>`
 			},
 			{
@@ -47,13 +49,20 @@ export const IsotypeMetadata = {
 				reason:
 					'Light-tone fills (500-level colors) are designed for light surfaces — they lose contrast on dark backgrounds',
 				alternative:
-					'Use tone="dark" when the parent surface is Summit, Terrace, or any dark background'
+					'Use tone="dark" on Summit and Aurora; leave the default tone="auto" on Ground, Terrace and Path'
 			},
 			{
 				scenario: 'Using tone="dark" on a light background',
 				reason:
 					'Dark-tone fills (50-level colors) are near-white and become invisible on light surfaces',
-				alternative: 'Use tone="light" when the parent surface is Ground or any light background'
+				alternative:
+					'Leave the default tone="auto" on Ground, Terrace and Path — it picks the light fill by day'
+			},
+			{
+				scenario: 'Leaving tone="auto" on a Summit or Aurora surface',
+				reason:
+					'Summit and Aurora are dark in both themes, so by day auto picks the 500-level fill and it disappears into a 500-level surface',
+				alternative: 'Pin tone="dark" on Summit and Aurora'
 			}
 		]
 	},
@@ -80,11 +89,13 @@ export const IsotypeMetadata = {
 			}
 		},
 		tone: {
-			options: ['light', 'dark'],
-			default: 'light',
+			options: ['auto', 'light', 'dark'],
+			default: 'auto',
 			purpose: {
-				light: 'High-saturation fills (500-level) designed for light and ground surfaces.',
-				dark: 'Low-saturation fills (50-level) designed for dark surfaces such as Summit or Terrace.'
+				auto: 'Follows the theme through light-dark(): the light fill by day, the dark fill at night. For Ground, Terrace and Path. Browsers without light-dark() keep the light fill.',
+				light:
+					'Pins the high-saturation fills (500-level; base: base/dark) in both themes, for surfaces that stay light.',
+				dark: 'Pins the low-saturation fills (50-level; base: base/light) in both themes, for Summit and Aurora, which are dark in both.'
 			}
 		}
 	},

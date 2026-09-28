@@ -58,12 +58,12 @@
 					"visitedLink": { "$value": "{color.information.900}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.brand.50}" },
-					"subtle": { "$value": "{color.brand.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.brand.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.brand.50}" },
-					"subtle": { "$value": "{color.brand.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.brand.50}" }
 				}
 			},
 			"accent": {
@@ -75,12 +75,12 @@
 					"visitedLink": { "$value": "{color.information.800}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.accent.50}" },
-					"subtle": { "$value": "{color.accent.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.accent.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.accent.50}" },
-					"subtle": { "$value": "{color.accent.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.accent.50}" }
 				}
 			},
 			"gray": {
@@ -98,12 +98,12 @@
 					"visitedLink": { "$value": "{color.information.950}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.gray.50}" },
-					"subtle": { "$value": "{color.gray.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.gray.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.gray.50}" },
-					"subtle": { "$value": "{color.gray.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.gray.50}" }
 				}
 			},
 			"information": {
@@ -115,12 +115,12 @@
 					"visitedLink": { "$value": "{color.brand.800}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.information.50}" },
-					"subtle": { "$value": "{color.information.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.information.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.information.50}" },
-					"subtle": { "$value": "{color.information.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.information.50}" }
 				}
 			},
 			"danger": {
@@ -132,12 +132,12 @@
 					"visitedLink": { "$value": "{color.information.800}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.danger.50}" },
-					"subtle": { "$value": "{color.danger.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.danger.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.danger.50}" },
-					"subtle": { "$value": "{color.danger.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.danger.50}" }
 				}
 			},
 			"success": {
@@ -149,12 +149,12 @@
 					"visitedLink": { "$value": "{color.information.800}" }
 				},
 				"summit": {
-					"base": { "$value": "{color.success.50}" },
-					"subtle": { "$value": "{color.success.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.success.50}" }
 				},
 				"aurora": {
-					"base": { "$value": "{color.success.50}" },
-					"subtle": { "$value": "{color.success.100}" }
+					"base": { "$value": "{color.base.light}" },
+					"subtle": { "$value": "{color.success.50}" }
 				}
 			}
 		},

@@ -2,7 +2,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="Home" />
 
-<div className="grove-home">
+<div className="grove-home" data-theme="light">
 
 <div className="grove-hero">
 	<div className="grove-hero-logo">
@@ -28,6 +28,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 		<span className="grove-badge">Lit 3</span>
 		<span className="grove-badge">TypeScript</span>
 		<span className="grove-badge">OKLCH tokens</span>
+		<span className="grove-badge">Light & dark</span>
 		<span className="grove-badge">Accessible</span>
 	</div>
 </div>
@@ -91,7 +92,8 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 			<div className="grove-card-icon">◎</div>
 			<h3 className="grove-card-title">Isotype</h3>
 			<p className="grove-card-desc">
-				Grove's logo mark in brand, accent, or base color — light and dark tones.
+				Grove's logo mark in brand, accent, or base color — follows the theme, or pins a light or
+				dark tone.
 			</p>
 		</div>
 		<div className="grove-card">
@@ -145,8 +147,8 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 		<div className="grove-pillar">
 			<h3 className="grove-pillar-title">Elevation system</h3>
 			<p className="grove-pillar-desc">
-				Three surface depths — Ground, Terrace, Summit — each with matching text, border, and shadow
-				tokens.
+				Four surface depths — Ground, Terrace, Path, Summit — plus Aurora for hover and press, each
+				with matching text, border, and shadow tokens.
 			</p>
 		</div>
 		<div className="grove-pillar">
@@ -155,6 +157,35 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 				Focus rings are applied globally via surface-scoped CSS. Components never declare their own
 				— it's handled automatically.
 			</p>
+		</div>
+	</div>
+</div>
+
+<div className="grove-section">
+	<h2 className="grove-section-heading">Light & dark</h2>
+	<p className="grove-section-body">
+		Dark mode follows <code>prefers-color-scheme</code> on its own. To pin a theme, set{' '}
+		<code>data-theme="light"</code> or <code>data-theme="dark"</code> on <code>&lt;html&gt;</code>.
+		Set it on any other element to make a theme island: a fresh Ground in that theme.
+	</p>
+	<div className="grove-themes">
+		<div className="grove-theme" data-theme="light">
+			<span className="grove-theme-label">By day</span>
+			<div className="grove-theme-terrace">
+				<h3 className="grove-theme-title">Terrace</h3>
+				<p className="grove-theme-body">Body text in the base role, one step above Ground.</p>
+				<p className="grove-theme-caption">Subtle text for captions and hints.</p>
+				<span className="grove-theme-summit">Summit</span>
+			</div>
+		</div>
+		<div className="grove-theme" data-theme="dark">
+			<span className="grove-theme-label">At night</span>
+			<div className="grove-theme-terrace">
+				<h3 className="grove-theme-title">Terrace</h3>
+				<p className="grove-theme-body">Body text in the base role, one step above Ground.</p>
+				<p className="grove-theme-caption">Subtle text for captions and hints.</p>
+				<span className="grove-theme-summit">Summit</span>
+			</div>
 		</div>
 	</div>
 </div>
@@ -180,6 +211,8 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 </div>
 
 <style>{`
+  /* MDX pages don't run the theme decorator, so Home pins itself to light (data-theme on
+     .grove-home) to match the docs chrome; the night demo below is an explicit dark island. */
   .grove-home {
     max-width: 860px;
     margin: 0 auto;
@@ -191,7 +224,7 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
   /* ── Hero ── */
   .grove-hero {
     padding-bottom: 56px;
-    border-bottom: 1px solid var(--semantic-color-border-divider-on-ground, rgba(0,0,0,0.08));
+    border-bottom: 1px solid var(--semantic-color-divider-on-ground, rgba(0,0,0,0.08));
     margin-bottom: 56px;
   }
 
@@ -261,7 +294,7 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 
   .grove-code {
     background: var(--semantic-color-surface-gray-terrace, #f4f4f5);
-    border: 1px solid var(--semantic-color-border-divider-on-ground, rgba(0,0,0,0.08));
+    border: 1px solid var(--semantic-color-divider-on-ground, rgba(0,0,0,0.08));
     border-radius: 8px;
     padding: 16px 20px;
     margin: 0;
@@ -282,7 +315,7 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
   .grove-card {
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid var(--semantic-color-border-divider-on-ground, rgba(0,0,0,0.08));
+    border: 1px solid var(--semantic-color-divider-on-ground, rgba(0,0,0,0.08));
     background: var(--semantic-color-surface-gray-terrace, #fafafa);
   }
 
@@ -331,6 +364,74 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
     margin: 0;
   }
 
+  /* ── Light & dark ── */
+  .grove-themes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  /* Each island is painted by globals.css ([data-theme] = a fresh Ground). */
+  .grove-theme {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--semantic-color-border-around-ground);
+    overflow: hidden; /* keeps the night card's deep shadow inside its island */
+  }
+
+  .grove-theme-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--semantic-color-text-on-ground-subtle);
+  }
+
+  .grove-theme-terrace {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--semantic-color-surface-brand-terrace);
+    box-shadow: var(--drop-shadow-under-brand-terrace);
+  }
+
+  .grove-theme-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--semantic-color-text-on-brand-terrace-emphasis);
+  }
+
+  .grove-theme-body {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--semantic-color-text-on-brand-terrace-base);
+  }
+
+  .grove-theme-caption {
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--semantic-color-text-on-brand-terrace-subtle);
+  }
+
+  .grove-theme-summit {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--semantic-color-surface-brand-summit);
+    color: var(--semantic-color-text-on-brand-summit-base);
+    box-shadow: var(--drop-shadow-under-brand-summit);
+  }
+
   /* ── Resource links ── */
   .grove-links {
     display: flex;
@@ -344,7 +445,7 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
     gap: 2px;
     padding: 16px 20px;
     border-radius: 10px;
-    border: 1px solid var(--semantic-color-border-divider-on-ground, rgba(0,0,0,0.08));
+    border: 1px solid var(--semantic-color-divider-on-ground, rgba(0,0,0,0.08));
     background: var(--semantic-color-surface-gray-terrace, #fafafa);
     text-decoration: none;
     min-width: 180px;

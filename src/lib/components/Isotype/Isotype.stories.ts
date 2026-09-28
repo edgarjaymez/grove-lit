@@ -6,7 +6,7 @@ import './Isotype.js';
 interface Args {
 	color: 'base' | 'brand' | 'accent';
 	size: number;
-	tone: 'light' | 'dark';
+	tone: 'auto' | 'light' | 'dark';
 	label: string;
 }
 
@@ -31,13 +31,13 @@ const meta: Meta<Args> = {
 	},
 	argTypes: {
 		color: { control: 'select', options: ['base', 'brand', 'accent'] },
-		tone: { control: 'select', options: ['light', 'dark'] },
+		tone: { control: 'select', options: ['auto', 'light', 'dark'] },
 		size: { control: 'number' },
 		label: { control: 'text' }
 	},
 	args: {
 		color: 'brand',
-		tone: 'light',
+		tone: 'auto',
 		size: 80,
 		label: ''
 	}
@@ -47,6 +47,16 @@ export default meta;
 type Story = StoryObj<Args>;
 
 export const Default: Story = {};
+export const BrandLight: Story = {
+	args: { tone: 'light' },
+	parameters: {
+		docs: {
+			description: {
+				story: 'tone="light" pins the day fill in both themes, for surfaces that stay light.'
+			}
+		}
+	}
+};
 export const BrandDark: Story = { args: { tone: 'dark' } };
 export const Accent: Story = { args: { color: 'accent' } };
 export const AccentDark: Story = { args: { color: 'accent', tone: 'dark' } };

@@ -17,6 +17,14 @@
 					"alpha": 1,
 					"hex": "#0B0B0B"
 				}
+			},
+			"night": {
+				"$value": {
+					"colorSpace": "oklch",
+					"components": [0.16, 0.012, 155],
+					"alpha": 1,
+					"hex": "#090F0B"
+				}
 			}
 		},
 		"brand": {

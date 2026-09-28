@@ -57,7 +57,8 @@ const meta: Meta<Args> = {
 				'900',
 				'950',
 				'light',
-				'dark'
+				'dark',
+				'night'
 			]
 		},
 		name: { control: 'text' },
@@ -221,6 +222,17 @@ export const BaseLight: Story = {
 		text: 'dark',
 		oklch: '0.98 0.008 91',
 		hex: '#FAF8F2'
+	}
+};
+
+export const BaseNight: Story = {
+	args: {
+		color: 'base',
+		shade: 'night',
+		name: 'Base Night',
+		text: 'light',
+		oklch: '0.16 0.012 155',
+		hex: '#090F0B'
 	}
 };
 
