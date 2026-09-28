@@ -127,7 +127,8 @@ export const IconButtonMetadata = {
 		wcag: 'AA',
 		notes: [
 			'aria-label is required on every instance — treat it as a required prop',
-			'Disabled state uses both the HTML disabled attribute and aria-disabled for maximum AT compatibility'
+			'Disabled state uses both the HTML disabled attribute and aria-disabled for maximum AT compatibility',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

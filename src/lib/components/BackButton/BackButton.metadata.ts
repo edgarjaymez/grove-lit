@@ -106,7 +106,8 @@ export const BackButtonMetadata = {
 		notes: [
 			'No focus-ring CSS is declared in the component — the global surface-scoped focus system applies the ring automatically based on the parent surface',
 			"Under Astro's <ClientRouter />, window.history.back() is intercepted by the router and rendered as a client-side view transition rather than a full page navigation — no Astro-specific code is required in this component",
-			'There is no fallback behavior when there is no previous history entry (out of scope per the SDD spec)'
+			'There is no fallback behavior when there is no previous history entry (out of scope per the SDD spec)',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

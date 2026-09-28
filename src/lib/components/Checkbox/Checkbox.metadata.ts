@@ -116,7 +116,8 @@ export const CheckboxMetadata = {
 		notes: [
 			'Always wrap in a <label> or use aria-label/aria-labelledby for an accessible name',
 			'disabled prop sets the HTML disabled attribute — browser blocks pointer events natively',
-			'State changes dispatch a change CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("change", (e) => use(e.detail))'
+			'State changes dispatch a change CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("change", (e) => use(e.detail))',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

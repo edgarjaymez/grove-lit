@@ -159,7 +159,8 @@ export const MenuItemMetadata = {
 			'parentConstraints: the parent must paint the brand terrace surface; the text-on-brand-terrace color family only meets contrast on that surface.',
 			'The component declares no focus-ring CSS — the global surface-scoped *:focus-visible system supplies the ring.',
 			"Every row is at least 24 CSS px tall (`min-block-size: var(--soft-grid-24)`), so it meets WCAG 2.2 SC 2.5.8 without relying on the parent's spacing.",
-			"Put lang on the element when the label is in another language: the shadow link inherits the host's language (WCAG 3.1.2). hreflang is advisory metadata about the destination and is rendered only when href is set."
+			"Put lang on the element when the label is in another language: the shadow link inherits the host's language (WCAG 3.1.2). hreflang is advisory metadata about the destination and is rendered only when href is set.",
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

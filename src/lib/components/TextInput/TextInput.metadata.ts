@@ -153,7 +153,8 @@ export const TextInputMetadata = {
 			'Always pair with a <label> element or aria-label prop — use input-id (not id) on the custom element to set the inner <input> id for <label for="..."> association',
 			'When error=true, link a visible error message via aria-describedby so assistive technologies announce it',
 			'aria-invalid is set automatically when error=true — do not set it manually',
-			'Disabled state is implemented via readonly + aria-disabled="true" (not the native disabled attribute) so the field stays focusable and is announced by assistive technology as disabled; it is not editable'
+			'Disabled state is implemented via readonly + aria-disabled="true" (not the native disabled attribute) so the field stays focusable and is announced by assistive technology as disabled; it is not editable',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

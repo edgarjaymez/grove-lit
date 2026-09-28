@@ -134,7 +134,8 @@ export const ToDoCategoryTogglerMetadata = {
 			'aria-pressed is set automatically from isSelected — do not set it manually',
 			'disabled prop sets the HTML disabled attribute; browser blocks pointer events natively',
 			'State changes dispatch a toggle CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("toggle", (e) => use(e.detail))',
-			'Group multiple togglers in a <div role="group" aria-label="Filter by category"> for screen reader context'
+			'Group multiple togglers in a <div role="group" aria-label="Filter by category"> for screen reader context',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

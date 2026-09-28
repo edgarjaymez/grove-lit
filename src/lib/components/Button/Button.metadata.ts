@@ -138,7 +138,8 @@ export const ButtonMetadata = {
 		wcag: 'AA',
 		notes: [
 			'text prop is the accessible name — keep it descriptive and action-oriented',
-			'Disabled state uses the HTML disabled attribute; pointer events are blocked natively'
+			'Disabled state uses the HTML disabled attribute; pointer events are blocked natively',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

@@ -106,13 +106,13 @@ export const ColorSwatchMetadata = {
 			'click .hex-value':
 				'Copies the plain #rrggbb string from the hex prop — the universal web fallback. Dispatches gv-copy with detail { space: "hex", value } after a successful write.',
 			hover:
-				'Hovering either copy button reveals its gv-tooltip ("Copy") over 300ms; leaving hides it again. Both bubbles sit outside the left edge of the column — accent level with the OKLCH row, gray level with the hex row.',
+				'Hovering either copy button reveals its gv-tooltip ("Copy") over 300ms (instant under prefers-reduced-motion: reduce); leaving hides it again. Both bubbles sit outside the left edge of the column — accent level with the OKLCH row, gray level with the hex row.',
 			focus:
 				'Focusing either copy button by keyboard reveals the same tooltip; blurring hides it. Keyboard parity with hover.',
 			copied:
 				'A successful copy flips that row\'s tooltip to "Copied!" and sets is-pressed on it, so the summit shadow drops away and the bubble reads as pushed down against the surface — the press cue for the value that was just clicked. The bubble is wider in this state and grows leftward, both states ending 8px clear of the column.',
 			'copied hold':
-				'Three seconds after a successful copy the swatch returns to its DEFAULT state: the bubble fades out over 300ms still reading "Copied!", and stays down even under a pointer that never moved. It re-arms when the pointer or focus leaves the column, so the next hover shows "Copy" again. The hold never reverts to the "Copy" hint in place.',
+				'Three seconds after a successful copy the swatch returns to its DEFAULT state: the bubble fades out over 300ms (instant under prefers-reduced-motion: reduce) still reading "Copied!", and stays down even under a pointer that never moved. It re-arms when the pointer or focus leaves the column, so the next hover shows "Copy" again. The hold never reverts to the "Copy" hint in place.',
 			'gv-copy':
 				'CustomEvent (bubbles: true, composed: true) with detail { space: "oklch" | "hex", value: string }, dispatched only after navigator.clipboard.writeText resolves.'
 		}
@@ -145,7 +145,8 @@ export const ColorSwatchMetadata = {
 			'Copies dispatch a gv-copy CustomEvent (bubbles: true, composed: true) with detail { space: "oklch" | "hex", value: string } — listen with addEventListener("gv-copy", (e) => use(e.detail))',
 			'The copy confirms itself, visually and programmatically: the tooltip reads "Copied!" and a visually hidden role="status" region announces it. A host does not need to add its own announcement to satisfy WCAG 4.1.3 Status Messages',
 			'navigator.clipboard is feature-detected and rejections are swallowed — an insecure origin or a denied permission produces no error and no event',
-			'The tooltips are revealed by CSS on :hover, :focus-visible and :focus-within of their owning button, and hidden with opacity/visibility so they leave the accessibility tree while hidden'
+			'The tooltips are revealed by CSS on :hover, :focus-visible and :focus-within of their owning button, and hidden with opacity/visibility so they leave the accessibility tree while hidden',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

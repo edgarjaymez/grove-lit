@@ -101,7 +101,7 @@ export const TooltipMetadata = {
 		states: ['DEFAULT', 'PRESSED'],
 		interactions: {
 			'is-pressed':
-				'A presentational flag, not an interaction the bubble detects — the consumer sets it. It removes the summit drop shadow over 300ms so the bubble flattens against the surface, reading as pressed. Pair it with the press it reflects (gv-color-swatch sets it while its copy confirmation shows).'
+				'A presentational flag, not an interaction the bubble detects — the consumer sets it. It removes the summit drop shadow over 300ms (instant under prefers-reduced-motion: reduce) so the bubble flattens against the surface, reading as pressed. Pair it with the press it reflects (gv-color-swatch sets it while its copy confirmation shows).'
 		}
 	},
 
@@ -146,7 +146,8 @@ export const TooltipMetadata = {
 			'The consumer must wire aria-describedby from the trigger to the tooltip id — the component cannot do it.',
 			'The decorative gv-icon is aria-hidden="true"; never put meaning in the icon alone.',
 			'Never pass a title attribute — it is a global HTML attribute and would render a native browser tooltip on the host.',
-			'The consuming app must import the Phosphor glyph it names, e.g. @phosphor-icons/webcomponents/PhCopy for icon="copy".'
+			'The consuming app must import the Phosphor glyph it names, e.g. @phosphor-icons/webcomponents/PhCopy for icon="copy".',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 

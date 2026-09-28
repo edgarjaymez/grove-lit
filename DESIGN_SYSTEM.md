@@ -19,6 +19,7 @@
 11. [Token Reference](#token-reference)
 12. [Composition Examples](#composition-examples)
 13. [Dark Theme — The Grove at Night](#dark-theme--the-grove-at-night)
+14. [Component Behaviour](#component-behaviour)
 
 ---
 
@@ -1117,6 +1118,22 @@ The night keeps Grove's woodland story, told through the druid's grove of D&D lo
 | **Lilac and Sky links** (`accent/100`, `information/100`) | Faerie light: violet for the path not yet walked, blue-white for the path already taken.     |
 | **Aurora hover** (`{track}/500`)                          | Grove Grass waking under your hand — at night, a touched surface brightens.                  |
 | **Selection**                                             | A violet haze over the chosen words.                                                         |
+
+---
+
+## Component Behaviour
+
+Every `gv-*` component adopts `componentReset` first in its shadow root, and so does any consumer component that imports the public export. It carries two host-level guarantees.
+
+### Hidden
+
+`hidden` hides any Grove element, as it does on a `<div>`, and removing it brings the element back unchanged. The rule is `!important`, so it also wins against a page rule that sets `display` on the host (`gv-title { display: grid }`). That is stronger than on native elements, on purpose: `hidden` is always dependable. `hidden="until-found"` keeps the browser's own behaviour.
+
+### Reduced Motion
+
+With `prefers-reduced-motion: reduce`, every transition and animation inside a Grove shadow root ends instantly, with the same end colours, shadows and visibility. Durations become `0.01ms` rather than `0s`, so `transitionend` still fires, and delays drop to `0s`. Timers aren't motion: `gv-color-swatch`'s three-second "Copied!" hold keeps its length. The rule never reaches a page's own light DOM.
+
+A component that needs a gentler alternative instead of no transition at all declares its own `!important` rule on a class selector inside `@media (prefers-reduced-motion: reduce)`. It is more specific than the reset's `*`, so it wins.
 
 ---
 
