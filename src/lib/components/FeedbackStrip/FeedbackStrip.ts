@@ -1,15 +1,24 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 
-type FeedbackStripType = 'success' | 'danger' | 'information';
+export type FeedbackStripType = 'success' | 'danger' | 'information';
+/** How the strip announces itself; `off` renders no live region. */
+export type FeedbackStripLive = 'polite' | 'assertive' | 'off';
 
 const TYPES = {
-	success: { icon: 'check-circle', role: 'status' },
-	danger: { icon: 'warning-circle', role: 'alert' },
-	information: { icon: 'info', role: 'status' }
+	success: { icon: 'check-circle', live: 'polite' },
+	danger: { icon: 'warning-circle', live: 'assertive' },
+	information: { icon: 'info', live: 'polite' }
+} as const;
+
+const REGIONS = {
+	polite: { role: 'status', ariaLive: 'polite' },
+	assertive: { role: 'alert', ariaLive: 'assertive' },
+	off: { role: undefined, ariaLive: undefined }
 } as const;
 
 /**
@@ -24,6 +33,8 @@ export class FeedbackStrip extends LitElement {
 	@property({ type: String, reflect: true }) type: FeedbackStripType = 'success';
 	@property({ type: String }) heading = '';
 	@property({ type: String }) message = '';
+	/** Announcement politeness, independent of `type`. Unset (or unknown), it follows `type`. */
+	@property({ type: String, reflect: true }) live?: FeedbackStripLive;
 
 	static styles = [
 		componentReset,
@@ -99,10 +110,16 @@ export class FeedbackStrip extends LitElement {
 	];
 
 	render() {
-		const t: FeedbackStripType = this.type in TYPES ? this.type : 'success';
+		const t: FeedbackStripType = Object.hasOwn(TYPES, this.type) ? this.type : 'success';
+		const live = this.live && Object.hasOwn(REGIONS, this.live) ? this.live : TYPES[t].live;
+		const region = REGIONS[live];
 
 		return html`
-			<div class=${classMap({ strip: true, [`strip--${t}`]: true })} role=${TYPES[t].role}>
+			<div
+				class=${classMap({ strip: true, [`strip--${t}`]: true })}
+				role=${ifDefined(region.role)}
+				aria-live=${ifDefined(region.ariaLive)}
+			>
 				<div class="header">
 					<gv-icon name=${TYPES[t].icon} is-filled aria-hidden="true"></gv-icon>
 					<p class="heading">${this.heading}</p>

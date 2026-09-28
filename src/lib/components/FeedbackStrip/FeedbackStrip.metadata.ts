@@ -5,11 +5,11 @@ export const FeedbackStripMetadata = {
 		path: 'src/lib/components/FeedbackStrip/FeedbackStrip.ts',
 		category: 'molecules',
 		description:
-			'A full-width status strip: a summit-depth colored band with a filled Phosphor status icon, a subheading-scale heading, and an indented message. Three semantic types — success, danger, information — each swapping surface, block borders, both text colors, the icon, and the ARIA live role together.',
+			'A full-width status strip: a summit-depth colored band with a filled Phosphor status icon, a subheading-scale heading, and an indented message. Three semantic types — success, danger, information — each swapping surface, block borders, both text colors and the icon. The live region follows the type (polite, or assertive for danger) unless live chooses the announcement separately.',
 		type: 'display',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/09/16',
-		modified: '2026/09/16'
+		modified: '2026/09/28'
 	},
 
 	usage: {
@@ -30,7 +30,7 @@ export const FeedbackStripMetadata = {
 			{
 				name: 'danger-alert',
 				description:
-					'Report a failure. The danger type carries role="alert", so screen readers interrupt to announce it.',
+					'Report a failure. With live unset, the danger type carries role="alert", so screen readers interrupt to announce it.',
 				composition:
 					'<gv-feedback-strip type="danger" heading="Upload failed" message="The file exceeds the 10 MB limit."></gv-feedback-strip>'
 			},
@@ -46,6 +46,27 @@ export const FeedbackStripMetadata = {
 					'Omit message (or pass an empty string) when the heading says everything — the body row is not rendered, so no orphan gap appears.',
 				composition:
 					'<gv-feedback-strip type="success" heading="Changes saved"></gv-feedback-strip>'
+			},
+			{
+				name: 'static-notice',
+				description:
+					'A notice rendered with the page that is part of its content, not a status message: live="off" renders no live region, so it is read in document order and never interrupts.',
+				composition:
+					'<gv-feedback-strip type="information" live="off" heading="Not connected yet" message="The contact form goes live next week."></gv-feedback-strip>'
+			},
+			{
+				name: 'quiet-failure',
+				description:
+					'A failure that should be announced without interrupting: danger colours with a polite region.',
+				composition:
+					'<gv-feedback-strip type="danger" live="polite" heading="Draft not synced" message="We will retry in a minute."></gv-feedback-strip>'
+			},
+			{
+				name: 'reliable-announcement',
+				description:
+					'Keep one strip connected and change its heading and message: changes inside a live region that already exists are what assistive technology announces most reliably.',
+				composition:
+					'<gv-feedback-strip type="information" live="polite" heading=""></gv-feedback-strip>'
 			},
 			{
 				name: 'full-bleed-placement',
@@ -78,7 +99,23 @@ export const FeedbackStripMetadata = {
 				scenario: 'Using type="danger" for routine, non-urgent information',
 				reason:
 					'The danger type maps to role="alert", which interrupts assistive technology; overuse trains users to ignore it.',
-				alternative: 'Use type="information" (role="status"), which announces politely'
+				alternative:
+					'Use type="information" (role="status"), which announces politely; if the danger colours are right but the message is not urgent, keep type="danger" and set live="polite"'
+			},
+			{
+				scenario:
+					'Wrapping the strip in your own role="status", role="alert" or aria-live element, or setting those on the host',
+				reason:
+					'That nests live regions around the same text. ARIA does not define how nested regions are announced, so the message may be read twice, once, or dropped, and an outer polite region cannot quieten the strip’s own alert.',
+				alternative: 'Use the live property: polite, assertive or off'
+			},
+			{
+				scenario:
+					'live="off" on a message shown in response to a user action without moving focus to it',
+				reason:
+					'That is a status message with no programmatic role, so assistive technology is never told about it: it fails WCAG 2.2 SC 4.1.3 Status Messages (AA).',
+				alternative:
+					'Leave live unset or set polite/assertive; use off only for notices that are part of the page, or when focus moves to the strip'
 			}
 		]
 	},
@@ -101,6 +138,13 @@ export const FeedbackStripMetadata = {
 
 	behavior: {
 		states: ['success', 'danger', 'information'],
+		announcement: {
+			'live unset or unknown':
+				'Follows type: role="status" aria-live="polite" for success and information, role="alert" aria-live="assertive" for danger.',
+			polite: 'role="status" aria-live="polite" for every type.',
+			assertive: 'role="alert" aria-live="assertive" for every type.',
+			off: 'No role and no aria-live: ordinary content, never announced by itself.'
+		},
 		interactions: null
 	},
 
@@ -110,27 +154,38 @@ export const FeedbackStripMetadata = {
 			default: 'success',
 			purpose: {
 				success:
-					'Confirms a completed action — success summit surface, check-circle icon, role="status".',
+					'Confirms a completed action — success summit surface, check-circle icon; polite (role="status") unless live says otherwise.',
 				danger:
-					'Reports a failure or blocking problem — danger summit surface, warning-circle icon, role="alert".',
+					'Reports a failure or blocking problem — danger summit surface, warning-circle icon; assertive (role="alert") unless live says otherwise.',
 				information:
-					'Shares neutral context — information summit surface, info icon, role="status".'
+					'Shares neutral context — information summit surface, info icon; polite (role="status") unless live says otherwise.'
+			}
+		},
+		live: {
+			options: ['polite', 'assertive', 'off'],
+			default: 'unset (follows type)',
+			purpose: {
+				polite: 'Announce without interrupting: outcomes such as a save or a sent message.',
+				assertive: 'Interrupt: failures that need immediate attention.',
+				off: 'No live region: static notices that are part of the page, or a strip that receives focus when shown.'
 			}
 		}
 	},
 
 	accessibility: {
-		role: 'status for type="success" and type="information"; alert for type="danger"',
+		role: 'From live: status (polite), alert (assertive) or none (off). With live unset: status for success and information, alert for danger.',
 		keyboardSupport:
 			'None — the strip is not interactive and contains no focusable content, so it is skipped in the tab order.',
 		screenReader:
-			'The root is an ARIA live region: polite (role="status") for success and information, assertive (role="alert") for danger. The heading is announced first, then the message. The icon is aria-hidden="true" and never announced — the type is conveyed by the role and the text, not by the glyph.',
+			'Unless live="off", the root is an ARIA live region with the politeness live chooses (or, unset, polite for success and information and assertive for danger). The heading is announced first, then the message. The icon is aria-hidden="true" and never announced — the type is conveyed by the text, not by the glyph.',
 		wcag: 'AA',
 		notes: [
-			'The role is derived from type: success → role="status", danger → role="alert", information → role="status".',
-			'Because the root is a live region, inserting the element into the DOM (or changing its heading/message while mounted) is what triggers the announcement — a strip already present at page load is not re-announced.',
+			'live chooses the announcement independently of type; unset or unknown, it follows type (success → role="status", danger → role="alert", information → role="status"). Each role is paired with its explicit aria-live value.',
+			'Changes to heading or message while the strip is connected and has a live region are announced with its politeness.',
+			'Whether inserting a strip, or upgrading a server-rendered one, is announced is not guaranteed: it depends on the browser and screen reader (WCAG technique ARIA22). To announce something reliably, keep a strip connected and change its text.',
+			'live="off" strips are never announced by themselves.',
 			'type reflects to the host attribute, so external CSS can target gv-feedback-strip[type="danger"].',
-			'An unknown type value falls back to success for styling, icon, and role.',
+			'An unknown type value falls back to success for styling, icon, and (with live unset) role.',
 			'The decorative icon carries aria-hidden="true"; colour is never the only carrier of meaning because the heading text states the outcome.',
 			'summit text-on tokens are contrast-verified against their summit surfaces for both base (heading) and subtle (message) roles.',
 			'No focus styles are declared in the component — Grove focus rings are handled by the global surface-scoped CSS.'
