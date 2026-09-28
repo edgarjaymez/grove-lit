@@ -5,6 +5,9 @@ import { componentReset } from '../../styles/component-reset.js';
 
 const DEFAULT_FREQUENCY = 0.25;
 
+/**
+ * @cssprop --gv-texture-tint - Tints every gv-texture below the element that sets it; a `tint` attribute wins.
+ */
 @customElement('gv-texture')
 export class Texture extends LitElement {
 	@property({ type: Number }) opacity = 1;

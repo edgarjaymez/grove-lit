@@ -6,9 +6,10 @@ import { componentReset } from '../../styles/component-reset.js';
 type CheckboxResponsive = 'default' | 'xl';
 
 /**
- * @fires gv-change - `CustomEvent<boolean>` with the new `checked`.
+ * @fires {CustomEvent<boolean>} gv-change - with the new `checked`.
  */
 @customElement('gv-checkbox')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- listener overloads, see CheckboxEventMap
 export class Checkbox extends LitElement {
 	@property({ type: Boolean, reflect: true }) checked = false;
 	@property({ type: String }) responsive: CheckboxResponsive = 'default';
@@ -117,6 +118,39 @@ export class Checkbox extends LitElement {
 		`;
 	}
 }
+
+/**
+ * gv-checkbox's events. `gv-change` is shared across Grove with different payloads, so the global map types
+ * it `CustomEvent<string | boolean>`; a listener on a gv-checkbox reference gets the exact `detail`.
+ */
+export interface CheckboxEventMap extends HTMLElementEventMap {
+	'gv-change': CustomEvent<boolean>;
+}
+
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging -- typed listener overloads only */
+export interface Checkbox {
+	addEventListener<K extends keyof CheckboxEventMap>(
+		type: K,
+		listener: (this: Checkbox, event: CheckboxEventMap[K]) => unknown,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	addEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	removeEventListener<K extends keyof CheckboxEventMap>(
+		type: K,
+		listener: (this: Checkbox, event: CheckboxEventMap[K]) => unknown,
+		options?: boolean | EventListenerOptions
+	): void;
+	removeEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | EventListenerOptions
+	): void;
+}
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */
 
 declare global {
 	interface HTMLElementTagNameMap {

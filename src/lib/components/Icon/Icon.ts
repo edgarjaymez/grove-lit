@@ -26,6 +26,9 @@ const pageLoaded = () =>
  *
  * Decorative unless `label` is set: without it the glyph is hidden from assistive technology, and
  * with it the glyph is one image named by `label`.
+ *
+ * @cssprop --gv-icon-regular-display - `display` of the regular weight; an ancestor sets it to swap weights.
+ * @cssprop --gv-icon-fill-display - `display` of the fill weight; an ancestor sets it to swap weights.
  */
 @customElement('gv-icon')
 export class Icon extends LitElement {

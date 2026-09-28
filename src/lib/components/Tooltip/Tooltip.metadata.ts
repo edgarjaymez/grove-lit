@@ -131,7 +131,7 @@ export const TooltipMetadata = {
 				gray: 'Neutral emphasis. Use for utility hints that should not compete with nearby accent UI.'
 			}
 		},
-		isPressed: {
+		'is-pressed': {
 			options: [false, true],
 			default: false,
 			purpose: {

@@ -8,9 +8,10 @@ import '../Icon/Icon.js';
 /**
  * A to-do row: a gv-checkbox, the task text and a category line.
  *
- * @fires gv-change - `CustomEvent<boolean>` with the new `isDone`, once per toggle.
+ * @fires {CustomEvent<boolean>} gv-change - with the new `isDone`, once per toggle.
  */
 @customElement('gv-todo-list-item')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- listener overloads, see ToDoListItemEventMap
 export class ToDoListItem extends LitElement {
 	/** The task text. Not `title`, which is the global HTML attribute (host tooltip and name). */
 	@property({ type: String }) heading = 'Task';
@@ -137,6 +138,39 @@ export class ToDoListItem extends LitElement {
 	}
 	/* eslint-enable lit-a11y/click-events-have-key-events */
 }
+
+/**
+ * gv-todo-list-item's events. `gv-change` is shared across Grove with different payloads, so the global map types
+ * it `CustomEvent<string | boolean>`; a listener on a gv-todo-list-item reference gets the exact `detail`.
+ */
+export interface ToDoListItemEventMap extends HTMLElementEventMap {
+	'gv-change': CustomEvent<boolean>;
+}
+
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging -- typed listener overloads only */
+export interface ToDoListItem {
+	addEventListener<K extends keyof ToDoListItemEventMap>(
+		type: K,
+		listener: (this: ToDoListItem, event: ToDoListItemEventMap[K]) => unknown,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	addEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	removeEventListener<K extends keyof ToDoListItemEventMap>(
+		type: K,
+		listener: (this: ToDoListItem, event: ToDoListItemEventMap[K]) => unknown,
+		options?: boolean | EventListenerOptions
+	): void;
+	removeEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | EventListenerOptions
+	): void;
+}
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */
 
 declare global {
 	interface HTMLElementTagNameMap {

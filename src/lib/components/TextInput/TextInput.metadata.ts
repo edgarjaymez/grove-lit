@@ -51,12 +51,13 @@ export const TextInputMetadata = {
 			{
 				name: 'email-field',
 				description: 'Email input — use type="email" for mobile keyboard and browser validation',
-				composition: `<gv-text-input type="email" input-id="email" placeholder="you@example.com" autocomplete="email"></gv-text-input>`
+				composition: `<gv-text-input type="email" input-id="email" placeholder="you@example.com"></gv-text-input>`
 			},
 			{
 				name: 'password-field',
-				description: 'Password input with browser autofill support',
-				composition: `<gv-text-input type="password" input-id="password" placeholder="Password" autocomplete="current-password"></gv-text-input>`
+				description:
+					'Password input. autocomplete is not forwarded to the inner input yet, so browser autofill hints cannot be set',
+				composition: `<gv-text-input type="password" input-id="password" placeholder="Password"></gv-text-input>`
 			}
 		],
 
@@ -138,8 +139,7 @@ export const TextInputMetadata = {
 				text: 'General single-line text entry.',
 				email:
 					'Email address — triggers email keyboard on mobile and enables browser email validation.',
-				password:
-					'Password entry — masks characters. Supports autocomplete="current-password" or "new-password".',
+				password: 'Password entry — masks characters.',
 				search: 'Search query — may show a clear button in some browsers.',
 				tel: 'Phone number — triggers numeric keyboard on mobile.',
 				url: 'URL entry — triggers URL keyboard on mobile.',

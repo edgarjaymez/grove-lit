@@ -81,6 +81,9 @@ function parseOklch(raw: string): [number, number, number] | null {
 	return [parts[0].endsWith('%') ? lightness / 100 : lightness, chroma, hue];
 }
 
+/**
+ * @fires {CustomEvent<ColorSwatchCopyDetail>} gv-copy - after a value is copied to the clipboard.
+ */
 @customElement('gv-color-swatch')
 export class ColorSwatch extends LitElement {
 	@property({ type: String }) color: ColorFamily = 'brand';

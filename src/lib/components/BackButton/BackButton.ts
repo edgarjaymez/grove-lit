@@ -4,7 +4,7 @@ import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 
 /**
- * @fires gv-back - cancelable; `preventDefault()` skips `history.back()`.
+ * @fires {CustomEvent<void>} gv-back - cancelable; `preventDefault()` skips `history.back()`.
  */
 @customElement('gv-back-button')
 export class BackButton extends LitElement {

@@ -84,6 +84,49 @@ import '@phosphor-icons/webcomponents/PhPalette'; // gv-title`}</code>
 </div>
 
 <div className="grove-section">
+	<h2 className="grove-section-heading">Using Grove in templates</h2>
+	<p className="grove-section-body">
+		Write attributes in kebab case. The HTML parser lowercases <code>isActive</code> to{' '}
+		<code>isactive</code>, which Grove ignores; the attribute is <code>is-active</code>.
+	</p>
+	<p className="grove-section-body">
+		In Astro, opt in to typed attributes with one line in <code>src/env.d.ts</code>. Then{' '}
+		<code>astro check</code> rejects camelCase names, unknown values such as <code>size="lg"</code>,
+		and <code>false</code> on boolean attributes. Misspelled dashed names such as{' '}
+		<code>is-activ</code> are not caught: TypeScript skips excess-property checks on attribute names
+		that contain a dash.
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`/// <reference types="@edgarjaymez/grove/astro" />`}</code>
+		</pre>
+	</div>
+	<p className="grove-section-body">
+		For booleans, pass <code>undefined</code>, never <code>false</code>. Astro renders{' '}
+		<code>is-active={'{false}'}</code> on a custom element as <code>is-active="false"</code>, and
+		any present attribute reads as true:
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`<gv-menu-item label="Docs" href="/docs" is-active={isCurrent || undefined} />`}</code>
+		</pre>
+	</div>
+	<p className="grove-section-body">
+		Events are typed with no cast, on an element or delegated to a form or the document. Every Grove
+		event starts with <code>gv-</code>, bubbles and crosses shadow roots. The tooling manifest ships
+		as <code>@edgarjaymez/grove/custom-elements.json</code>.
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`import type { TextInput } from '@edgarjaymez/grove';
+declare const field: TextInput;
+field.addEventListener('gv-change', (e) => e.detail.trim()); // string
+form.addEventListener('gv-input', (e) => e.detail); // string, from any gv-text-input`}</code>
+		</pre>
+	</div>
+</div>
+
+<div className="grove-section">
 	<h2 className="grove-section-heading">Components</h2>
 	<p className="grove-section-body">
 		Browse all components in the sidebar. Here's what's available today:

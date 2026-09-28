@@ -14,6 +14,9 @@ const COLOR_MAP: Record<IsotypeColor, Record<IsotypeFill, string>> = {
 	accent: { light: 'var(--color-accent-500)', dark: 'var(--color-accent-50)' }
 };
 
+/**
+ * @cssprop --gv-isotype-size - Rendered size; set from `size` (px).
+ */
 @customElement('gv-isotype')
 export class Isotype extends LitElement {
 	@property({ type: String }) color: IsotypeColor = 'brand';

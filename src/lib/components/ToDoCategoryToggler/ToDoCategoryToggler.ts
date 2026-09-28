@@ -7,7 +7,7 @@ import { componentReset } from '../../styles/component-reset.js';
 type Color = 'brand' | 'accent' | 'information' | 'gray';
 
 /**
- * @fires gv-toggle - `CustomEvent<boolean>` with the new `isSelected`.
+ * @fires {CustomEvent<boolean>} gv-toggle - with the new `isSelected`.
  */
 @customElement('gv-todo-category-toggler')
 export class ToDoCategoryToggler extends LitElement {

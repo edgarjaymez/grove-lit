@@ -8,10 +8,11 @@ type InputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'num
 type InputColor = 'brand' | 'gray';
 
 /**
- * @fires gv-input - `CustomEvent<string>` with the value, on every edit.
- * @fires gv-change - `CustomEvent<string>` with the value, when a change is committed.
+ * @fires {CustomEvent<string>} gv-input - with the value, on every edit.
+ * @fires {CustomEvent<string>} gv-change - with the value, when a change is committed.
  */
 @customElement('gv-text-input')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- listener overloads, see TextInputEventMap
 export class TextInput extends LitElement {
 	@property({ type: String }) value = '';
 	@property({ type: String }) color: InputColor = 'brand';
@@ -188,6 +189,39 @@ export class TextInput extends LitElement {
 		`;
 	}
 }
+
+/**
+ * gv-text-input's events. `gv-change` is shared across Grove with different payloads, so the global map types
+ * it `CustomEvent<string | boolean>`; a listener on a gv-text-input reference gets the exact `detail`.
+ */
+export interface TextInputEventMap extends HTMLElementEventMap {
+	'gv-change': CustomEvent<string>;
+}
+
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging -- typed listener overloads only */
+export interface TextInput {
+	addEventListener<K extends keyof TextInputEventMap>(
+		type: K,
+		listener: (this: TextInput, event: TextInputEventMap[K]) => unknown,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	addEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	removeEventListener<K extends keyof TextInputEventMap>(
+		type: K,
+		listener: (this: TextInput, event: TextInputEventMap[K]) => unknown,
+		options?: boolean | EventListenerOptions
+	): void;
+	removeEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | EventListenerOptions
+	): void;
+}
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */
 
 declare global {
 	interface HTMLElementTagNameMap {
