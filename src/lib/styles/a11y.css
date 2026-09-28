@@ -1,0 +1,19 @@
+/*
+ * Light-DOM accessibility utilities. They need no script, so they work before (or without) the
+ * component bundle.
+ *
+ * .visually-hidden keeps content in the accessibility tree while drawing nothing. Never put it on
+ * a focusable element: it would take focus while invisible (SC 2.4.7). Keep the declarations in step
+ * with visuallyHidden in visually-hidden.ts; a unit test checks they match.
+ */
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}

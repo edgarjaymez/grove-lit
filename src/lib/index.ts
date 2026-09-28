@@ -1,4 +1,5 @@
 export { componentReset } from './styles/component-reset.js';
+export { visuallyHidden } from './styles/visually-hidden.js';
 export { BackButton } from './components/BackButton/BackButton.js';
 export { BackButtonMetadata } from './components/BackButton/BackButton.metadata.js';
 export { Button } from './components/Button/Button.js';

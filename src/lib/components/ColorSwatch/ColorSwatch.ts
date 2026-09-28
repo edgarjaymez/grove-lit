@@ -4,6 +4,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Tooltip/Tooltip.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { visuallyHidden } from '../../styles/visually-hidden.js';
 
 export type ColorFamily =
 	| 'brand'
@@ -103,6 +104,7 @@ export class ColorSwatch extends LitElement {
 
 	static styles = [
 		componentReset,
+		visuallyHidden,
 		css`
 			:host {
 				display: block;
@@ -241,18 +243,6 @@ export class ColorSwatch extends LitElement {
 				transition:
 					opacity 300ms ease-out,
 					visibility 0s linear 300ms;
-			}
-
-			.sr-only {
-				position: absolute;
-				width: 1px;
-				height: 1px;
-				margin: -1px;
-				padding: 0;
-				overflow: hidden;
-				clip-path: inset(50%);
-				white-space: nowrap;
-				border: 0;
 			}
 		`
 	];
@@ -400,7 +390,7 @@ export class ColorSwatch extends LitElement {
 						message=${this.copied === 'hex' ? 'Copied!' : 'Copy'}
 					></gv-tooltip>
 				</div>
-				<p class="sr-only" role="status" aria-live="polite">
+				<p class="visually-hidden" role="status" aria-live="polite">
 					${this.copied ? `Copied ${this.copied} value` : ''}
 				</p>
 			</div>

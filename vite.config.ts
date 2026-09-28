@@ -27,7 +27,8 @@ export default defineConfig({
 			include: [
 				'src/lib/index.ts',
 				'src/lib/components/**/*.ts',
-				'src/lib/styles/component-reset.ts'
+				'src/lib/styles/component-reset.ts',
+				'src/lib/styles/visually-hidden.ts'
 			],
 			exclude: [
 				'src/lib/components/**/*.stories.ts',
