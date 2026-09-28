@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vitest/config';
 import dts from 'unplugin-dts/vite';
+import { playwright } from '@vitest/browser-playwright';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
 
@@ -15,7 +16,11 @@ export default defineConfig({
 				'src/lib/components/**/*.ts',
 				'src/lib/styles/component-reset.ts'
 			],
-			exclude: ['src/lib/components/**/*.stories.ts', 'src/lib/components/**/*.metadata.ts'],
+			exclude: [
+				'src/lib/components/**/*.stories.ts',
+				'src/lib/components/**/*.metadata.ts',
+				'src/lib/components/**/*.test.ts'
+			],
 			outDirs: 'dist',
 			entryRoot: 'src/lib'
 		}),
@@ -58,7 +63,22 @@ export default defineConfig({
 				test: {
 					name: 'unit',
 					environment: 'node',
-					include: ['src/**/*.{test,spec}.{js,ts}']
+					include: ['src/**/*.{test,spec}.{js,ts}'],
+					exclude: ['src/**/*.browser.test.ts']
+				}
+			},
+			{
+				extends: './vite.config.ts',
+				test: {
+					name: 'browser',
+					include: ['src/**/*.browser.test.ts'],
+					setupFiles: ['src/test/browser-setup.ts'],
+					browser: {
+						enabled: true,
+						headless: true,
+						provider: playwright(),
+						instances: [{ browser: 'chromium' }]
+					}
 				}
 			}
 		]

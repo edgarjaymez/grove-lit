@@ -33,3 +33,7 @@ MEMORY.md
 AGENTS.md
 CLAUDE.md
 .claude/**
+
+# Vitest browser failure artefacts
+__screenshots__
+.vitest-attachments
