@@ -40,13 +40,18 @@ import { Meta } from '@storybook/addon-docs/blocks';
 			<code>pnpm add @edgarjaymez/grove</code>
 		</pre>
 	</div>
-	<p className="grove-section-body">Then import the tokens and fonts in your app's entry point:</p>
+	<p className="grove-section-body">Then import Grove's stylesheet once, in your app's entry point:</p>
 	<div className="grove-install">
 		<pre className="grove-code">
-			<code>{`import '@edgarjaymez/grove/tokens.css';
-import '@edgarjaymez/grove/fonts.css';`}</code>
+			<code>{`import '@edgarjaymez/grove/grove.css';`}</code>
 		</pre>
 	</div>
+	<p className="grove-section-body">
+		It bundles the tokens, fonts, base and typography styles, the <code>gv-surface-*</code>{' '}
+		classes and the <code>.visually-hidden</code> utility. Importing only{' '}
+		<code>tokens.css</code> and <code>fonts.css</code> still works, but then the surface classes and
+		utilities are missing.
+	</p>
 	<p className="grove-section-body">
 		Icons are powered by <code>@phosphor-icons/webcomponents</code>. Install it and import each
 		glyph you use, one module per glyph. <code>gv-icon</code> renders them by name:
@@ -190,6 +195,56 @@ form.addEventListener('gv-input', (e) => e.detail); // string, from any gv-text-
 				color tracks.
 			</p>
 		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">←</div>
+			<h3 className="grove-card-title">Back Button</h3>
+			<p className="grove-card-desc">
+				A square tile that goes back one entry in browser history. Cancel its gv-back event to
+				handle it yourself.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">◐</div>
+			<h3 className="grove-card-title">Color Swatch</h3>
+			<p className="grove-card-desc">
+				Shows a colour token with its OKLCH and hex values, each one copyable.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">▭</div>
+			<h3 className="grove-card-title">Feedback Strip</h3>
+			<p className="grove-card-desc">
+				Full-width success, danger or information band, with a live region you can tune.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">☰</div>
+			<h3 className="grove-card-title">Menu Item</h3>
+			<p className="grove-card-desc">
+				Navigation link with a leading icon, two sizes and an active state.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">H</div>
+			<h3 className="grove-card-title">Title</h3>
+			<p className="grove-card-desc">
+				Icon and heading block with a real heading level, on any Grove surface.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">✓</div>
+			<h3 className="grove-card-title">To-Do List Item</h3>
+			<p className="grove-card-desc">
+				A checkbox with the task and its category; checking it marks the task done.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">◔</div>
+			<h3 className="grove-card-title">Tooltip</h3>
+			<p className="grove-card-desc">
+				The hint bubble itself, simple or complete, in accent or gray. You position it.
+			</p>
+		</div>
 	</div>
 </div>
 
@@ -213,8 +268,10 @@ form.addEventListener('gv-input', (e) => e.detail); // string, from any gv-text-
 		<div className="grove-pillar">
 			<h3 className="grove-pillar-title">Elevation system</h3>
 			<p className="grove-pillar-desc">
-				Four surface depths — Ground, Terrace, Path, Summit — plus Aurora for hover and press, each
-				with matching text, border, and shadow tokens.
+				Four surface depths (Ground, Terrace, Path, Summit) plus Aurora for hover, press and
+				highlights, each with matching text, border and shadow tokens. Paint a section with a{' '}
+				<code>gv-surface-*</code> class, named by the <code>GroveSurface</code> type, and components
+				that take a <code>surface</code> use the same names.
 			</p>
 		</div>
 		<div className="grove-pillar">
