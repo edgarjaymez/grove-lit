@@ -3,6 +3,7 @@ import { defineConfig } from 'vitest/config';
 import dts from 'unplugin-dts/vite';
 import { playwright } from '@vitest/browser-playwright';
 import type { BrowserCommand } from 'vitest/node';
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 
 interface MediaEmulation {
 	reducedMotion?: 'reduce' | 'no-preference';
@@ -15,6 +16,41 @@ const emulateMedia: BrowserCommand<[MediaEmulation]> = async (ctx, media) => {
 		throw new Error('emulateMedia needs the playwright provider');
 	await ctx.page.emulateMedia(media);
 };
+
+/**
+ * Every story runs once per Grove theme. OS dark leaves `data-theme` off and sets the browser's colour
+ * scheme, so the `prefers-color-scheme` block of tokens.css is what gets tested.
+ */
+const themeInstances = [
+	{ name: 'light', theme: 'light', colorScheme: 'light' },
+	{ name: 'dark', theme: 'dark', colorScheme: 'light' },
+	{ name: 'os-dark', theme: 'system', colorScheme: 'dark' }
+].map(({ name, theme, colorScheme }) => ({
+	browser: 'chromium' as const,
+	name,
+	provide: { groveTheme: theme },
+	provider: playwright({ contextOptions: { colorScheme: colorScheme as 'light' | 'dark' } })
+}));
+
+/** A Storybook project over the stories selected by tag, in all three themes. */
+const storybookProject = (name: string, tags: { include?: string[]; exclude?: string[] }) => ({
+	extends: true as const,
+	plugins: [storybookTest({ configDir: '.storybook', tags })],
+	test: {
+		name,
+		// An empty collection means the plugin found no stories: that must fail, not pass.
+		passWithNoTests: false,
+		// The a11y addon only calls expect() when it finds a violation.
+		expect: { requireAssertions: false },
+		setupFiles: ['.storybook/vitest.setup.ts'],
+		browser: {
+			enabled: true,
+			headless: true,
+			provider: playwright(),
+			instances: themeInstances
+		}
+	}
+});
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
 
@@ -96,7 +132,12 @@ export default defineConfig({
 						commands: { emulateMedia }
 					}
 				}
-			}
+			},
+			storybookProject('storybook', { exclude: ['a11y-canary'] }),
+			// Fails by design, so only `pnpm test:a11y-canary` turns it on (and inverts the result).
+			...(process.env.GROVE_A11Y_CANARY
+				? [storybookProject('a11y-canary', { include: ['a11y-canary'] })]
+				: [])
 		]
 	}
 });

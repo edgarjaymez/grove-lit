@@ -1098,6 +1098,13 @@ WCAG 3's contrast method is still undecided — its Working Draft (10 September 
 
 `src/lib/tokens/contrast.test.ts` checks every pair in both themes on each `pnpm test`, reading the built `tokens.css`, and fails when that file is out of date with the JSON sources.
 
+Rendered components are checked too. `pnpm test` runs every Storybook story through axe-core (WCAG 2.0 to 2.2 A and AA rules) in headless Chromium, once each in light, dark and OS dark. The gate is report-only while the known checkbox-name violations are open (#50) and switches to failing once they are fixed. Two more local checks keep it honest:
+
+- `pnpm test:a11y-canary` passes only when a story with two planted contrast failures, one inside a shadow root, fails in all three themes.
+- `pnpm test:storybook-static` builds the static Storybook and fails if any story ships an undefined or un-upgraded `gv-*` element.
+
+A green run covers only what axe can detect. It is not a conformance claim.
+
 - **Large display type.** APCA suggests Lc 90 as a maximum for very large, bold text and large areas of colour — one more reason Ground text at night is Chalk, not Parchment.
 - **Links in running text** are not distinct enough from body text to rely on colour alone (WCAG 1.4.1; technique G183 needs 3:1 against the surrounding text). Underline them.
 - **Input boundaries.** A text input's resting underline uses `border-around/{track}/summit`, which holds 3:1 against both the fill and Ground in both themes. `border-around/{track}/terrace` stays for decorative edges.

@@ -15,7 +15,8 @@ import '@phosphor-icons/webcomponents';
  */
 const withTheme: Decorator = (story, { globals }) => {
 	const root = document.documentElement;
-	if (globals.theme === 'light' || globals.theme === 'dark') root.dataset.theme = globals.theme;
+	const theme = globalThis.__GROVE_TEST_THEME__ ?? globals.theme;
+	if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
 	else delete root.dataset.theme;
 	return html`<div style="display: contents; color: var(--semantic-color-text-on-ground-base)">
 		${story()}
@@ -44,6 +45,17 @@ const preview: Preview = {
 		backgrounds: { value: 'ground' }
 	},
 	parameters: {
+		// Report-only until the known violations are fixed (#50: checkbox names); then 'error'.
+		// The rule set matches the audit in #33, so results compare one to one.
+		a11y: {
+			test: 'todo',
+			options: {
+				runOnly: {
+					type: 'tag',
+					values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
+				}
+			}
+		},
 		// A single background drawn from the theme itself, so canvas and docs previews always sit on
 		// the active Ground (Storybook paints docs previews white otherwise).
 		backgrounds: {

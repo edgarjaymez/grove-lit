@@ -24,6 +24,8 @@
 		"format": "prettier --write .",
 		"test:unit": "vitest",
 		"test": "pnpm test:unit -- --run",
+		"test:a11y-canary": "node scripts/a11y-canary.mjs",
+		"test:storybook-static": "pnpm build-storybook --quiet && node scripts/storybook-static-smoke.mjs",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"build-tokens": "tz build"
@@ -35,7 +37,8 @@
 	],
 	"sideEffects": [
 		"**/*.css",
-		"**/*.js"
+		"**/*.js",
+		"./src/lib/components/**/*.ts"
 	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
