@@ -41,6 +41,7 @@ export { TextInput } from './components/TextInput/TextInput.js';
 export type { TextInputEventMap } from './components/TextInput/TextInput.js';
 export { TextInputMetadata } from './components/TextInput/TextInput.metadata.js';
 export { Title } from './components/Title/Title.js';
+export type { TitleSurface } from './components/Title/Title.js';
 export { TitleMetadata } from './components/Title/Title.metadata.js';
 export { ToDoCategoryToggler } from './components/ToDoCategoryToggler/ToDoCategoryToggler.js';
 export { ToDoCategoryTogglerMetadata } from './components/ToDoCategoryToggler/ToDoCategoryToggler.metadata.js';

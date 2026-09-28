@@ -7,9 +7,9 @@ export const TitleMetadata = {
 		path: 'src/lib/components/Title/Title.ts',
 		category: 'atoms',
 		description:
-			'A static title block: a filled Phosphor icon beside a title-scale heading, painted on the ground surface. Non-interactive page chrome — renders a real heading element whose level is a prop (default h2).',
+			'A static title block: a filled Phosphor icon beside a title-scale heading, painted on the Grove surface named by surface (default ground) with the base text colour of that surface. Non-interactive page chrome — renders a real heading element whose level is a prop (default h2).',
 		type: 'display',
-		version: '1.2.0',
+		version: '1.3.0',
 		created: '2026/09/16',
 		modified: '2026/09/28'
 	},
@@ -23,6 +23,13 @@ export const TitleMetadata = {
 		useCases: ['page-title', 'section-heading', 'documentation-title', 'page-chrome'],
 		requiredProps: [],
 		commonPatterns: [
+			{
+				name: 'section-surface',
+				description:
+					'A title inside a coloured section: set surface to the section surface so the title paints the same colour, with its paired text. The gv-surface-* class paints the section and sets the focus ring for controls in it.',
+				composition:
+					'<section class="gv-surface-brand-terrace"><gv-title surface="brand-terrace" heading="Principles"></gv-title></section>'
+			},
 			{
 				name: 'slotted-heading',
 				description:
@@ -51,6 +58,13 @@ export const TitleMetadata = {
 			}
 		],
 		antiPatterns: [
+			{
+				scenario: 'Setting a surface that differs from the section the title sits in',
+				reason:
+					'The title paints its own surface, so it shows as a block of a different colour inside the section',
+				alternative:
+					'Set surface to the parent section\'s surface, e.g. both gv-surface-brand-terrace and surface="brand-terrace"'
+			},
 			{
 				scenario: 'Using gv-title as an interactive button or link',
 				reason:
@@ -104,6 +118,28 @@ export const TitleMetadata = {
 		]
 	},
 
+	variants: {
+		surface: {
+			options: [
+				'ground',
+				'<track>-terrace',
+				'brand-path',
+				'gray-path',
+				'<track>-summit',
+				'<track>-aurora'
+			],
+			default: 'ground',
+			purpose: {
+				ground: 'The page surface. Default.',
+				resting:
+					'Terrace, Path and Summit: a coloured section the title belongs to. Every track that has the depth; Path exists on brand and gray only.',
+				aurora:
+					'A transient highlight section, never a nesting parent. Aurora has no emphasis role, ring or shadow.',
+				fallback: 'Any other value, including wrong case or accent-path, renders as ground.'
+			}
+		}
+	},
+
 	accessibility: {
 		role: 'None — the host has no interactive or landmark role; the rendered heading carries native heading semantics',
 		keyboardSupport: 'None — the component is not focusable and has no keyboard interactions',
@@ -129,6 +165,6 @@ export const TitleMetadata = {
 			'documentation header'
 		],
 		context:
-			'Use as static page or section chrome when a title needs a leading icon on the ground surface — e.g. a documentation page header. Set `level` to match the real document heading hierarchy, and pass icon="" to omit the icon when none is needed.'
+			'Use as static page or section chrome when a title needs a leading icon — e.g. a documentation page header, or a heading inside a coloured section with surface set to that section\'s surface. Set `level` to match the real document heading hierarchy, and pass icon="" to omit the icon when none is needed.'
 	}
 } satisfies ComponentMetadata;

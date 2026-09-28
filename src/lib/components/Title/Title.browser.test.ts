@@ -1,8 +1,10 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { html, render } from 'lit';
 import './Title.js';
 import type { Title } from './Title.js';
+import { GROVE_SURFACES } from '../../surfaces.js';
+import { applyTheme, themes } from '../../../test/themes.js';
 
 const host = document.body.appendChild(document.createElement('div'));
 const LONG = 'Getting started with the Grove design system';
@@ -152,5 +154,87 @@ describe('gv-title semantics are unchanged (#31 FR-12, FR-14)', () => {
 	it('renders an empty heading without overflow', async () => {
 		const el = await mount(320, html`<gv-title heading=""></gv-title>`);
 		expectInside(el);
+	});
+});
+
+/** The computed colours of a probe painted with a surface's tokens, where `context` is. */
+const expected = (surface: string, context: Element = host) => {
+	const probe = context.appendChild(document.createElement('div'));
+	probe.style.background = `var(--semantic-color-surface-${surface})`;
+	probe.style.color = `var(--semantic-color-text-on-${surface}-base)`;
+	const { backgroundColor, color } = getComputedStyle(probe);
+	probe.remove();
+	return { backgroundColor, color };
+};
+
+const painted = (el: Title) => {
+	const { backgroundColor, color } = getComputedStyle(parts(el).block);
+	return { backgroundColor, color };
+};
+
+describe('gv-title surface (#36)', () => {
+	afterAll(() => applyTheme(themes[0]));
+
+	for (const theme of themes)
+		it(`paints every Grove surface with its base text-on pair in ${theme.name}`, async () => {
+			await applyTheme(theme);
+			const el = await mount(640, html`<gv-title heading="Principles"></gv-title>`);
+			expect(painted(el)).toEqual(expected('ground'));
+			for (const surface of GROVE_SURFACES) {
+				el.surface = surface;
+				await el.updateComplete;
+				expect(painted(el), surface).toEqual(expected(surface));
+				const icon = parts(el).icon!;
+				expect(getComputedStyle(icon).color).toBe(getComputedStyle(parts(el).heading).color);
+			}
+		});
+
+	it('switches at runtime and returns to ground when the attribute is removed', async () => {
+		await applyTheme(themes[0]);
+		const el = await mount(
+			640,
+			html`<gv-title heading="Principles" surface="brand-summit"></gv-title>`
+		);
+		expect(painted(el)).toEqual(expected('brand-summit'));
+		el.surface = 'accent-terrace';
+		await el.updateComplete;
+		expect(painted(el)).toEqual(expected('accent-terrace'));
+		el.removeAttribute('surface');
+		await el.updateComplete;
+		expect(painted(el)).toEqual(expected('ground'));
+		expect(parts(el).block.className).toBe('title title--ground');
+	});
+
+	it.each(['bogus', 'accent-path', '', 'Brand-Terrace'])(
+		'renders surface="%s" as ground',
+		async (surface) => {
+			await applyTheme(themes[0]);
+			const el = await mount(
+				640,
+				html`<gv-title heading="Principles" surface=${surface}></gv-title>`
+			);
+			expect(painted(el)).toEqual(expected('ground'));
+		}
+	);
+
+	it('paints an empty heading on a non-ground surface', async () => {
+		const el = await mount(640, html`<gv-title heading="" surface="gray-path"></gv-title>`);
+		expect(painted(el)).toEqual(expected('gray-path'));
+		expect(parts(el).block.getBoundingClientRect().height).toBeGreaterThan(0);
+	});
+
+	it('follows a data-theme island', async () => {
+		await applyTheme(themes[0]);
+		render(
+			html`<div data-theme="dark">
+				<gv-title heading="Night" surface="brand-terrace"></gv-title>
+			</div>`,
+			host
+		);
+		const el = host.querySelector('gv-title') as Title;
+		await el.updateComplete;
+		const island = host.querySelector('[data-theme]')!;
+		expect(painted(el)).toEqual(expected('brand-terrace', island));
+		expect(painted(el)).not.toEqual(expected('brand-terrace'));
 	});
 });

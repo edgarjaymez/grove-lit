@@ -2,28 +2,33 @@ import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
 import { expect } from 'storybook/test';
 import './Title.js';
+import { GROVE_SURFACES } from '../../surfaces.js';
+import type { GroveSurface } from '../../surfaces.js';
 
 interface Args {
 	heading: string;
 	level: 1 | 2 | 3 | 4 | 5 | 6;
 	icon: string;
+	surface: GroveSurface;
 }
 
 const meta: Meta<Args> = {
 	title: 'Components/gv-title',
 	tags: ['autodocs'],
-	render: ({ heading, level, icon }) => html`
-		<gv-title heading=${heading} level=${level} icon=${icon}></gv-title>
+	render: ({ heading, level, icon, surface }) => html`
+		<gv-title heading=${heading} level=${level} icon=${icon} surface=${surface}></gv-title>
 	`,
 	argTypes: {
 		heading: { control: 'text' },
 		level: { control: 'select', options: [1, 2, 3, 4, 5, 6] },
-		icon: { control: 'text' }
+		icon: { control: 'text' },
+		surface: { control: 'select', options: GROVE_SURFACES }
 	},
 	args: {
 		heading: 'Documentation',
 		level: 2,
-		icon: 'palette'
+		icon: 'palette',
+		surface: 'ground'
 	}
 };
 export default meta;
@@ -75,4 +80,17 @@ export const NarrowNoIcon: Story = {
 export const Slotted: Story = {
 	render: ({ level, icon }) =>
 		html`<gv-title level=${level} icon=${icon}>Getting started</gv-title>`
+};
+
+/** One title per Grove surface, each inside a section painted with the same surface (#36). */
+export const Surfaces: Story = {
+	render: ({ level, icon }) => html`
+		${GROVE_SURFACES.map(
+			(surface) => html`
+				<section class="gv-surface-${surface}">
+					<gv-title heading=${surface} level=${level} icon=${icon} surface=${surface}></gv-title>
+				</section>
+			`
+		)}
+	`
 };

@@ -254,7 +254,9 @@ The depth axis (Ground → Terrace → Path → Summit) maps to perceived visual
 
 ### Aurora
 
-**Aurora is not a container depth.** It is an interactive state — the hover/active variant of Summit. Never place other elements inside an Aurora surface. Only Summit-level interactive elements (buttons, chips, links) use Aurora. Apply it via `:hover` or `:active` CSS states only.
+**Aurora is a transient surface, not a resting container.** It is the hover and press state of Summit controls, and it can also paint a highlight: a section that is briefly emphasised on top of the surface it rests on. Summit-level interactive elements (buttons, chips, links) use it through `:hover` or `:active`. A highlight section may hold content, such as a `gv-title` with `surface="brand-aurora"`, but it never becomes a nesting parent for further depths.
+
+Aurora has no `emphasis` text role, no focus ring and no drop shadow. A control focused over an aurora highlight keeps the ring of the resting surface underneath it.
 
 ```css
 .button-primary {
@@ -452,7 +454,7 @@ Brand and Accent tracks should not contain Danger, Success, or Information track
 
 #### 7. Aurora is a state, not a container.
 
-Aurora is the hover state for Summit elements. It never contains other elements. Only Summit changes surface color on hover.
+Aurora is the hover state for Summit elements, or a transient highlight over a resting surface. It is never a resting container and never the parent of another depth. Only Summit changes surface color on hover. Components that take a `surface` (the `GroveSurface` type) accept the aurora values for highlight sections.
 
 #### 8. Floating elements return to Ground.
 
