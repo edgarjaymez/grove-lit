@@ -31,19 +31,22 @@ export class Title extends LitElement {
 				justify-content: center;
 				gap: var(--soft-grid-16);
 				padding: var(--soft-grid-24);
-				overflow: clip;
 				color: var(--semantic-color-text-on-ground-base);
 				background: var(--semantic-color-surface-ground);
 			}
 
 			.title__icon {
+				flex: none;
 				font: var(--typography-single-line-title-base);
 			}
 
+			/* Keeps its natural width while it fits, so the row still centres it; when it doesn't, it
+			   shrinks beside the icon and wraps, between words first. */
 			.title__heading {
-				font: var(--typography-single-line-title-emphasis);
+				min-width: 0;
+				font: var(--typography-multi-line-title-emphasis);
 				letter-spacing: var(--letter-spacing-base);
-				white-space: nowrap;
+				overflow-wrap: anywhere;
 			}
 		`
 	];

@@ -7,9 +7,9 @@ export const TitleMetadata = {
 		description:
 			'A static title block: a filled Phosphor icon beside a title-scale heading, painted on the ground surface. Non-interactive page chrome — renders a real heading element whose level is a prop (default h2).',
 		type: 'display',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/09/16',
-		modified: '2026/09/16'
+		modified: '2026/09/28'
 	},
 
 	usage: {
@@ -75,7 +75,13 @@ export const TitleMetadata = {
 
 	behavior: {
 		states: ['default'],
-		interactions: null
+		interactions: null,
+		layout: [
+			'A heading that fits sits on one line, centred in the block after the icon.',
+			'A longer heading wraps onto as many lines as it needs, start-aligned, with the icon centred on the whole heading; the block grows taller. Breaks fall between words; a word longer than the line breaks inside the word. Nothing is clipped at any width or text size (WCAG 2.2 1.4.10, 1.4.4).',
+			'The icon keeps its 40 px glyph and never shrinks or moves to its own line.',
+			'The heading uses the multi-line title token (40 px / 600, 1.2 line height).'
+		]
 	},
 
 	accessibility: {
