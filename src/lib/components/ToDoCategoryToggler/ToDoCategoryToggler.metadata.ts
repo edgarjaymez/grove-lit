@@ -3,7 +3,7 @@ export const ToDoCategoryTogglerMetadata = {
 		name: 'ToDoCategoryToggler',
 		category: 'atoms',
 		description:
-			'A color-coded toggle button that displays a task count and category label. Pressing it toggles a selected state and dispatches a toggle CustomEvent. Used in dashboards and overview surfaces to filter or highlight task categories.',
+			'A color-coded toggle button that displays a task count and category label. Pressing it toggles a selected state and dispatches a gv-toggle CustomEvent. Used in dashboards and overview surfaces to filter or highlight task categories.',
 		type: 'interactive',
 		path: 'src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts',
 		version: '1.1.0',
@@ -46,7 +46,7 @@ export const ToDoCategoryTogglerMetadata = {
 				description: 'React to toggle state changes via the CustomEvent',
 				composition: `<gv-todo-category-toggler id="design-cat" color="brand" category="Design" count="5"></gv-todo-category-toggler>
 <script>
-  document.querySelector('#design-cat').addEventListener('toggle', (e) => { isActive = e.detail; });
+  document.querySelector('#design-cat').addEventListener('gv-toggle', (e) => { isActive = e.detail; });
 </script>`
 			},
 			{
@@ -93,7 +93,7 @@ export const ToDoCategoryTogglerMetadata = {
 		states: ['default', 'selected', 'focus', 'disabled'],
 
 		interactions: {
-			click: 'Toggles isSelected state; dispatches a toggle CustomEvent with detail: boolean',
+			click: 'Toggles isSelected state; dispatches a gv-toggle CustomEvent with detail: boolean',
 			hover:
 				'No surface change on hover — the toggler shows only its two states (Terrace when off, Summit when on)',
 			active:
@@ -133,7 +133,7 @@ export const ToDoCategoryTogglerMetadata = {
 		notes: [
 			'aria-pressed is set automatically from isSelected — do not set it manually',
 			'disabled prop sets the HTML disabled attribute; browser blocks pointer events natively',
-			'State changes dispatch a toggle CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("toggle", (e) => use(e.detail))',
+			'State changes dispatch a gv-toggle CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("gv-toggle", (e) => use(e.detail))',
 			'Group multiple togglers in a <div role="group" aria-label="Filter by category"> for screen reader context',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
@@ -155,6 +155,6 @@ export const ToDoCategoryTogglerMetadata = {
 			'icon'
 		],
 		context:
-			'Use when the UI needs a compact, color-coded toggle button for filtering or selecting a task category. Choose the color track that matches the surrounding design language — brand (green) for primary, accent (purple) for secondary, information (blue) for informational, gray for neutral. Pass a Phosphor icon name to the optional icon prop to show a filled glyph in the header (e.g. icon="tree"); omit it to leave the icon slot empty. Always listen to the toggle CustomEvent to react to state changes.'
+			'Use when the UI needs a compact, color-coded toggle button for filtering or selecting a task category. Choose the color track that matches the surrounding design language — brand (green) for primary, accent (purple) for secondary, information (blue) for informational, gray for neutral. Pass a Phosphor icon name to the optional icon prop to show a filled glyph in the header (e.g. icon="tree"); omit it to leave the icon slot empty. Always listen to the gv-toggle CustomEvent to react to state changes.'
 	}
 };

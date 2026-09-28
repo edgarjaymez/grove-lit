@@ -5,6 +5,9 @@ import { componentReset } from '../../styles/component-reset.js';
 
 type CheckboxResponsive = 'default' | 'xl';
 
+/**
+ * @fires gv-change - `CustomEvent<boolean>` with the new `checked`.
+ */
 @customElement('gv-checkbox')
 export class Checkbox extends LitElement {
 	@property({ type: Boolean, reflect: true }) checked = false;
@@ -85,7 +88,7 @@ export class Checkbox extends LitElement {
 	private _toggle() {
 		this.checked = !this.checked;
 		this.dispatchEvent(
-			new CustomEvent('change', { detail: this.checked, bubbles: true, composed: true })
+			new CustomEvent('gv-change', { detail: this.checked, bubbles: true, composed: true })
 		);
 	}
 

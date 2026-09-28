@@ -7,6 +7,10 @@ import { componentReset } from '../../styles/component-reset.js';
 type InputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number';
 type InputColor = 'brand' | 'gray';
 
+/**
+ * @fires gv-input - `CustomEvent<string>` with the value, on every edit.
+ * @fires gv-change - `CustomEvent<string>` with the value, when a change is committed.
+ */
 @customElement('gv-text-input')
 export class TextInput extends LitElement {
 	@property({ type: String }) value = '';
@@ -147,7 +151,7 @@ export class TextInput extends LitElement {
 		e.stopPropagation();
 		this.value = (e.target as HTMLInputElement).value;
 		this.dispatchEvent(
-			new CustomEvent('input', { detail: this.value, bubbles: true, composed: true })
+			new CustomEvent('gv-input', { detail: this.value, bubbles: true, composed: true })
 		);
 	}
 
@@ -155,7 +159,7 @@ export class TextInput extends LitElement {
 		e.stopPropagation();
 		this.value = (e.target as HTMLInputElement).value;
 		this.dispatchEvent(
-			new CustomEvent('change', { detail: this.value, bubbles: true, composed: true })
+			new CustomEvent('gv-change', { detail: this.value, bubbles: true, composed: true })
 		);
 	}
 

@@ -34,11 +34,12 @@ export const CheckboxMetadata = {
 			},
 			{
 				name: 'controlled-toggle',
-				description: 'Listen to the change CustomEvent (detail: boolean) to react to state changes',
+				description:
+					'Listen to the gv-change CustomEvent (detail: boolean) to react to state changes',
 				composition: `<gv-checkbox id="my-check"></gv-checkbox>
 <script>
   const el = document.querySelector('#my-check');
-  el.addEventListener('change', (e) => { isSelected = e.detail; });
+  el.addEventListener('gv-change', (e) => { isSelected = e.detail; });
 </script>`
 			},
 			{
@@ -85,7 +86,7 @@ export const CheckboxMetadata = {
 		states: ['DEFAULT', 'checked', 'hover', 'active', 'disabled', 'disabled-checked'],
 
 		interactions: {
-			click: 'Toggles checked state; dispatches a change CustomEvent with detail: boolean',
+			click: 'Toggles checked state; dispatches a gv-change CustomEvent with detail: boolean',
 			hover:
 				'Unchecked: border shifts to gray/aurora. Checked: background and edge shift from brand/summit to brand/aurora — the same as active until Grove has a press-state token',
 			active: 'Checked: background and edge shift to brand/aurora',
@@ -116,7 +117,7 @@ export const CheckboxMetadata = {
 		notes: [
 			'Always wrap in a <label> or use aria-label/aria-labelledby for an accessible name',
 			'disabled prop sets the HTML disabled attribute — browser blocks pointer events natively',
-			'State changes dispatch a change CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("change", (e) => use(e.detail))',
+			'State changes dispatch a gv-change CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("gv-change", (e) => use(e.detail))',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},

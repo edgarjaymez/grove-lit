@@ -5,9 +5,15 @@ import { componentReset } from '../../styles/component-reset.js';
 import '../Checkbox/Checkbox.js';
 import '../Icon/Icon.js';
 
+/**
+ * A to-do row: a gv-checkbox, the task text and a category line.
+ *
+ * @fires gv-change - `CustomEvent<boolean>` with the new `isDone`, once per toggle.
+ */
 @customElement('gv-todo-list-item')
 export class ToDoListItem extends LitElement {
-	@property({ type: String }) title = 'Task';
+	/** The task text. Not `title`, which is the global HTML attribute (host tooltip and name). */
+	@property({ type: String }) heading = 'Task';
 	@property({ type: String }) category = 'Category';
 	@property({ type: String }) icon = 'tree';
 	@property({ type: Boolean, attribute: 'is-done', reflect: true }) isDone = false;
@@ -86,9 +92,12 @@ export class ToDoListItem extends LitElement {
 	];
 
 	private _onCheckboxChange(e: CustomEvent<boolean>) {
+		// The inner checkbox's own composed gv-change would otherwise escape the host too, so each
+		// toggle would reach the page twice.
+		e.stopPropagation();
 		this.isDone = e.detail;
 		this.dispatchEvent(
-			new CustomEvent('change', { detail: this.isDone, bubbles: true, composed: true })
+			new CustomEvent('gv-change', { detail: this.isDone, bubbles: true, composed: true })
 		);
 	}
 
@@ -97,7 +106,7 @@ export class ToDoListItem extends LitElement {
 		if (checkbox && e.composedPath().includes(checkbox)) return;
 		this.isDone = !this.isDone;
 		this.dispatchEvent(
-			new CustomEvent('change', { detail: this.isDone, bubbles: true, composed: true })
+			new CustomEvent('gv-change', { detail: this.isDone, bubbles: true, composed: true })
 		);
 	}
 
@@ -107,9 +116,9 @@ export class ToDoListItem extends LitElement {
 	render() {
 		return html`
 			<div class="item" @click=${this._handleItemClick}>
-				<gv-checkbox ?checked=${this.isDone} @change=${this._onCheckboxChange}></gv-checkbox>
+				<gv-checkbox ?checked=${this.isDone} @gv-change=${this._onCheckboxChange}></gv-checkbox>
 				<div class="labels">
-					<p class=${classMap({ title: true, 'title--done': this.isDone })}>${this.title}</p>
+					<p class=${classMap({ title: true, 'title--done': this.isDone })}>${this.heading}</p>
 					<div class="category-row">
 						${this.icon
 							? html`<gv-icon

@@ -102,7 +102,7 @@ export const TextInputMetadata = {
 			error:
 				'Danger-terrace surface and text over a danger-summit underline, regardless of color prop. Hover keeps the surface and text and steps the underline to danger-aurora. Focus keeps the surface, text and underline, so the native focus indicator is the focus cue.',
 			input:
-				'Dispatches an input CustomEvent (detail: string) on every keystroke and a change CustomEvent on blur. Placeholder-vs-typed-value color is handled natively (::placeholder vs the input color).'
+				'Dispatches a gv-input CustomEvent (detail: string) on every keystroke and a gv-change CustomEvent (detail: string) when a changed value is committed; the native input and change events are stopped at the shadow boundary. Placeholder-vs-typed-value color is handled natively (::placeholder vs the input color).'
 		}
 	},
 

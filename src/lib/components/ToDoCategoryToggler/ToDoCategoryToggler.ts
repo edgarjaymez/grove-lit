@@ -6,6 +6,9 @@ import { componentReset } from '../../styles/component-reset.js';
 
 type Color = 'brand' | 'accent' | 'information' | 'gray';
 
+/**
+ * @fires gv-toggle - `CustomEvent<boolean>` with the new `isSelected`.
+ */
 @customElement('gv-todo-category-toggler')
 export class ToDoCategoryToggler extends LitElement {
 	@property({ type: String }) category = 'Category';
@@ -155,7 +158,7 @@ export class ToDoCategoryToggler extends LitElement {
 	private _toggle() {
 		this.isSelected = !this.isSelected;
 		this.dispatchEvent(
-			new CustomEvent('toggle', { detail: this.isSelected, bubbles: true, composed: true })
+			new CustomEvent('gv-toggle', { detail: this.isSelected, bubbles: true, composed: true })
 		);
 	}
 

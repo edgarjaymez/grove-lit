@@ -3,6 +3,9 @@ import { customElement, property } from 'lit/decorators.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 
+/**
+ * @fires gv-back - cancelable; `preventDefault()` skips `history.back()`.
+ */
 @customElement('gv-back-button')
 export class BackButton extends LitElement {
 	@property({ type: String }) label = 'Go back';
@@ -46,7 +49,7 @@ export class BackButton extends LitElement {
 	];
 
 	private handleClick() {
-		const event = new CustomEvent('back', {
+		const event = new CustomEvent('gv-back', {
 			bubbles: true,
 			composed: true,
 			cancelable: true

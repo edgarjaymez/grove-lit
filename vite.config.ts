@@ -26,15 +26,12 @@ export default defineConfig({
 		dts({
 			include: [
 				'src/lib/index.ts',
+				'src/lib/events.ts',
 				'src/lib/components/**/*.ts',
 				'src/lib/styles/component-reset.ts',
 				'src/lib/styles/visually-hidden.ts'
 			],
-			exclude: [
-				'src/lib/components/**/*.stories.ts',
-				'src/lib/components/**/*.metadata.ts',
-				'src/lib/components/**/*.test.ts'
-			],
+			exclude: ['src/lib/components/**/*.stories.ts', 'src/lib/components/**/*.test.ts'],
 			outDirs: 'dist',
 			entryRoot: 'src/lib'
 		}),
