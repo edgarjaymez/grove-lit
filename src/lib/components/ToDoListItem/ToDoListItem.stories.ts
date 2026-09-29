@@ -3,7 +3,7 @@ import { html } from 'lit';
 import './ToDoListItem.js';
 
 interface Args {
-	title: string;
+	heading: string;
 	category: string;
 	icon: string;
 	isDone: boolean;
@@ -12,22 +12,22 @@ interface Args {
 const meta: Meta<Args> = {
 	title: 'Components/gv-todo-list-item',
 	tags: ['autodocs'],
-	render: ({ title, category, icon, isDone }) => html`
+	render: ({ heading, category, icon, isDone }) => html`
 		<gv-todo-list-item
-			title=${title}
+			heading=${heading}
 			category=${category}
 			icon=${icon}
 			?is-done=${isDone}
 		></gv-todo-list-item>
 	`,
 	argTypes: {
-		title: { control: 'text' },
+		heading: { control: 'text' },
 		category: { control: 'text' },
 		icon: { control: 'text' },
 		isDone: { control: 'boolean' }
 	},
 	args: {
-		title: 'Task',
+		heading: 'Task',
 		category: 'Category',
 		icon: 'tree',
 		isDone: false

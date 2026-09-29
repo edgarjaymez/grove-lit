@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const TooltipMetadata = {
 	component: {
 		name: 'Tooltip',
@@ -7,9 +9,14 @@ export const TooltipMetadata = {
 		description:
 			'A floating hint bubble at summit depth, carrying the summit drop shadow as its attention cue. The simple type is a single nowrap line of icon + message; the complete type stacks an emphasized heading over a wrapping message. Accent and gray swap the surface, both text roles, and the shadow together. The is-pressed flag drops the shadow so the bubble reads as pushed down against the surface. It is the bubble only — it does not anchor, position, open, or close itself.',
 		type: 'display',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/09/16',
-		modified: '2026/09/18'
+		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -22,6 +29,12 @@ export const TooltipMetadata = {
 		],
 		requiredProps: ['message'],
 		commonPatterns: [
+			{
+				name: 'slotted-content',
+				description: 'Pass heading and message as slotted content; the props are the fallbacks.',
+				composition:
+					'<gv-tooltip type="complete"><span slot="heading">Heads up</span><span slot="message">Values copy as <code>oklch()</code>.</span></gv-tooltip>'
+			},
 			{
 				name: 'simple-hint',
 				description:
@@ -88,7 +101,18 @@ export const TooltipMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: 'heading',
+				description: 'The heading of the complete type. Phrasing content only.',
+				fallback: 'heading'
+			},
+			{
+				name: 'message',
+				description: 'The message, or the body of the complete type. Phrasing content only.',
+				fallback: 'message'
+			}
+		],
 		nestedComponents: [{ name: 'Icon', source: '../Icon/Icon.js' }],
 		commonPartners: ['ColorSwatch', 'IconButton', 'Button', 'TextInput'],
 		parentConstraints: [
@@ -101,7 +125,7 @@ export const TooltipMetadata = {
 		states: ['DEFAULT', 'PRESSED'],
 		interactions: {
 			'is-pressed':
-				'A presentational flag, not an interaction the bubble detects — the consumer sets it. It removes the summit drop shadow over 300ms so the bubble flattens against the surface, reading as pressed. Pair it with the press it reflects (gv-color-swatch sets it while its copy confirmation shows).'
+				'A presentational flag, not an interaction the bubble detects — the consumer sets it. It removes the summit drop shadow over 300ms (instant under prefers-reduced-motion: reduce) so the bubble flattens against the surface, reading as pressed. Pair it with the press it reflects (gv-color-swatch sets it while its copy confirmation shows).'
 		}
 	},
 
@@ -124,7 +148,7 @@ export const TooltipMetadata = {
 				gray: 'Neutral emphasis. Use for utility hints that should not compete with nearby accent UI.'
 			}
 		},
-		isPressed: {
+		'is-pressed': {
 			options: [false, true],
 			default: false,
 			purpose: {
@@ -146,7 +170,8 @@ export const TooltipMetadata = {
 			'The consumer must wire aria-describedby from the trigger to the tooltip id — the component cannot do it.',
 			'The decorative gv-icon is aria-hidden="true"; never put meaning in the icon alone.',
 			'Never pass a title attribute — it is a global HTML attribute and would render a native browser tooltip on the host.',
-			'The consuming app must import the Phosphor glyph it names, e.g. @phosphor-icons/webcomponents/PhCopy for icon="copy".'
+			'The consuming app must register the glyph it names (see the phosphor field), e.g. @phosphor-icons/webcomponents/PhCopy for icon="copy".',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 
@@ -158,4 +183,4 @@ export const TooltipMetadata = {
 			skip: 'When you need anchoring, hover timing, or open/close behavior — gv-tooltip provides none of it. Also skip for persistent page-level status, which is gv-feedback-strip.'
 		}
 	}
-};
+} satisfies ComponentMetadata;

@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const ButtonMetadata = {
 	component: {
 		name: 'Button',
@@ -6,9 +8,14 @@ export const ButtonMetadata = {
 			'Primary interactive element for triggering actions. Supports visual hierarchy through style and color variants, optional leading icon, and three sizes.',
 		type: 'interactive',
 		path: 'src/lib/components/Button/Button.ts',
-		version: '1.1.1',
+		version: '1.2.0',
 		created: '2026/03/08',
-		modified: '2026/05/30'
+		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -24,6 +31,12 @@ export const ButtonMetadata = {
 		requiredProps: ['text'],
 
 		commonPatterns: [
+			{
+				name: 'slotted-text',
+				description:
+					'Pass the text as content; it names the button and is in the server HTML. The text prop is the fallback when the slot is empty.',
+				composition: '<gv-button variant="filled">Save changes</gv-button>'
+			},
 			{
 				name: 'page-level-cta',
 				description: 'Primary action on a landing section or hero — highest visual prominence',
@@ -77,7 +90,13 @@ export const ButtonMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: '',
+				description: 'The button text. Text and phrasing content only, never a form control.',
+				fallback: 'text'
+			}
+		],
 		nestedComponents: [{ name: 'Icon', source: '../Icon/Icon.js' }],
 		commonPartners: ['IconButton', 'Input', 'Modal', 'Card', 'Form'],
 		parentConstraints: null
@@ -90,7 +109,8 @@ export const ButtonMetadata = {
 			click: 'Triggers onclick handler',
 			hover: 'Background transitions to aurora surface level; icon switches to filled variant',
 			active: 'Background stays at aurora level; drop shadow removed',
-			focus: 'Visible focus ring applied by global surface-scoped CSS — do not override',
+			focus:
+				"Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else the Ground ring; a system-colour outline under forced colours",
 			disabled: '50% opacity; cursor changes to not-allowed; pointer events blocked'
 		}
 	},
@@ -134,11 +154,13 @@ export const ButtonMetadata = {
 		keyboardSupport: 'Native browser support — Space/Enter to activate',
 		screenReader: 'Announces button role with visible text content as the accessible name',
 		focusManagement:
-			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
+			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
+			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',
 			'text prop is the accessible name — keep it descriptive and action-oriented',
-			'Disabled state uses the HTML disabled attribute; pointer events are blocked natively'
+			'Disabled state uses the HTML disabled attribute; pointer events are blocked natively',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 
@@ -148,4 +170,4 @@ export const ButtonMetadata = {
 		context:
 			'Use for any user-initiated action. Choose style and color based on visual hierarchy: filled accent for primary, tonal for secondary, outlined/ghost for tertiary. Add icon for reinforcement, never as the sole label.'
 	}
-};
+} satisfies ComponentMetadata;

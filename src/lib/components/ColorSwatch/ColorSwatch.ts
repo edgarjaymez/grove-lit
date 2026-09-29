@@ -4,6 +4,8 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Tooltip/Tooltip.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
+import { visuallyHidden } from '../../styles/visually-hidden.js';
 
 export type ColorFamily =
 	| 'brand'
@@ -80,6 +82,9 @@ function parseOklch(raw: string): [number, number, number] | null {
 	return [parts[0].endsWith('%') ? lightness / 100 : lightness, chroma, hue];
 }
 
+/**
+ * @fires {CustomEvent<ColorSwatchCopyDetail>} gv-copy - after a value is copied to the clipboard.
+ */
 @customElement('gv-color-swatch')
 export class ColorSwatch extends LitElement {
 	@property({ type: String }) color: ColorFamily = 'brand';
@@ -103,6 +108,8 @@ export class ColorSwatch extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
+		visuallyHidden,
 		css`
 			:host {
 				display: block;
@@ -242,18 +249,6 @@ export class ColorSwatch extends LitElement {
 					opacity 300ms ease-out,
 					visibility 0s linear 300ms;
 			}
-
-			.sr-only {
-				position: absolute;
-				width: 1px;
-				height: 1px;
-				margin: -1px;
-				padding: 0;
-				overflow: hidden;
-				clip-path: inset(50%);
-				white-space: nowrap;
-				border: 0;
-			}
 		`
 	];
 
@@ -363,7 +358,7 @@ export class ColorSwatch extends LitElement {
 					<div class="oklch-row">
 						<button
 							type="button"
-							class="oklch-group"
+							class="oklch-group gv-focusable"
 							aria-label="Copy oklch value"
 							aria-describedby="oklch-tip"
 							@click=${this.onCopyOklch}
@@ -383,7 +378,7 @@ export class ColorSwatch extends LitElement {
 					</div>
 					<button
 						type="button"
-						class="hex-value"
+						class="hex-value gv-focusable"
 						aria-label="Copy hex value"
 						aria-describedby="hex-tip"
 						@click=${this.onCopyHex}
@@ -400,7 +395,7 @@ export class ColorSwatch extends LitElement {
 						message=${this.copied === 'hex' ? 'Copied!' : 'Copy'}
 					></gv-tooltip>
 				</div>
-				<p class="sr-only" role="status" aria-live="polite">
+				<p class="visually-hidden" role="status" aria-live="polite">
 					${this.copied ? `Copied ${this.copied} value` : ''}
 				</p>
 			</div>

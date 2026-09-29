@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 
 type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost';
 type IconButtonColor = 'accent' | 'gray';
@@ -19,8 +20,10 @@ export class IconButton extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			.icon-btn {
+				box-shadow: var(--_drop, 0 0 #0000);
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
@@ -68,7 +71,7 @@ export class IconButton extends LitElement {
 			.icon-btn--filled.icon-btn--accent {
 				background: var(--semantic-color-surface-accent-summit);
 				color: var(--semantic-color-text-on-accent-summit-base);
-				box-shadow: var(--drop-shadow-under-accent-summit);
+				--_drop: var(--drop-shadow-under-accent-summit);
 			}
 			.icon-btn--filled.icon-btn--accent:not(:disabled):hover {
 				background: var(--semantic-color-surface-accent-aurora);
@@ -77,13 +80,13 @@ export class IconButton extends LitElement {
 			.icon-btn--filled.icon-btn--accent:not(:disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			.icon-btn--filled.icon-btn--gray {
 				background: var(--semantic-color-surface-gray-summit);
 				color: var(--semantic-color-text-on-gray-summit-base);
-				box-shadow: var(--drop-shadow-under-gray-summit);
+				--_drop: var(--drop-shadow-under-gray-summit);
 			}
 			.icon-btn--filled.icon-btn--gray:not(:disabled):hover {
 				background: var(--semantic-color-surface-gray-aurora);
@@ -92,14 +95,14 @@ export class IconButton extends LitElement {
 			.icon-btn--filled.icon-btn--gray:not(:disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			/* ---- Tonal ---- */
 			.icon-btn--tonal.icon-btn--accent {
 				background: var(--semantic-color-surface-accent-terrace);
 				color: var(--semantic-color-text-on-accent-terrace-base);
-				box-shadow: var(--drop-shadow-under-accent-summit);
+				--_drop: var(--drop-shadow-under-accent-summit);
 			}
 			.icon-btn--tonal.icon-btn--accent:not(:disabled):hover {
 				background: var(--semantic-color-surface-accent-aurora);
@@ -108,13 +111,13 @@ export class IconButton extends LitElement {
 			.icon-btn--tonal.icon-btn--accent:not(:disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			.icon-btn--tonal.icon-btn--gray {
 				background: var(--semantic-color-surface-gray-terrace);
 				color: var(--semantic-color-text-on-gray-terrace-base);
-				box-shadow: var(--drop-shadow-under-gray-summit);
+				--_drop: var(--drop-shadow-under-gray-summit);
 			}
 			.icon-btn--tonal.icon-btn--gray:not(:disabled):hover {
 				background: var(--semantic-color-surface-gray-aurora);
@@ -123,7 +126,7 @@ export class IconButton extends LitElement {
 			.icon-btn--tonal.icon-btn--gray:not(:disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			/* ---- Outlined ---- */
@@ -136,13 +139,13 @@ export class IconButton extends LitElement {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				border-color: transparent;
-				box-shadow: var(--drop-shadow-under-accent-summit);
+				--_drop: var(--drop-shadow-under-accent-summit);
 			}
 			.icon-btn--outlined.icon-btn--accent:not(:disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				border-color: transparent;
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			.icon-btn--outlined.icon-btn--gray {
@@ -154,13 +157,13 @@ export class IconButton extends LitElement {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				border-color: transparent;
-				box-shadow: var(--drop-shadow-under-gray-summit);
+				--_drop: var(--drop-shadow-under-gray-summit);
 			}
 			.icon-btn--outlined.icon-btn--gray:not(:disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				border-color: transparent;
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			/* ---- Ghost ---- */
@@ -171,12 +174,12 @@ export class IconButton extends LitElement {
 			.icon-btn--ghost.icon-btn--accent:not(:disabled):hover {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
-				box-shadow: var(--drop-shadow-under-accent-summit);
+				--_drop: var(--drop-shadow-under-accent-summit);
 			}
 			.icon-btn--ghost.icon-btn--accent:not(:disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			.icon-btn--ghost.icon-btn--gray {
@@ -186,12 +189,12 @@ export class IconButton extends LitElement {
 			.icon-btn--ghost.icon-btn--gray:not(:disabled):hover {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
-				box-shadow: var(--drop-shadow-under-gray-summit);
+				--_drop: var(--drop-shadow-under-gray-summit);
 			}
 			.icon-btn--ghost.icon-btn--gray:not(:disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
-				box-shadow: none;
+				--_drop: 0 0 #0000;
 			}
 
 			/* ---- Icon fill on hover (cross-shadow via inheriting custom properties) ---- */
@@ -215,6 +218,7 @@ export class IconButton extends LitElement {
 			<button
 				class=${classMap({
 					'icon-btn': true,
+					'gv-focusable': true,
 					[`icon-btn--${this.variant}`]: true,
 					[`icon-btn--${this.color}`]: true,
 					[`icon-btn--${this.size}`]: true

@@ -2,7 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 
+/**
+ * @fires {CustomEvent<void>} gv-back - cancelable; `preventDefault()` skips `history.back()`.
+ */
 @customElement('gv-back-button')
 export class BackButton extends LitElement {
 	@property({ type: String }) label = 'Go back';
@@ -10,6 +14,7 @@ export class BackButton extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			:host {
 				display: inline-block;
@@ -46,7 +51,7 @@ export class BackButton extends LitElement {
 	];
 
 	private handleClick() {
-		const event = new CustomEvent('back', {
+		const event = new CustomEvent('gv-back', {
 			bubbles: true,
 			composed: true,
 			cancelable: true
@@ -58,7 +63,12 @@ export class BackButton extends LitElement {
 
 	render() {
 		return html`
-			<button type="button" class="tile" aria-label=${this.label} @click=${this.handleClick}>
+			<button
+				type="button"
+				class="tile gv-focusable"
+				aria-label=${this.label}
+				@click=${this.handleClick}
+			>
 				<gv-icon name=${this.icon} fill-in-hover aria-hidden="true"></gv-icon>
 			</button>
 		`;

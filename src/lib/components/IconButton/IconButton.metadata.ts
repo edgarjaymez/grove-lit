@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const IconButtonMetadata = {
 	component: {
 		name: 'IconButton',
@@ -5,9 +7,14 @@ export const IconButtonMetadata = {
 		description: 'Icon-only button for triggering actions where a text label is not needed',
 		type: 'interactive',
 		path: 'src/lib/components/IconButton/IconButton.ts',
-		version: '1.0.0',
+		version: '1.1.0',
 		created: '2026/03/07',
-		modified: '2026/05/30'
+		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: 'icon',
+		default: 'tree',
+		fixed: []
 	},
 
 	usage: {
@@ -79,7 +86,8 @@ export const IconButtonMetadata = {
 			click: 'Triggers onclick handler',
 			hover: 'Icon switches from DEFAULT to :hover state',
 			active: 'Background stays at aurora level; drop shadow removed',
-			focus: 'Visible focus ring applied by global surface-scoped CSS — do not override',
+			focus:
+				"Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else the Ground ring; a system-colour outline under forced colours",
 			disabled: '50% opacity; cursor changes to not-allowed; pointer events blocked'
 		}
 	},
@@ -123,11 +131,13 @@ export const IconButtonMetadata = {
 		keyboardSupport: 'Native browser support — Space/Enter to activate',
 		screenReader: 'No visible text — aria-label is mandatory for an accessible name',
 		focusManagement:
-			'Focus ring applied by global surface-scoped CSS; component must not declare its own focus styles',
+			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
+			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',
 			'aria-label is required on every instance — treat it as a required prop',
-			'Disabled state uses both the HTML disabled attribute and aria-disabled for maximum AT compatibility'
+			'Disabled state uses both the HTML disabled attribute and aria-disabled for maximum AT compatibility',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 
@@ -137,4 +147,4 @@ export const IconButtonMetadata = {
 		context:
 			'Use when an action is well-understood from its icon alone and a text label would clutter the UI. Always pair with aria-label.'
 	}
-};
+} satisfies ComponentMetadata;

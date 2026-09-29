@@ -5,9 +5,16 @@ import { componentReset } from '../../styles/component-reset.js';
 import '../Checkbox/Checkbox.js';
 import '../Icon/Icon.js';
 
+/**
+ * A to-do row: a gv-checkbox, the task text and a category line.
+ *
+ * @fires {CustomEvent<boolean>} gv-change - with the new `isDone`, once per toggle.
+ */
 @customElement('gv-todo-list-item')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- listener overloads, see ToDoListItemEventMap
 export class ToDoListItem extends LitElement {
-	@property({ type: String }) title = 'Task';
+	/** The task text. Not `title`, which is the global HTML attribute (host tooltip and name). */
+	@property({ type: String }) heading = 'Task';
 	@property({ type: String }) category = 'Category';
 	@property({ type: String }) icon = 'tree';
 	@property({ type: Boolean, attribute: 'is-done', reflect: true }) isDone = false;
@@ -86,9 +93,12 @@ export class ToDoListItem extends LitElement {
 	];
 
 	private _onCheckboxChange(e: CustomEvent<boolean>) {
+		// The inner checkbox's own composed gv-change would otherwise escape the host too, so each
+		// toggle would reach the page twice.
+		e.stopPropagation();
 		this.isDone = e.detail;
 		this.dispatchEvent(
-			new CustomEvent('change', { detail: this.isDone, bubbles: true, composed: true })
+			new CustomEvent('gv-change', { detail: this.isDone, bubbles: true, composed: true })
 		);
 	}
 
@@ -97,7 +107,7 @@ export class ToDoListItem extends LitElement {
 		if (checkbox && e.composedPath().includes(checkbox)) return;
 		this.isDone = !this.isDone;
 		this.dispatchEvent(
-			new CustomEvent('change', { detail: this.isDone, bubbles: true, composed: true })
+			new CustomEvent('gv-change', { detail: this.isDone, bubbles: true, composed: true })
 		);
 	}
 
@@ -107,9 +117,9 @@ export class ToDoListItem extends LitElement {
 	render() {
 		return html`
 			<div class="item" @click=${this._handleItemClick}>
-				<gv-checkbox ?checked=${this.isDone} @change=${this._onCheckboxChange}></gv-checkbox>
+				<gv-checkbox ?checked=${this.isDone} @gv-change=${this._onCheckboxChange}></gv-checkbox>
 				<div class="labels">
-					<p class=${classMap({ title: true, 'title--done': this.isDone })}>${this.title}</p>
+					<p class=${classMap({ title: true, 'title--done': this.isDone })}>${this.heading}</p>
 					<div class="category-row">
 						${this.icon
 							? html`<gv-icon
@@ -128,6 +138,39 @@ export class ToDoListItem extends LitElement {
 	}
 	/* eslint-enable lit-a11y/click-events-have-key-events */
 }
+
+/**
+ * gv-todo-list-item's events. `gv-change` is shared across Grove with different payloads, so the global map types
+ * it `CustomEvent<string | boolean>`; a listener on a gv-todo-list-item reference gets the exact `detail`.
+ */
+export interface ToDoListItemEventMap extends HTMLElementEventMap {
+	'gv-change': CustomEvent<boolean>;
+}
+
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging -- typed listener overloads only */
+export interface ToDoListItem {
+	addEventListener<K extends keyof ToDoListItemEventMap>(
+		type: K,
+		listener: (this: ToDoListItem, event: ToDoListItemEventMap[K]) => unknown,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	addEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	removeEventListener<K extends keyof ToDoListItemEventMap>(
+		type: K,
+		listener: (this: ToDoListItem, event: ToDoListItemEventMap[K]) => unknown,
+		options?: boolean | EventListenerOptions
+	): void;
+	removeEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | EventListenerOptions
+	): void;
+}
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */
 
 declare global {
 	interface HTMLElementTagNameMap {

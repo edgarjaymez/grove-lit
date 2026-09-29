@@ -16,7 +16,8 @@
 		"url": "https://github.com/edgarjaymez/grove-lit/issues"
 	},
 	"scripts": {
-		"build": "pnpm build-tokens && vite build",
+		"build": "pnpm build-tokens && vite build && pnpm build-manifest",
+		"build-manifest": "cem analyze --config custom-elements-manifest.config.mjs && node scripts/generate-framework-types.mjs && node scripts/check-manifest.mjs",
 		"prepack": "pnpm build && publint",
 		"check": "tsc --noEmit",
 		"check:watch": "tsc --noEmit --watch",
@@ -24,6 +25,8 @@
 		"format": "prettier --write .",
 		"test:unit": "vitest",
 		"test": "pnpm test:unit -- --run",
+		"test:a11y-canary": "node scripts/a11y-canary.mjs",
+		"test:storybook-static": "pnpm build-storybook --quiet && node scripts/storybook-static-smoke.mjs",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"build-tokens": "tz build"
@@ -35,7 +38,8 @@
 	],
 	"sideEffects": [
 		"**/*.css",
-		"**/*.js"
+		"**/*.js",
+		"./src/lib/components/**/*.ts"
 	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -48,8 +52,14 @@
 		"./tokens.css": "./dist/tokens/tokens.css",
 		"./fonts/*": "./dist/fonts/*",
 		"./fonts.css": "./dist/fonts/fonts.css",
-		"./grove.css": "./dist/styles/grove.css"
+		"./grove.css": "./dist/styles/grove.css",
+		"./custom-elements.json": "./dist/custom-elements.json",
+		"./astro": {
+			"types": "./dist/types/astro.d.ts"
+		},
+		"./package.json": "./package.json"
 	},
+	"customElements": "dist/custom-elements.json",
 	"peerDependencies": {
 		"@phosphor-icons/webcomponents": "^2.1.5",
 		"lit": "^3.0.0"
@@ -61,6 +71,7 @@
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "5.2.1",
+		"@custom-elements-manifest/analyzer": "0.11.0",
 		"@eslint/compat": "2.1.0",
 		"@eslint/js": "10.0.1",
 		"@phosphor-icons/webcomponents": "2.1.5",
@@ -72,7 +83,9 @@
 		"@terrazzo/cli": "2.2.0",
 		"@terrazzo/plugin-css": "2.2.0",
 		"@types/node": "25.9.1",
+		"@vitest/browser-playwright": "4.1.7",
 		"@vitest/coverage-v8": "4.1.7",
+		"apca-w3": "0.1.9",
 		"eslint": "10.4.0",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-plugin-lit": "2.3.1",
@@ -80,6 +93,7 @@
 		"eslint-plugin-storybook": "10.4.1",
 		"globals": "17.6.0",
 		"lit": "3.3.3",
+		"playwright": "1.56.1",
 		"prettier": "3.8.3",
 		"publint": "0.3.21",
 		"storybook": "10.4.1",
@@ -98,5 +112,6 @@
 	],
 	"engines": {
 		"node": ">=20"
-	}
+	},
+	"customElements": "dist/custom-elements.json"
 }

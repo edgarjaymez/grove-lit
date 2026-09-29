@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const ColorSwatchMetadata = {
 	component: {
 		name: 'ColorSwatch',
@@ -7,9 +9,14 @@ export const ColorSwatchMetadata = {
 		description:
 			'Displays a primitive color token as a labeled swatch with a color preview, an OKLCH value and a hex value. Both value rows are copy buttons: the OKLCH row copies the DTCG (W3C Design Tokens) colour object, the hex row copies the plain #rrggbb string, and each reveals a gv-tooltip on hover and on focus. A successful copy flips that tooltip to "Copied!" and drops its shadow so the bubble reads as pressed, then dismisses it after three seconds. Used in design system documentation and Storybook color pages.',
 		type: 'documentation',
-		version: '1.2.0',
+		version: '1.3.0',
 		created: '2026/05/31',
-		modified: '2026/09/18'
+		modified: '2026/09/28'
+	},
+	phosphor: {
+		prop: null,
+		default: null,
+		fixed: ['copy']
 	},
 
 	usage: {
@@ -94,7 +101,7 @@ export const ColorSwatchMetadata = {
 		parentConstraints: [
 			'Should be placed inside a surface that loads tokens.css — the component relies on CSS custom properties from the Grove token system',
 			'Both tooltips are pinned outside the left edge of the 9rem column, right-aligned 8px clear of it — keep a left gutter of at least 80px so the wider "Copied!" bubble is not clipped by a scroll container',
-			'The consuming app must import the Phosphor copy glyph (@phosphor-icons/webcomponents/PhCopy) for the tooltip icon to render'
+			'The consuming app must register the fixed glyph listed in the phosphor field (copy, @phosphor-icons/webcomponents/PhCopy) for the tooltip icon to render'
 		]
 	},
 
@@ -106,13 +113,13 @@ export const ColorSwatchMetadata = {
 			'click .hex-value':
 				'Copies the plain #rrggbb string from the hex prop — the universal web fallback. Dispatches gv-copy with detail { space: "hex", value } after a successful write.',
 			hover:
-				'Hovering either copy button reveals its gv-tooltip ("Copy") over 300ms; leaving hides it again. Both bubbles sit outside the left edge of the column — accent level with the OKLCH row, gray level with the hex row.',
+				'Hovering either copy button reveals its gv-tooltip ("Copy") over 300ms (instant under prefers-reduced-motion: reduce); leaving hides it again. Both bubbles sit outside the left edge of the column — accent level with the OKLCH row, gray level with the hex row.',
 			focus:
 				'Focusing either copy button by keyboard reveals the same tooltip; blurring hides it. Keyboard parity with hover.',
 			copied:
 				'A successful copy flips that row\'s tooltip to "Copied!" and sets is-pressed on it, so the summit shadow drops away and the bubble reads as pushed down against the surface — the press cue for the value that was just clicked. The bubble is wider in this state and grows leftward, both states ending 8px clear of the column.',
 			'copied hold':
-				'Three seconds after a successful copy the swatch returns to its DEFAULT state: the bubble fades out over 300ms still reading "Copied!", and stays down even under a pointer that never moved. It re-arms when the pointer or focus leaves the column, so the next hover shows "Copy" again. The hold never reverts to the "Copy" hint in place.',
+				'Three seconds after a successful copy the swatch returns to its DEFAULT state: the bubble fades out over 300ms (instant under prefers-reduced-motion: reduce) still reading "Copied!", and stays down even under a pointer that never moved. It re-arms when the pointer or focus leaves the column, so the next hover shows "Copy" again. The hold never reverts to the "Copy" hint in place.',
 			'gv-copy':
 				'CustomEvent (bubbles: true, composed: true) with detail { space: "oklch" | "hex", value: string }, dispatched only after navigator.clipboard.writeText resolves.'
 		}
@@ -137,7 +144,7 @@ export const ColorSwatchMetadata = {
 		screenReader:
 			'Each copy button is labelled "Copy oklch value" / "Copy hex value" and described by its tooltip via aria-describedby. The color values themselves are rendered as plain text inside the buttons and are read as the button content. A hidden tooltip is visibility: hidden, so it is not exposed until revealed. A successful copy is announced through a visually hidden role="status" live region ("Copied oklch value" / "Copied hex value"), because the visible "Copied!" confirmation lives inside a tooltip that a screen reader user may never have revealed.',
 		focusManagement:
-			'Focus stays on the activated button after a copy — nothing is moved or opened. The three-second hold dismisses the bubble without touching focus, so a keyboard user is never moved out from under their own cursor. The global surface-scoped focus-ring system supplies the ring; the component declares none.',
+			'Focus stays on the activated button after a copy — nothing is moved or opened. The three-second hold dismisses the bubble without touching focus, so a keyboard user is never moved out from under their own cursor. Each copy button draws the Grove focus ring on :focus-visible.',
 		wcag: 'AA',
 		notes: [
 			'The text prop must be set to ensure the color name meets AA contrast against the swatch background',
@@ -145,7 +152,8 @@ export const ColorSwatchMetadata = {
 			'Copies dispatch a gv-copy CustomEvent (bubbles: true, composed: true) with detail { space: "oklch" | "hex", value: string } — listen with addEventListener("gv-copy", (e) => use(e.detail))',
 			'The copy confirms itself, visually and programmatically: the tooltip reads "Copied!" and a visually hidden role="status" region announces it. A host does not need to add its own announcement to satisfy WCAG 4.1.3 Status Messages',
 			'navigator.clipboard is feature-detected and rejections are swallowed — an insecure origin or a denied permission produces no error and no event',
-			'The tooltips are revealed by CSS on :hover, :focus-visible and :focus-within of their owning button, and hidden with opacity/visibility so they leave the accessibility tree while hidden'
+			'The tooltips are revealed by CSS on :hover, :focus-visible and :focus-within of their owning button, and hidden with opacity/visibility so they leave the accessibility tree while hidden',
+			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
 
@@ -168,4 +176,4 @@ export const ColorSwatchMetadata = {
 			skip: 'Do not use in production UI — it documents a token rather than participating in a layout, and its only interaction is copying its own values.'
 		}
 	}
-};
+} satisfies ComponentMetadata;

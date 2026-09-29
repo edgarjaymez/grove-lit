@@ -40,22 +40,93 @@ import { Meta } from '@storybook/addon-docs/blocks';
 			<code>pnpm add @edgarjaymez/grove</code>
 		</pre>
 	</div>
-	<p className="grove-section-body">Then import the tokens and fonts in your app's entry point:</p>
+	<p className="grove-section-body">Then import Grove's stylesheet once, in your app's entry point:</p>
 	<div className="grove-install">
 		<pre className="grove-code">
-			<code>{`import '@edgarjaymez/grove/tokens.css';
-import '@edgarjaymez/grove/fonts.css';`}</code>
+			<code>{`import '@edgarjaymez/grove/grove.css';`}</code>
 		</pre>
 	</div>
 	<p className="grove-section-body">
-		Icons are powered by <code>@phosphor-icons/webcomponents</code>. Install it and import the
-		icons you use — <code>gv-icon</code> renders them by name:
+		It bundles the tokens, fonts, base and typography styles, the <code>gv-surface-*</code>{' '}
+		classes and the <code>.visually-hidden</code> utility. Importing only{' '}
+		<code>tokens.css</code> and <code>fonts.css</code> still works, but then the surface classes and
+		utilities are missing.
+	</p>
+	<p className="grove-section-body">
+		Icons are powered by <code>@phosphor-icons/webcomponents</code>. Install it and import each
+		glyph you use, one module per glyph. <code>gv-icon</code> renders them by name:
 	</p>
 	<div className="grove-install">
 		<pre className="grove-code">
 			<code>{`pnpm add @phosphor-icons/webcomponents
 
 import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
+		</pre>
+	</div>
+	<p className="grove-section-body">
+		Some components render glyphs you never name. Import these too for the components you place
+		(each component's metadata lists them in its <code>phosphor</code> field):
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`// Always rendered
+import '@phosphor-icons/webcomponents/PhCheckCircle'; // gv-feedback-strip type="success"
+import '@phosphor-icons/webcomponents/PhWarningCircle'; // gv-feedback-strip type="danger"
+import '@phosphor-icons/webcomponents/PhInfo'; // gv-feedback-strip type="information"
+import '@phosphor-icons/webcomponents/PhCopy'; // gv-color-swatch
+// Defaults, when you leave out the icon attribute
+import '@phosphor-icons/webcomponents/PhArrowLeft'; // gv-back-button
+import '@phosphor-icons/webcomponents/PhTree'; // gv-icon-button, gv-todo-category-toggler, gv-todo-list-item
+import '@phosphor-icons/webcomponents/PhHouse'; // gv-menu-item
+import '@phosphor-icons/webcomponents/PhPalette'; // gv-title`}</code>
+		</pre>
+	</div>
+	<p className="grove-section-body">
+		Importing the package root registers all 1,512 glyphs. It works, but ships every one of them.
+		If you miss one, the glyph renders nothing, and outside production builds the console logs one
+		warning naming the import to add.
+	</p>
+</div>
+
+<div className="grove-section">
+	<h2 className="grove-section-heading">Using Grove in templates</h2>
+	<p className="grove-section-body">
+		Write attributes in kebab case. The HTML parser lowercases <code>isActive</code> to{' '}
+		<code>isactive</code>, which Grove ignores; the attribute is <code>is-active</code>.
+	</p>
+	<p className="grove-section-body">
+		In Astro, opt in to typed attributes with one line in <code>src/env.d.ts</code>. Then{' '}
+		<code>astro check</code> rejects camelCase names, unknown values such as <code>size="lg"</code>,
+		and <code>false</code> on boolean attributes. Misspelled dashed names such as{' '}
+		<code>is-activ</code> are not caught: TypeScript skips excess-property checks on attribute names
+		that contain a dash.
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`/// <reference types="@edgarjaymez/grove/astro" />`}</code>
+		</pre>
+	</div>
+	<p className="grove-section-body">
+		For booleans, pass <code>undefined</code>, never <code>false</code>. Astro renders{' '}
+		<code>is-active={'{false}'}</code> on a custom element as <code>is-active="false"</code>, and
+		any present attribute reads as true:
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`<gv-menu-item label="Docs" href="/docs" is-active={isCurrent || undefined} />`}</code>
+		</pre>
+	</div>
+	<p className="grove-section-body">
+		Events are typed with no cast, on an element or delegated to a form or the document. Every Grove
+		event starts with <code>gv-</code>, bubbles and crosses shadow roots. The tooling manifest ships
+		as <code>@edgarjaymez/grove/custom-elements.json</code>.
+	</p>
+	<div className="grove-install">
+		<pre className="grove-code">
+			<code>{`import type { TextInput } from '@edgarjaymez/grove';
+declare const field: TextInput;
+field.addEventListener('gv-change', (e) => e.detail.trim()); // string
+form.addEventListener('gv-input', (e) => e.detail); // string, from any gv-text-input`}</code>
 		</pre>
 	</div>
 </div>
@@ -124,6 +195,56 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 				color tracks.
 			</p>
 		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">←</div>
+			<h3 className="grove-card-title">Back Button</h3>
+			<p className="grove-card-desc">
+				A square tile that goes back one entry in browser history. Cancel its gv-back event to
+				handle it yourself.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">◐</div>
+			<h3 className="grove-card-title">Color Swatch</h3>
+			<p className="grove-card-desc">
+				Shows a colour token with its OKLCH and hex values, each one copyable.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">▭</div>
+			<h3 className="grove-card-title">Feedback Strip</h3>
+			<p className="grove-card-desc">
+				Full-width success, danger or information band, with a live region you can tune.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">☰</div>
+			<h3 className="grove-card-title">Menu Item</h3>
+			<p className="grove-card-desc">
+				Navigation link with a leading icon, two sizes and an active state.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">H</div>
+			<h3 className="grove-card-title">Title</h3>
+			<p className="grove-card-desc">
+				Icon and heading block with a real heading level, on any Grove surface.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">✓</div>
+			<h3 className="grove-card-title">To-Do List Item</h3>
+			<p className="grove-card-desc">
+				A checkbox with the task and its category; checking it marks the task done.
+			</p>
+		</div>
+		<div className="grove-card">
+			<div className="grove-card-icon">◔</div>
+			<h3 className="grove-card-title">Tooltip</h3>
+			<p className="grove-card-desc">
+				The hint bubble itself, simple or complete, in accent or gray. You position it.
+			</p>
+		</div>
 	</div>
 </div>
 
@@ -147,15 +268,19 @@ import '@phosphor-icons/webcomponents/PhTree'; // for name="tree"`}</code>
 		<div className="grove-pillar">
 			<h3 className="grove-pillar-title">Elevation system</h3>
 			<p className="grove-pillar-desc">
-				Four surface depths — Ground, Terrace, Path, Summit — plus Aurora for hover and press, each
-				with matching text, border, and shadow tokens.
+				Four surface depths (Ground, Terrace, Path, Summit) plus Aurora for hover, press and
+				highlights, each with matching text, border and shadow tokens. Paint a section with a{' '}
+				<code>gv-surface-*</code> class, named by the <code>GroveSurface</code> type, and components
+				that take a <code>surface</code> use the same names.
 			</p>
 		</div>
 		<div className="grove-pillar">
 			<h3 className="grove-pillar-title">Focus by surface</h3>
 			<p className="grove-pillar-desc">
-				Focus rings are applied globally via surface-scoped CSS. Components never declare their own
-				— it's handled automatically.
+				Every control draws the ring of the surface it sits on. Paint a section with a{' '}
+				<code>gv-surface-*</code> class from <code>grove.css</code>, or set{' '}
+				<code>--gv-focus-ring</code> next to your own background; with neither, controls use the
+				Ground ring.
 			</p>
 		</div>
 	</div>

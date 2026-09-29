@@ -3,11 +3,17 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 
 type InputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number';
 type InputColor = 'brand' | 'gray';
 
+/**
+ * @fires {CustomEvent<string>} gv-input - with the value, on every edit.
+ * @fires {CustomEvent<string>} gv-change - with the value, when a change is committed.
+ */
 @customElement('gv-text-input')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- listener overloads, see TextInputEventMap
 export class TextInput extends LitElement {
 	@property({ type: String }) value = '';
 	@property({ type: String }) color: InputColor = 'brand';
@@ -22,6 +28,7 @@ export class TextInput extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			:host {
 				display: block;
@@ -147,7 +154,7 @@ export class TextInput extends LitElement {
 		e.stopPropagation();
 		this.value = (e.target as HTMLInputElement).value;
 		this.dispatchEvent(
-			new CustomEvent('input', { detail: this.value, bubbles: true, composed: true })
+			new CustomEvent('gv-input', { detail: this.value, bubbles: true, composed: true })
 		);
 	}
 
@@ -155,7 +162,7 @@ export class TextInput extends LitElement {
 		e.stopPropagation();
 		this.value = (e.target as HTMLInputElement).value;
 		this.dispatchEvent(
-			new CustomEvent('change', { detail: this.value, bubbles: true, composed: true })
+			new CustomEvent('gv-change', { detail: this.value, bubbles: true, composed: true })
 		);
 	}
 
@@ -164,6 +171,7 @@ export class TextInput extends LitElement {
 			<input
 				class=${classMap({
 					'text-input': true,
+					'gv-focusable': true,
 					[`text-input--${this.color}`]: true,
 					'text-input--error': this.error,
 					'text-input--disabled': this.disabled
@@ -184,6 +192,39 @@ export class TextInput extends LitElement {
 		`;
 	}
 }
+
+/**
+ * gv-text-input's events. `gv-change` is shared across Grove with different payloads, so the global map types
+ * it `CustomEvent<string | boolean>`; a listener on a gv-text-input reference gets the exact `detail`.
+ */
+export interface TextInputEventMap extends HTMLElementEventMap {
+	'gv-change': CustomEvent<string>;
+}
+
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging -- typed listener overloads only */
+export interface TextInput {
+	addEventListener<K extends keyof TextInputEventMap>(
+		type: K,
+		listener: (this: TextInput, event: TextInputEventMap[K]) => unknown,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	addEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | AddEventListenerOptions
+	): void;
+	removeEventListener<K extends keyof TextInputEventMap>(
+		type: K,
+		listener: (this: TextInput, event: TextInputEventMap[K]) => unknown,
+		options?: boolean | EventListenerOptions
+	): void;
+	removeEventListener(
+		type: string,
+		listener: EventListenerOrEventListenerObject,
+		options?: boolean | EventListenerOptions
+	): void;
+}
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */
 
 declare global {
 	interface HTMLElementTagNameMap {

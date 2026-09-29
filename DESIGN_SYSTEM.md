@@ -19,6 +19,7 @@
 11. [Token Reference](#token-reference)
 12. [Composition Examples](#composition-examples)
 13. [Dark Theme — The Grove at Night](#dark-theme--the-grove-at-night)
+14. [Component Behaviour](#component-behaviour)
 
 ---
 
@@ -253,7 +254,9 @@ The depth axis (Ground → Terrace → Path → Summit) maps to perceived visual
 
 ### Aurora
 
-**Aurora is not a container depth.** It is an interactive state — the hover/active variant of Summit. Never place other elements inside an Aurora surface. Only Summit-level interactive elements (buttons, chips, links) use Aurora. Apply it via `:hover` or `:active` CSS states only.
+**Aurora is a transient surface, not a resting container.** It is the hover and press state of Summit controls, and it can also paint a highlight: a section that is briefly emphasised on top of the surface it rests on. Summit-level interactive elements (buttons, chips, links) use it through `:hover` or `:active`. A highlight section may hold content, such as a `gv-title` with `surface="brand-aurora"`, but it never becomes a nesting parent for further depths.
+
+Aurora has no `emphasis` text role, no focus ring and no drop shadow. A control focused over an aurora highlight keeps the ring of the resting surface underneath it.
 
 ```css
 .button-primary {
@@ -451,7 +454,7 @@ Brand and Accent tracks should not contain Danger, Success, or Information track
 
 #### 7. Aurora is a state, not a container.
 
-Aurora is the hover state for Summit elements. It never contains other elements. Only Summit changes surface color on hover.
+Aurora is the hover state for Summit elements, or a transient highlight over a resting surface. It is never a resting container and never the parent of another depth. Only Summit changes surface color on hover. Components that take a `surface` (the `GroveSurface` type) accept the aurora values for highlight sections.
 
 #### 8. Floating elements return to Ground.
 
@@ -1088,6 +1091,8 @@ The same two-layer tokens, so hover-lift and pressed-drop behave exactly as they
 
 WCAG 3's contrast method is still undecided — its Working Draft (10 September 2026) reads "@@[contrast measure to be determined]", and APCA was taken out of the draft in 2023. Until that settles, Grove gates on what can be measured today: **WCAG 2.2 AA** plus **APCA** at the ARC Bronze floors (`apca-w3` 0.1.9).
 
+APCA is a supplementary measure, not a W3C standard. It comes from the unmodified `apca-w3` package by Andrew Somers (Myndex), used under its W3 License for Compliant Code Only. Its dependency `colorparsley` is AGPL-3.0, used only by the tests and never shipped in the package.
+
 | Pair                                                                                     | Floor           |
 | ---------------------------------------------------------------------------------------- | --------------- |
 | Body text — base on Ground or a Terrace, including Terrace text drawn straight on Ground | Lc 75 and 4.5:1 |
@@ -1096,6 +1101,13 @@ WCAG 3's contrast method is still undecided — its Working Draft (10 September 
 | Text-input underline against its fill and against Ground                                 | 3:1 (SC 1.4.11) |
 
 `src/lib/tokens/contrast.test.ts` checks every pair in both themes on each `pnpm test`, reading the built `tokens.css`, and fails when that file is out of date with the JSON sources.
+
+Rendered components are checked too. `pnpm test` runs every Storybook story through axe-core (WCAG 2.0 to 2.2 A and AA rules) in headless Chromium, once each in light, dark and OS dark. The gate is report-only while the known checkbox-name violations are open (#50) and switches to failing once they are fixed. Two more local checks keep it honest:
+
+- `pnpm test:a11y-canary` passes only when a story with two planted contrast failures, one inside a shadow root, fails in all three themes.
+- `pnpm test:storybook-static` builds the static Storybook and fails if any story ships an undefined or un-upgraded `gv-*` element.
+
+A green run covers only what axe can detect. It is not a conformance claim.
 
 - **Large display type.** APCA suggests Lc 90 as a maximum for very large, bold text and large areas of colour — one more reason Ground text at night is Chalk, not Parchment.
 - **Links in running text** are not distinct enough from body text to rely on colour alone (WCAG 1.4.1; technique G183 needs 3:1 against the surrounding text). Underline them.
@@ -1117,6 +1129,68 @@ The night keeps Grove's woodland story, told through the druid's grove of D&D lo
 | **Lilac and Sky links** (`accent/100`, `information/100`) | Faerie light: violet for the path not yet walked, blue-white for the path already taken.     |
 | **Aurora hover** (`{track}/500`)                          | Grove Grass waking under your hand — at night, a touched surface brightens.                  |
 | **Selection**                                             | A violet haze over the chosen words.                                                         |
+
+---
+
+## Component Behaviour
+
+Every `gv-*` component adopts `componentReset` first in its shadow root, and so does any consumer component that imports the public export. It carries two host-level guarantees.
+
+### Hidden
+
+`hidden` hides any Grove element, as it does on a `<div>`, and removing it brings the element back unchanged. The rule is `!important`, so it also wins against a page rule that sets `display` on the host (`gv-title { display: grid }`). That is stronger than on native elements, on purpose: `hidden` is always dependable. `hidden="until-found"` keeps the browser's own behaviour.
+
+### Reduced Motion
+
+With `prefers-reduced-motion: reduce`, every transition and animation inside a Grove shadow root ends instantly, with the same end colours, shadows and visibility. Durations become `0.01ms` rather than `0s`, so `transitionend` still fires, and delays drop to `0s`. Timers aren't motion: `gv-color-swatch`'s three-second "Copied!" hold keeps its length. The rule never reaches a page's own light DOM.
+
+A component that needs a gentler alternative instead of no transition at all declares its own `!important` rule on a class selector inside `@media (prefers-reduced-motion: reduce)`. It is more specific than the reset's `*`, so it wins.
+
+### Focus
+
+Every focusable Grove control draws the focus ring of the **surface it sits on**, on `:focus-visible`, around the element inside its shadow root that takes focus. The ring is a `--ring-on-*` token: a 4px gap in the surface colour, then a 4px ring, at 3:1 or more against the surface in both themes.
+
+| Surface the control sits on | Ring                                       |
+| --------------------------- | ------------------------------------------ |
+| Ground                      | `--ring-on-ground`                         |
+| `{track}` Terrace           | `--ring-on-{track}-terrace`                |
+| Brand or Gray Path          | `--ring-on-{brand\|gray}-path`             |
+| `{track}` Summit            | `--ring-on-{track}-summit`                 |
+| Aurora                      | the ring of the resting surface underneath |
+
+- **Declaring a surface.** Paint a section with a `.gv-surface-{surface}` class from `grove.css` (background, text and ring together), or set `--gv-focus-ring: var(--ring-on-…)` next to your own background. Surface names follow the `GroveSurface` type in token spelling. The property inherits into every Grove control inside, nested components included, and the innermost declaration wins.
+- **Defaults.** With no declaration, controls use the Ground ring; `gv-menu-item` uses the Brand Terrace ring its parent paints. A `[data-theme]` island starts again from its own Ground ring.
+- **Aurora.** Aurora is a transient highlight, so its classes don't declare a ring. Over an aurora section a control keeps the resting surface's ring. The terrace and path rings fall below 3:1 against their track's aurora fill (recorded, not gated, in `contrast.test.ts`).
+- **Drop shadows.** Controls with a drop shadow keep it: the ring is drawn over it.
+- **Forced colours.** The ring is a box-shadow, which forced colours remove; a transparent outline in the same rule then shows in the system colour.
+- **Never suppress it.** No component sets `outline: none`, and a test enforces it. Custom components can adopt the `focusRing` fragment and the `gv-focusable` class.
+
+### Content and Slots
+
+Text-bearing components take their text as content, projected through a `<slot>`, so it is in the server HTML and names the control it sits in. The string property is the fallback.
+
+| Component           | Slot                           | Fallback property    |
+| ------------------- | ------------------------------ | -------------------- |
+| `gv-button`         | default                        | `text`               |
+| `gv-title`          | default, inside the `h{level}` | `heading`            |
+| `gv-menu-item`      | default, inside the link       | `label`              |
+| `gv-feedback-strip` | `heading`, `message`           | `heading`, `message` |
+| `gv-tooltip`        | `heading`, `message`           | `heading`, `message` |
+
+```html
+<gv-button>Save changes</gv-button>
+<gv-title level="1">Getting started</gv-title>
+<gv-feedback-strip type="success">
+	<span slot="heading">Changes saved</span>
+	<span slot="message">Your <strong>profile</strong> was updated.</span>
+</gv-feedback-strip>
+```
+
+- **Precedence.** Slotted content wins. With nothing slotted, the property renders, and removing the content brings the property back. Whitespace and comments between the tags don't count as content, so `<gv-button text="Save">` with a line break before its closing tag still shows "Save".
+- **Phrasing content only.** Slots take text and inline elements (`strong`, `em`, `code`, `a` where the component isn't already a link). Never a form control: a projected `<input>` or `<button>` would take part in a surrounding form alongside the component. Outside production builds, the component logs one console warning when a slot holds one.
+- **Structure stays with the component.** `gv-title`'s heading element still comes from `level`, and `gv-menu-item`'s link from `href`.
+- **Declared.** Each component lists its slots in its metadata (`composition.slots`) and in `custom-elements.json`. A test fails if a component renders a slot it doesn't declare.
+- **Before upgrade.** Slotted content is plain light DOM, so it renders before the element is defined and with JavaScript off. Rendering the component's own markup on the server (Declarative Shadow DOM) is a separate, later spec.
 
 ---
 

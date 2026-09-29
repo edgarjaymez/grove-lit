@@ -1,4 +1,10 @@
 export { componentReset } from './styles/component-reset.js';
+export { visuallyHidden } from './styles/visually-hidden.js';
+export { focusRing } from './styles/focus-ring.js';
+export { GROVE_SURFACES, isAurora } from './surfaces.js';
+export type { GroveSurface, GroveTrack } from './surfaces.js';
+export type { GroveEventMap } from './events.js';
+export type { ComponentMetadata, PhosphorGlyphs } from './components/metadata.js';
 export { BackButton } from './components/BackButton/BackButton.js';
 export { BackButtonMetadata } from './components/BackButton/BackButton.metadata.js';
 export { Button } from './components/Button/Button.js';
@@ -13,8 +19,13 @@ export type {
 } from './components/ColorSwatch/ColorSwatch.js';
 export { ColorSwatchMetadata } from './components/ColorSwatch/ColorSwatch.metadata.js';
 export { Checkbox } from './components/Checkbox/Checkbox.js';
+export type { CheckboxEventMap } from './components/Checkbox/Checkbox.js';
 export { CheckboxMetadata } from './components/Checkbox/Checkbox.metadata.js';
 export { FeedbackStrip } from './components/FeedbackStrip/FeedbackStrip.js';
+export type {
+	FeedbackStripType,
+	FeedbackStripLive
+} from './components/FeedbackStrip/FeedbackStrip.js';
 export { FeedbackStripMetadata } from './components/FeedbackStrip/FeedbackStrip.metadata.js';
 export { IconButton } from './components/IconButton/IconButton.js';
 export { IconButtonMetadata } from './components/IconButton/IconButton.metadata.js';
@@ -27,12 +38,15 @@ export { MenuItemMetadata } from './components/MenuItem/MenuItem.metadata.js';
 export { Texture } from './components/Texture/Texture.js';
 export { TextureMetadata } from './components/Texture/Texture.metadata.js';
 export { TextInput } from './components/TextInput/TextInput.js';
+export type { TextInputEventMap } from './components/TextInput/TextInput.js';
 export { TextInputMetadata } from './components/TextInput/TextInput.metadata.js';
 export { Title } from './components/Title/Title.js';
+export type { TitleSurface } from './components/Title/Title.js';
 export { TitleMetadata } from './components/Title/Title.metadata.js';
 export { ToDoCategoryToggler } from './components/ToDoCategoryToggler/ToDoCategoryToggler.js';
 export { ToDoCategoryTogglerMetadata } from './components/ToDoCategoryToggler/ToDoCategoryToggler.metadata.js';
 export { ToDoListItem } from './components/ToDoListItem/ToDoListItem.js';
+export type { ToDoListItemEventMap } from './components/ToDoListItem/ToDoListItem.js';
 export { ToDoListItemMetadata } from './components/ToDoListItem/ToDoListItem.metadata.js';
 export { Tooltip } from './components/Tooltip/Tooltip.js';
 export type { TooltipType, TooltipColor } from './components/Tooltip/Tooltip.js';

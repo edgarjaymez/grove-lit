@@ -42,10 +42,10 @@ export const LogsBackEvent: Story = {
 	render: () => html`
 		<div>
 			<gv-back-button
-				@back=${(event: Event) => {
+				@gv-back=${(event: Event) => {
 					event.preventDefault();
 					const output = (event.currentTarget as HTMLElement).nextElementSibling;
-					if (output) output.textContent = 'back event fired';
+					if (output) output.textContent = 'gv-back event fired';
 				}}
 			></gv-back-button>
 			<p>&nbsp;</p>

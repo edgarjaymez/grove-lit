@@ -1,0 +1,33 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Accessibility utilities" />
+
+# Accessibility utilities
+
+`grove.css` ships light-DOM utilities that need no script, so they work before the component bundle loads. They live in `a11y.css`.
+
+## `.visually-hidden`
+
+Keeps content in the accessibility tree while drawing nothing: a 1 × 1 px clipped box, never `display: none` or `visibility: hidden`. Screen readers still read it.
+
+<button type="button">
+	<span aria-hidden="true">★</span>
+	<span className="visually-hidden">Add to favourites</span>
+</button>
+
+```html
+<button type="button">
+	<span aria-hidden="true">★</span>
+	<span class="visually-hidden">Add to favourites</span>
+</button>
+```
+
+- **Never on a focusable element.** It would take focus while invisible, which fails WCAG 2.2 SC 2.4.7 Focus Visible.
+- **It doesn't hide from assistive technology.** For content that must be hidden from everyone, such as a spam honeypot, also set `aria-hidden="true"` on the wrapper and `tabindex="-1"` on the field.
+- **Inside your own Lit components**, add the `visuallyHidden` export to `static styles`; it carries the same declarations.
+
+```ts
+import { componentReset, visuallyHidden } from '@edgarjaymez/grove';
+
+static styles = [componentReset, visuallyHidden, css`…`];
+```

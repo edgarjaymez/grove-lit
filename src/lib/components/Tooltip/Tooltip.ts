@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { SlotContent } from '../../utils/slot-content.js';
 
 export type TooltipType = 'simple' | 'complete';
 export type TooltipColor = 'accent' | 'gray';
@@ -21,9 +22,14 @@ export type TooltipColor = 'accent' | 'gray';
  *
  * The consuming app must import the Phosphor icon it names, e.g.
  * `import '@phosphor-icons/webcomponents/PhCopy'` for `icon="copy"`.
+ *
+ * @slot heading - The heading of the complete type. Falls back to `heading` when empty.
+ * @slot message - The message (the body of the complete type). Falls back to `message` when empty.
  */
 @customElement('gv-tooltip')
 export class Tooltip extends LitElement {
+	private readonly _slots = new SlotContent(this, ['heading', 'message']);
+
 	@property({ type: String, reflect: true }) type: TooltipType = 'simple';
 	@property({ type: String, reflect: true }) color: TooltipColor = 'accent';
 	@property({ type: String }) icon: string | undefined;
@@ -161,15 +167,17 @@ export class Tooltip extends LitElement {
 			[`tooltip--${color}`]: true,
 			'tooltip--pressed': this.isPressed
 		});
+		const heading = this._slots.has('heading') ? nothing : this.heading;
+		const message = this._slots.has('message') ? nothing : this.message;
 
 		if (type === 'complete') {
 			return html`
 				<div class=${classes}>
 					<div class="header">
-						<p class="heading">${this.heading}</p>
+						<p class="heading"><slot name="heading"></slot>${heading}</p>
 						${this.renderIcon()}
 					</div>
-					<p class="body">${this.message}</p>
+					<p class="body"><slot name="message"></slot>${message}</p>
 				</div>
 			`;
 		}
@@ -177,7 +185,7 @@ export class Tooltip extends LitElement {
 		return html`
 			<div class=${classes}>
 				${this.renderIcon()}
-				<p class="message">${this.message}</p>
+				<p class="message"><slot name="message"></slot>${message}</p>
 			</div>
 		`;
 	}

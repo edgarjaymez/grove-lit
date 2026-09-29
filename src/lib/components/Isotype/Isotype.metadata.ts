@@ -1,3 +1,5 @@
+import type { ComponentMetadata } from '../metadata.js';
+
 export const IsotypeMetadata = {
 	component: {
 		name: 'Isotype',
@@ -9,6 +11,11 @@ export const IsotypeMetadata = {
 		version: '1.1.0',
 		created: '2026/02/15',
 		modified: '2026/09/27'
+	},
+	phosphor: {
+		prop: null,
+		default: null,
+		fixed: []
 	},
 
 	usage: {
@@ -120,4 +127,4 @@ export const IsotypeMetadata = {
 			skip: 'Do not recreate with a raw SVG or img tag — always use this component to ensure correct token-driven fill colors'
 		}
 	}
-};
+} satisfies ComponentMetadata;

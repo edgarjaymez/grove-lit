@@ -3,9 +3,13 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
 
 type Color = 'brand' | 'accent' | 'information' | 'gray';
 
+/**
+ * @fires {CustomEvent<boolean>} gv-toggle - with the new `isSelected`.
+ */
 @customElement('gv-todo-category-toggler')
 export class ToDoCategoryToggler extends LitElement {
 	@property({ type: String }) category = 'Category';
@@ -17,8 +21,10 @@ export class ToDoCategoryToggler extends LitElement {
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			.btn {
+				box-shadow: var(--_drop, 0 0 #0000);
 				display: flex;
 				flex-direction: column;
 				gap: var(--soft-grid-4);
@@ -74,7 +80,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--brand {
 				background: var(--semantic-color-surface-brand-terrace);
 				color: var(--semantic-color-text-on-brand-terrace-subtle);
-				box-shadow: var(--drop-shadow-under-brand-terrace);
+				--_drop: var(--drop-shadow-under-brand-terrace);
 			}
 			.btn--brand .btn__count {
 				color: var(--semantic-color-text-on-brand-terrace-base);
@@ -84,7 +90,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--brand.btn--selected {
 				background: var(--semantic-color-surface-brand-summit);
 				color: var(--semantic-color-text-on-brand-summit-subtle);
-				box-shadow: var(--drop-shadow-under-brand-summit);
+				--_drop: var(--drop-shadow-under-brand-summit);
 			}
 			.btn--brand.btn--selected .btn__count {
 				color: var(--semantic-color-text-on-brand-summit-base);
@@ -94,7 +100,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--accent {
 				background: var(--semantic-color-surface-accent-terrace);
 				color: var(--semantic-color-text-on-accent-terrace-subtle);
-				box-shadow: var(--drop-shadow-under-accent-terrace);
+				--_drop: var(--drop-shadow-under-accent-terrace);
 			}
 			.btn--accent .btn__count {
 				color: var(--semantic-color-text-on-accent-terrace-base);
@@ -104,7 +110,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--accent.btn--selected {
 				background: var(--semantic-color-surface-accent-summit);
 				color: var(--semantic-color-text-on-accent-summit-subtle);
-				box-shadow: var(--drop-shadow-under-accent-summit);
+				--_drop: var(--drop-shadow-under-accent-summit);
 			}
 			.btn--accent.btn--selected .btn__count {
 				color: var(--semantic-color-text-on-accent-summit-base);
@@ -114,7 +120,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--information {
 				background: var(--semantic-color-surface-information-terrace);
 				color: var(--semantic-color-text-on-information-terrace-subtle);
-				box-shadow: var(--drop-shadow-under-information-terrace);
+				--_drop: var(--drop-shadow-under-information-terrace);
 			}
 			.btn--information .btn__count {
 				color: var(--semantic-color-text-on-information-terrace-base);
@@ -124,7 +130,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--information.btn--selected {
 				background: var(--semantic-color-surface-information-summit);
 				color: var(--semantic-color-text-on-information-summit-subtle);
-				box-shadow: var(--drop-shadow-under-information-summit);
+				--_drop: var(--drop-shadow-under-information-summit);
 			}
 			.btn--information.btn--selected .btn__count {
 				color: var(--semantic-color-text-on-information-summit-base);
@@ -134,7 +140,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--gray {
 				background: var(--semantic-color-surface-gray-terrace);
 				color: var(--semantic-color-text-on-gray-terrace-subtle);
-				box-shadow: var(--drop-shadow-under-gray-terrace);
+				--_drop: var(--drop-shadow-under-gray-terrace);
 			}
 			.btn--gray .btn__count {
 				color: var(--semantic-color-text-on-gray-terrace-base);
@@ -144,7 +150,7 @@ export class ToDoCategoryToggler extends LitElement {
 			.btn--gray.btn--selected {
 				background: var(--semantic-color-surface-gray-summit);
 				color: var(--semantic-color-text-on-gray-summit-subtle);
-				box-shadow: var(--drop-shadow-under-gray-summit);
+				--_drop: var(--drop-shadow-under-gray-summit);
 			}
 			.btn--gray.btn--selected .btn__count {
 				color: var(--semantic-color-text-on-gray-summit-base);
@@ -155,7 +161,7 @@ export class ToDoCategoryToggler extends LitElement {
 	private _toggle() {
 		this.isSelected = !this.isSelected;
 		this.dispatchEvent(
-			new CustomEvent('toggle', { detail: this.isSelected, bubbles: true, composed: true })
+			new CustomEvent('gv-toggle', { detail: this.isSelected, bubbles: true, composed: true })
 		);
 	}
 
@@ -165,6 +171,7 @@ export class ToDoCategoryToggler extends LitElement {
 				type="button"
 				class=${classMap({
 					btn: true,
+					'gv-focusable': true,
 					[`btn--${this.color}`]: true,
 					'btn--selected': this.isSelected
 				})}

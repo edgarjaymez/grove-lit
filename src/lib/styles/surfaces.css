@@ -1,0 +1,126 @@
+/*
+   Grove surfaces as classes: one per GroveSurface (src/lib/surfaces.ts). Each paints the surface,
+   its base text colour, and declares the focus ring every Grove control inside it draws.
+   Aurora is a transient highlight over a resting surface, so its classes leave the ring alone:
+   a control focused over an aurora keeps the resting surface's ring.
+*/
+
+.gv-surface-ground {
+	background-color: var(--semantic-color-surface-ground);
+	color: var(--semantic-color-text-on-ground-base);
+	--gv-focus-ring: var(--ring-on-ground);
+}
+
+.gv-surface-accent-terrace {
+	background-color: var(--semantic-color-surface-accent-terrace);
+	color: var(--semantic-color-text-on-accent-terrace-base);
+	--gv-focus-ring: var(--ring-on-accent-terrace);
+}
+
+.gv-surface-brand-terrace {
+	background-color: var(--semantic-color-surface-brand-terrace);
+	color: var(--semantic-color-text-on-brand-terrace-base);
+	--gv-focus-ring: var(--ring-on-brand-terrace);
+}
+
+.gv-surface-danger-terrace {
+	background-color: var(--semantic-color-surface-danger-terrace);
+	color: var(--semantic-color-text-on-danger-terrace-base);
+	--gv-focus-ring: var(--ring-on-danger-terrace);
+}
+
+.gv-surface-gray-terrace {
+	background-color: var(--semantic-color-surface-gray-terrace);
+	color: var(--semantic-color-text-on-gray-terrace-base);
+	--gv-focus-ring: var(--ring-on-gray-terrace);
+}
+
+.gv-surface-information-terrace {
+	background-color: var(--semantic-color-surface-information-terrace);
+	color: var(--semantic-color-text-on-information-terrace-base);
+	--gv-focus-ring: var(--ring-on-information-terrace);
+}
+
+.gv-surface-success-terrace {
+	background-color: var(--semantic-color-surface-success-terrace);
+	color: var(--semantic-color-text-on-success-terrace-base);
+	--gv-focus-ring: var(--ring-on-success-terrace);
+}
+
+.gv-surface-brand-path {
+	background-color: var(--semantic-color-surface-brand-path);
+	color: var(--semantic-color-text-on-brand-path-base);
+	--gv-focus-ring: var(--ring-on-brand-path);
+}
+
+.gv-surface-gray-path {
+	background-color: var(--semantic-color-surface-gray-path);
+	color: var(--semantic-color-text-on-gray-path-base);
+	--gv-focus-ring: var(--ring-on-gray-path);
+}
+
+.gv-surface-accent-summit {
+	background-color: var(--semantic-color-surface-accent-summit);
+	color: var(--semantic-color-text-on-accent-summit-base);
+	--gv-focus-ring: var(--ring-on-accent-summit);
+}
+
+.gv-surface-brand-summit {
+	background-color: var(--semantic-color-surface-brand-summit);
+	color: var(--semantic-color-text-on-brand-summit-base);
+	--gv-focus-ring: var(--ring-on-brand-summit);
+}
+
+.gv-surface-danger-summit {
+	background-color: var(--semantic-color-surface-danger-summit);
+	color: var(--semantic-color-text-on-danger-summit-base);
+	--gv-focus-ring: var(--ring-on-danger-summit);
+}
+
+.gv-surface-gray-summit {
+	background-color: var(--semantic-color-surface-gray-summit);
+	color: var(--semantic-color-text-on-gray-summit-base);
+	--gv-focus-ring: var(--ring-on-gray-summit);
+}
+
+.gv-surface-information-summit {
+	background-color: var(--semantic-color-surface-information-summit);
+	color: var(--semantic-color-text-on-information-summit-base);
+	--gv-focus-ring: var(--ring-on-information-summit);
+}
+
+.gv-surface-success-summit {
+	background-color: var(--semantic-color-surface-success-summit);
+	color: var(--semantic-color-text-on-success-summit-base);
+	--gv-focus-ring: var(--ring-on-success-summit);
+}
+
+.gv-surface-accent-aurora {
+	background-color: var(--semantic-color-surface-accent-aurora);
+	color: var(--semantic-color-text-on-accent-aurora-base);
+}
+
+.gv-surface-brand-aurora {
+	background-color: var(--semantic-color-surface-brand-aurora);
+	color: var(--semantic-color-text-on-brand-aurora-base);
+}
+
+.gv-surface-danger-aurora {
+	background-color: var(--semantic-color-surface-danger-aurora);
+	color: var(--semantic-color-text-on-danger-aurora-base);
+}
+
+.gv-surface-gray-aurora {
+	background-color: var(--semantic-color-surface-gray-aurora);
+	color: var(--semantic-color-text-on-gray-aurora-base);
+}
+
+.gv-surface-information-aurora {
+	background-color: var(--semantic-color-surface-information-aurora);
+	color: var(--semantic-color-text-on-information-aurora-base);
+}
+
+.gv-surface-success-aurora {
+	background-color: var(--semantic-color-surface-success-aurora);
+	color: var(--semantic-color-text-on-success-aurora-base);
+}

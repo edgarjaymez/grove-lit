@@ -4,6 +4,9 @@ import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
+import { focusRing } from '../../styles/focus-ring.js';
+import { SlotContent } from '../../utils/slot-content.js';
+import { linkAttribute } from '../../utils/link-attributes.js';
 
 type MenuItemSize = 'md' | 'sm';
 
@@ -17,17 +20,28 @@ type MenuItemSize = 'md' | 'sm';
  *
  * The consuming app must register the Phosphor icon it uses, e.g.
  * `import '@phosphor-icons/webcomponents/PhHouse'` for `icon="house"`.
+ *
+ * `hreflang` names the destination's language and is forwarded to the link only when `href` is set.
+ * When the label itself is in another language, put `lang` on the element
+ * (`<gv-menu-item lang="es" hreflang="es" …>`): the shadow link inherits the host's language, so
+ * screen readers switch voice (WCAG 3.1.2). `lang` is deliberately not a property.
+ *
+ * @slot - The link label. Falls back to `label` when empty.
  */
 @customElement('gv-menu-item')
 export class MenuItem extends LitElement {
+	private readonly _slots = new SlotContent(this, ['']);
+
 	@property({ type: String }) label = '';
 	@property({ type: String }) href?: string;
+	@property({ type: String }) hreflang?: string;
 	@property({ type: String }) icon = 'house';
 	@property({ type: String }) size: MenuItemSize = 'md';
 	@property({ type: Boolean, attribute: 'is-active', reflect: true }) isActive = false;
 
 	static styles = [
 		componentReset,
+		focusRing,
 		css`
 			:host {
 				display: block;
@@ -35,10 +49,13 @@ export class MenuItem extends LitElement {
 
 			/* Transparent row — the parent paints the brand terrace surface. */
 			.item {
+				--_ring-default: var(--ring-on-brand-terrace);
 				display: flex;
 				align-items: center;
 				width: 100%;
 				gap: var(--soft-grid-8);
+				/* WCAG 2.2 SC 2.5.8: every row is at least 24 CSS px tall, at either size. */
+				min-block-size: var(--soft-grid-24);
 				text-decoration: none;
 				letter-spacing: var(--letter-spacing-base);
 				color: var(--semantic-color-text-on-brand-terrace-subtle);
@@ -93,16 +110,18 @@ export class MenuItem extends LitElement {
 			<a
 				class=${classMap({
 					item: true,
+					'gv-focusable': true,
 					[`item--${this.size}`]: true,
 					'item--active': this.isActive
 				})}
 				href=${ifDefined(this.href)}
+				hreflang=${ifDefined(linkAttribute(this.href, this.hreflang))}
 				aria-current=${this.isActive ? 'page' : nothing}
 			>
 				${this.icon
 					? html`<gv-icon name=${this.icon} fill-in-hover aria-hidden="true"></gv-icon>`
 					: nothing}
-				<span class="label">${this.label}</span>
+				<span class="label"><slot></slot>${this._slots.has() ? nothing : this.label}</span>
 			</a>
 		`;
 	}
