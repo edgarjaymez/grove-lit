@@ -120,7 +120,7 @@ export default defineConfig({
 				test: {
 					name: 'unit',
 					environment: 'node',
-					include: ['src/**/*.{test,spec}.{js,ts}'],
+					include: ['src/**/*.{test,spec}.{js,ts}', 'scripts/**/*.test.mjs'],
 					exclude: ['src/**/*.browser.test.ts']
 				}
 			},
