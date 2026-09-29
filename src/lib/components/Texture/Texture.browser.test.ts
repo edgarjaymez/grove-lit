@@ -146,19 +146,23 @@ describe('gv-texture tint (#20)', () => {
 		}
 	);
 
-	it('resolves var() against the page, so token variables need no getComputedStyle', async () => {
-		host.style.setProperty('--scene-tint', 'rgb(1, 2, 3)');
-		const [el] = await mount(surface(html`<gv-texture tint="var(--scene-tint)"></gv-texture>`));
-		expect(grain(el)).toBe('rgb(1, 2, 3)');
+	it('resolves Grove tokens through var() against the page', async () => {
+		const tint = 'color-mix(in srgb, var(--color-accent-700) 12%, transparent)';
+		const probe = host.appendChild(document.createElement('span'));
+		probe.style.color = tint;
+		const expected = getComputedStyle(probe).color;
+		probe.remove();
+		const [el] = await mount(surface(html`<gv-texture tint=${tint}></gv-texture>`));
+		expect(expected).not.toBe('rgb(0, 0, 0)');
+		expect(grain(el)).toBe(expected);
 	});
 
-	it('takes --gv-texture-tint from an ancestor, and a tint attribute wins over it', async () => {
+	it('ignores an inherited --gv-texture-tint: the tint attribute is the only override', async () => {
+		await applyTheme(themes[0]);
 		host.style.setProperty('--gv-texture-tint', 'rgb(0, 0, 255)');
-		const [inherited, own] = await mount(
-			surface(html`<gv-texture></gv-texture><gv-texture tint="rgb(255, 0, 0)"></gv-texture>`)
-		);
-		expect(grain(inherited)).toBe('rgb(0, 0, 255)');
-		expect(grain(own)).toBe('rgb(255, 0, 0)');
+		const [el] = await mount(surface(html`<gv-texture></gv-texture>`));
+		expect(grain(el)).toBe(LIGHT_DEFAULT);
+		host.style.removeProperty('--gv-texture-tint');
 	});
 
 	it('updates in place: the host and its svg survive a tint or frequency change', async () => {

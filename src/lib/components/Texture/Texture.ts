@@ -5,9 +5,6 @@ import { componentReset } from '../../styles/component-reset.js';
 
 const DEFAULT_FREQUENCY = 0.25;
 
-/**
- * @cssprop --gv-texture-tint - Tints every gv-texture below the element that sets it; a `tint` attribute wins.
- */
 @customElement('gv-texture')
 export class Texture extends LitElement {
 	@property({ type: Number }) opacity = 1;
@@ -28,10 +25,9 @@ export class Texture extends LitElement {
 				z-index: 0;
 			}
 
-			/* The grain is painted with currentColor, resolved in three steps: the per-instance tint on
-			   feFlood, then --gv-texture-tint on the filter, then the theme default here. A colour that
-			   is invalid at any step, even at computed-value time (var(--missing)), inherits the next
-			   one instead of turning black, because color is an inherited property. */
+			/* The grain is painted with currentColor: the tint on feFlood, else the theme default here.
+			   A tint that is invalid, even at computed-value time (var(--missing)), inherits the default
+			   instead of turning black, because color is an inherited property. */
 			svg {
 				display: block;
 				width: 100%;
@@ -46,10 +42,6 @@ export class Texture extends LitElement {
 						color-mix(in srgb, var(--color-brand-50, oklch(93% 0.035 145)) 10%, transparent)
 					);
 				}
-			}
-
-			filter {
-				color: var(--gv-texture-tint);
 			}
 		`
 	];

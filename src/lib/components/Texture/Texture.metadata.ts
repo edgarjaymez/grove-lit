@@ -8,9 +8,9 @@ export const TextureMetadata = {
 			'Absolutely positioned SVG noise overlay that adds organic grain to surfaces. The grain colour follows the theme and can be tinted; its coarseness is tunable.',
 		type: 'display',
 		path: 'src/lib/components/Texture/Texture.ts',
-		version: '1.2.0',
+		version: '1.2.1',
 		created: '2026/02/18',
-		modified: '2026/09/28'
+		modified: '2026/09/29'
 	},
 	phosphor: {
 		prop: null,
@@ -125,9 +125,7 @@ export const TextureMetadata = {
 				default:
 					'Unset: green at 10 % by day, brand-50 at 10 % at night (light-dark(); browsers without it keep the day value).',
 				custom:
-					'Painted as given, so include the alpha. An invalid colour, or a var() that does not resolve, falls back to the next source instead of turning black.',
-				'--gv-texture-tint':
-					'CSS custom property that tints every gv-texture below the element that sets it, so a theme or scene can retint without markup. A tint attribute wins over it.'
+					'Painted as given, so include the alpha. Pass Grove tokens, e.g. color-mix(in srgb, var(--color-accent-700) 12%, transparent), or a light-dark() pair of them for a tint that follows the theme. An invalid colour, or a var() that does not resolve, falls back to the theme default instead of turning black.'
 			}
 		},
 		frequency: {
