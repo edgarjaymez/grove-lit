@@ -32,9 +32,13 @@ export class SlotContent implements ReactiveController {
 		return this._state.get(name) ?? false;
 	}
 
+	/**
+	 * Also runs on reconnect, where children changed while detached must re-render. Before the first
+	 * update one is already pending, so the request adds nothing.
+	 */
 	hostConnected() {
-		this._refresh(false);
-		this._observer = new MutationObserver(() => this._refresh(true));
+		this._refresh();
+		this._observer = new MutationObserver(() => this._refresh());
 		this._observer.observe(this._host, {
 			childList: true,
 			subtree: true,
@@ -55,7 +59,7 @@ export class SlotContent implements ReactiveController {
 		});
 	}
 
-	private _refresh(update: boolean) {
+	private _refresh() {
 		let changed = false;
 		for (const name of this._names) {
 			const nodes = this._assigned(name);
@@ -64,7 +68,7 @@ export class SlotContent implements ReactiveController {
 			this._state.set(name, has);
 			this._warnOnFormControls(name, nodes);
 		}
-		if (changed && update) this._host.requestUpdate();
+		if (changed) this._host.requestUpdate();
 	}
 
 	/** Slots take text and phrasing content: a projected control would join the form twice. */

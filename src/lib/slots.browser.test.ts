@@ -100,6 +100,43 @@ describe('precedence: a slotted child wins, removing it falls back to the prop',
 			expect(shown(el)).not.toContain('From prop');
 		});
 
+	it('re-renders when a child is added while detached', async () => {
+		const el = await mount<LitElement>(html`<gv-button text="Fallback"></gv-button>`, 'gv-button');
+		el.remove();
+		el.append('Slotted');
+		host.append(el);
+		await el.updateComplete;
+		expect(shown(el)).toBe('Slotted');
+	});
+
+	it('falls back to the prop when a child is removed while detached', async () => {
+		const el = await mount<LitElement>(
+			html`<gv-button text="Fallback">Slotted</gv-button>`,
+			'gv-button'
+		);
+		el.remove();
+		el.replaceChildren();
+		host.append(el);
+		await el.updateComplete;
+		expect(shown(el)).toBe('Fallback');
+	});
+
+	it('shows a feedback-strip message slotted while detached', async () => {
+		const el = await mount<LitElement>(
+			html`<gv-feedback-strip></gv-feedback-strip>`,
+			'gv-feedback-strip'
+		);
+		el.remove();
+		const message = document.createElement('span');
+		message.slot = 'message';
+		message.textContent = 'Details';
+		el.append(message);
+		host.append(el);
+		await el.updateComplete;
+		expect(el.shadowRoot!.querySelector('.body')).not.toBeNull();
+		expect(shown(el)).toContain('Details');
+	});
+
 	it('ignores whitespace between the tags, so the prop still renders', async () => {
 		const el = await mount<LitElement>(html`<gv-button text="Save"> </gv-button>`, 'gv-button');
 		expect(shown(el)).toBe('Save');
