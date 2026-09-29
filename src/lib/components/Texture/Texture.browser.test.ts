@@ -242,6 +242,34 @@ describe('gv-texture in the dark theme (#20 FR-DT1 to FR-DT4)', () => {
 		}
 	});
 
+	it('drops the previous tint when an invalid one replaces it at runtime', async () => {
+		await applyTheme(themes[0]);
+		const [plain, el] = await mount(
+			surface(html`<gv-texture></gv-texture><gv-texture tint="rgb(255, 0, 0)"></gv-texture>`)
+		);
+		expect(grain(el)).toBe('rgb(255, 0, 0)');
+		el.tint = 'not-a-colour';
+		await el.updateComplete;
+		expect(grain(el)).toBe(grain(plain));
+		el.tint = 'light-dark(rgb(1, 1, 1), rgb(2, 2, 2))';
+		await el.updateComplete;
+		expect(grain(el)).toBe('rgb(1, 1, 1)');
+	});
+
+	it('keeps a var() tint on update, even one that resolves only at computed-value time', async () => {
+		await applyTheme(themes[0]);
+		host.style.setProperty('--grain', 'rgb(3, 3, 3)');
+		const [plain, el] = await mount(
+			surface(html`<gv-texture></gv-texture><gv-texture tint="rgb(255, 0, 0)"></gv-texture>`)
+		);
+		el.tint = 'var(--grain)';
+		await el.updateComplete;
+		expect(grain(el)).toBe('rgb(3, 3, 3)');
+		el.tint = 'var(--missing)';
+		await el.updateComplete;
+		expect(grain(el)).toBe(grain(plain));
+	});
+
 	it('falls back to the night default for an invalid tint in the dark theme', async () => {
 		await applyTheme(themes[1]);
 		const [plain, invalid] = await mount(

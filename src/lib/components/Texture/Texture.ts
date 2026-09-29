@@ -46,6 +46,16 @@ export class Texture extends LitElement {
 		`
 	];
 
+	/**
+	 * The tint if the browser parses it as a colour. styleMap edits the live declaration, and an
+	 * invalid assignment is ignored there, so passing one on would keep the previous tint.
+	 */
+	private get _validTint() {
+		const tint = this.tint;
+		if (!tint) return undefined;
+		return typeof CSS === 'undefined' || CSS.supports('color', tint) ? tint : undefined;
+	}
+
 	render() {
 		const frequency =
 			typeof this.frequency === 'number' && this.frequency > 0 ? this.frequency : DEFAULT_FREQUENCY;
@@ -89,7 +99,7 @@ export class Texture extends LitElement {
 						<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
 						<feFlood
 							flood-color="currentColor"
-							style=${styleMap({ color: this.tint || undefined })}
+							style=${styleMap({ color: this._validTint })}
 							result="color1Flood"
 						/>
 						<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
