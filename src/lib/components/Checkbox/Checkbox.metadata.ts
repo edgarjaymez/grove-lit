@@ -5,10 +5,10 @@ export const CheckboxMetadata = {
 		name: 'Checkbox',
 		category: 'atoms',
 		description:
-			'A toggle input that represents a binary checked/unchecked state. Renders as a square button with a brand-green fill and white checkmark when checked. Supports default (24px) and xl (28px) sizes.',
+			'A toggle input that represents a binary checked/unchecked state. Renders as a square button with a brand-green fill and white checkmark when checked, followed by the slotted label text, if any. Supports default (24px) and xl (28px) sizes.',
 		type: 'input',
 		path: 'src/lib/components/Checkbox/Checkbox.ts',
-		version: '1.2.0',
+		version: '1.3.0',
 		created: '2026/05/20',
 		modified: '2026/09/28'
 	},
@@ -31,6 +31,12 @@ export const CheckboxMetadata = {
 		requiredProps: [],
 
 		commonPatterns: [
+			{
+				name: 'labeled-by-slot',
+				description:
+					'Slot the label text: it shows next to the box, names the checkbox, and a click on it toggles',
+				composition: `<gv-checkbox>Subscribe to the newsletter</gv-checkbox>`
+			},
 			{
 				name: 'labeled-form-field',
 				description: 'Pair with a label element for accessible form inputs',
@@ -70,7 +76,8 @@ export const CheckboxMetadata = {
 			{
 				scenario: 'Using Checkbox without an accessible label',
 				reason: 'Screen readers will announce only the role with no meaningful name',
-				alternative: 'Always pair with a visible <label> or aria-label on the wrapping element'
+				alternative:
+					'Slot the label text (<gv-checkbox>Subscribe</gv-checkbox>), or pair with a visible <label> or aria-label on the wrapping element'
 			},
 			{
 				scenario: 'Controlling hover/focus state via the state prop',
@@ -83,7 +90,14 @@ export const CheckboxMetadata = {
 	},
 
 	composition: {
-		slots: null,
+		slots: [
+			{
+				name: '',
+				description:
+					'The label text, shown next to the box inside the focusable control: it names the checkbox and a click on it toggles. Text and phrasing content only, never a form control.',
+				fallback: null
+			}
+		],
 		nestedComponents: [],
 		commonPartners: ['TextInput', 'Button', 'Form'],
 		parentConstraints: null
@@ -123,7 +137,7 @@ export const CheckboxMetadata = {
 			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
-			'Always wrap in a <label> or use aria-label/aria-labelledby for an accessible name',
+			'Slotted label text names the checkbox (it sits inside the focusable control). Without it, wrap in a <label> or use aria-label/aria-labelledby for an accessible name',
 			'disabled prop sets the HTML disabled attribute — browser blocks pointer events natively',
 			'State changes dispatch a gv-change CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("gv-change", (e) => use(e.detail))',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'

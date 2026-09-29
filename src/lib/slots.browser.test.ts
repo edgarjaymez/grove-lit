@@ -183,6 +183,44 @@ describe('slotted text reaches the accessibility tree', () => {
 	});
 });
 
+describe('gv-checkbox label slot (#34)', () => {
+	const box = (el: Element) => el.shadowRoot!.querySelector('.box')!.getBoundingClientRect();
+
+	it('names the checkbox by the slotted text, which it shows next to the box', async () => {
+		const el = await mount<LitElement>(html`<gv-checkbox>Subscribe</gv-checkbox>`, 'gv-checkbox');
+		expect(shown(el)).toBe('Subscribe');
+		const label = el.shadowRoot!.querySelector('.label')!.getBoundingClientRect();
+		expect(label.left).toBeGreaterThan(box(el).right);
+		expect(await commands.ariaSnapshot('#slots-host')).toContain('checkbox "Subscribe"');
+	});
+
+	it('toggles on a click on the label text', async () => {
+		const el = await mount<LitElement & { checked: boolean }>(
+			html`<gv-checkbox><span>Subscribe</span></gv-checkbox>`,
+			'gv-checkbox'
+		);
+		el.querySelector('span')!.click();
+		await el.updateComplete;
+		expect(el.checked).toBe(true);
+	});
+
+	it('renders the bare box without a label', async () => {
+		for (const [responsive, size] of [
+			['default', 24],
+			['xl', 28]
+		] as const) {
+			const el = await mount<LitElement>(
+				html`<gv-checkbox responsive=${responsive}> </gv-checkbox>`,
+				'gv-checkbox'
+			);
+			expect(el.shadowRoot!.querySelector('.label')).toBeNull();
+			const control = el.shadowRoot!.querySelector('button')!.getBoundingClientRect();
+			expect([control.width, control.height]).toEqual([size, size]);
+			expect([box(el).width, box(el).height]).toEqual([size, size]);
+		}
+	});
+});
+
 describe('slots take no form controls (#34 slot contract)', () => {
 	let warn: MockInstance<typeof console.warn>;
 	beforeEach(() => {
