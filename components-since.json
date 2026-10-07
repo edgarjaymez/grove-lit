@@ -1,0 +1,18 @@
+{
+	"components": {
+		"BackButton": "0.41.0",
+		"Button": "0.28.0",
+		"Checkbox": "0.28.0",
+		"ColorSwatch": "0.29.0",
+		"FeedbackStrip": "0.41.0",
+		"Icon": "0.28.0",
+		"IconButton": "0.28.0",
+		"Isotype": "0.28.0",
+		"MenuItem": "0.41.0",
+		"TextInput": "0.28.0",
+		"Texture": "0.28.0",
+		"Title": "0.41.0",
+		"ToDoCategoryToggler": "0.28.0",
+		"ToDoListItem": "0.31.0"
+	}
+}
