@@ -51,9 +51,16 @@
 
 ### `pnpm prepack`
 
-`pnpm prepack` runs `pnpm build && publint`. **publint** checks that `exports`, `types` and `files`
-point at files that exist and are shaped correctly. npm runs `prepack` automatically before it packs
-or publishes, so a broken export map stops a publish.
+`pnpm prepack` runs `pnpm check-ledger && pnpm build && publint`:
+
+- **`check-ledger`** fails if a component has no entry in the release ledger (below), so a release
+  cannot ship a component it has not recorded;
+- **`build`** is the full build above;
+- **publint** checks that `exports`, `types` and `files` point at files that exist and are shaped
+  correctly.
+
+npm runs `prepack` automatically before it packs or publishes, so any of these failing stops a
+publish.
 
 ## Releasing by hand
 
@@ -69,7 +76,7 @@ automatically. Pull requests are merged on GitHub with a merge commit. A release
    component directory that has none, and never changes an existing one, so running it twice is
    safe.
 3. Set `"version"` in `package.json` by editing it, if it needs to change.
-4. Verify: `pnpm check`, `pnpm lint`, `pnpm check-ledger`, `pnpm prepack`.
+4. Verify: `pnpm check`, `pnpm lint`, `pnpm prepack` (which runs `check-ledger` first).
 5. Commit the ledger and the version, push, open the pull request, and merge it.
 
 **On `main`, after the merge:**
@@ -88,7 +95,9 @@ package, offline. Two scripts manage it (shared logic in `scripts/components-sin
   directory.
 
 `check-ledger` **is expected to fail between releases** whenever a new component exists: the new
-component has no entry until the next release records it. That failure is the reminder.
+component has no entry until the next release records it. That failure is the reminder. Because
+`prepack` runs it first, `pnpm prepack` fails the same way until the release step records the
+component; use `pnpm build` to check your work in between.
 
 ## House rules
 
