@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { linkAttribute, linkRel } from './link-attributes.js';
 
-describe('linkAttribute', () => {
-	it('keeps a value only on a real link', () => {
-		expect(linkAttribute('/es/', 'es')).toBe('es');
-		expect(linkAttribute(undefined, 'es')).toBeUndefined();
-		expect(linkAttribute('', 'es')).toBeUndefined();
-		expect(linkAttribute('/es/', '')).toBeUndefined();
-	});
+describe('linkAttribute (#43 FR-02 to FR-04)', () => {
+	it.each([
+		['/es/', 'es', 'es'],
+		[undefined, 'es', undefined],
+		['', 'es', undefined],
+		['/es/', '', undefined],
+		['/es/', undefined, undefined]
+	])('href %j, value %j → %j', (href, value, expected) =>
+		expect(linkAttribute(href, value)).toBe(expected)
+	);
 });
 
 describe('linkRel (#14 FR-04, FR-05)', () => {

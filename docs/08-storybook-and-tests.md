@@ -85,8 +85,10 @@ Every story gets what a consuming page would have:
   Storybook. A real app registers only the glyphs it uses (chapter 07);
 - a **theme toolbar** (System, Light, Dark). The `withTheme` decorator sets `data-theme` on `<html>`,
   or removes it for System, exactly as a consumer would;
-- the **a11y addon** (axe) in report-only mode (`test: 'todo'`): violations show in the panel but do
-  not fail tests yet. The comment there names the issue that has to be fixed first.
+- the **a11y addon** (axe), report-only by default (`test: 'todo'`): violations show in the panel but
+  do not fail tests. A component whose stories are already clean opts in to failing on violations
+  with `parameters: { a11y: { test: 'error' } }` in its stories file (`gv-menu-item` does today),
+  until #50 switches the library default to `'error'`.
 
 ### Repo-level pages
 
@@ -197,8 +199,9 @@ If one of these fails after your change, update the other copy; don't loosen the
 
 ### The a11y canary
 
-The Storybook project runs axe on every story, but in report-only mode. To prove that the checking
-itself still works, `src/stories/A11yCanary.stories.ts` plants known faults, and
+The Storybook project runs axe on every story. It only reports, except where a stories file opts in
+to `test: 'error'` (today `gv-menu-item`) until #50 makes that the default. To prove that the
+checking itself still works, `src/stories/A11yCanary.stories.ts` plants known faults, and
 `pnpm test:a11y-canary` runs only that story and **inverts the result**: it passes only if the run
 failed in every theme and reported both planted nodes (`scripts/a11y-canary.mjs`).
 
