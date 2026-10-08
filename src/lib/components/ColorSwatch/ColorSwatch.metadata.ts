@@ -9,7 +9,7 @@ export const ColorSwatchMetadata = {
 		description:
 			'Displays a primitive color token as a labeled swatch with a color preview, an OKLCH value and a hex value. Both value rows are copy buttons: the OKLCH row copies the DTCG (W3C Design Tokens) colour object, the hex row copies the plain #rrggbb string, and each reveals a gv-tooltip on hover and on focus. A successful copy flips that tooltip to "Copied!" and drops its shadow so the bubble reads as pressed, then dismisses it after three seconds. Used in design system documentation and Storybook color pages.',
 		type: 'documentation',
-		version: '1.3.0',
+		version: '1.3.1',
 		created: '2026/05/31',
 		modified: '2026/10/08'
 	},

@@ -8,7 +8,7 @@ export const ToDoCategoryTogglerMetadata = {
 			'A color-coded toggle button that displays a task count and category label. Pressing it toggles a selected state and dispatches a gv-toggle CustomEvent. Used in dashboards and overview surfaces to filter or highlight task categories.',
 		type: 'interactive',
 		path: 'src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts',
-		version: '1.2.0',
+		version: '1.2.1',
 		created: '2026/02/18',
 		modified: '2026/10/08'
 	},

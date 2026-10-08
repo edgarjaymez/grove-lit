@@ -9,7 +9,7 @@ export const FeedbackStripMetadata = {
 		description:
 			'A full-width status strip: a summit-depth colored band with a filled Phosphor status icon, a subheading-scale heading, and an indented message. Three semantic types — success, danger, information — each swapping surface, block borders, both text colors and the icon. The live region follows the type (polite, or assertive for danger) unless live chooses the announcement separately.',
 		type: 'display',
-		version: '1.2.0',
+		version: '1.2.1',
 		created: '2026/09/16',
 		modified: '2026/10/08'
 	},
