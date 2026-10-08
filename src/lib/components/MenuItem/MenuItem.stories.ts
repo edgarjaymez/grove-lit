@@ -25,6 +25,8 @@ const meta: Meta<Args> = {
 	title: 'Components/gv-menu-item',
 	tags: ['autodocs'],
 	decorators: [terrace],
+	// Already clean, so it gates now: Sidebar locks SC 2.5.8 before the library-wide switch (#50).
+	parameters: { a11y: { test: 'error' } },
 	render: ({ label, href, hreflang, icon, size, isActive }) => html`
 		<gv-menu-item
 			label=${label}
