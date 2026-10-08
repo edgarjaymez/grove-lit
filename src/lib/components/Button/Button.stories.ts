@@ -162,13 +162,13 @@ const toggleFieldset = (event: Event) => {
  */
 export const InForm: Story = {
 	render: () => html`
-		<div class="story-form" style="display: grid; gap: 12px; max-width: 28rem">
+		<div class="story-form" style="display: grid; gap: var(--soft-grid-12); max-width: 28rem">
 			<form id="story-in-form" @submit=${handleSubmit} @reset=${logReset}>
-				<fieldset style="display: grid; gap: 8px">
+				<fieldset style="display: grid; gap: var(--soft-grid-8)">
 					<legend>Contact</legend>
 					<label>Name <input name="name" value="Ada" /></label>
 					<label>Email <input name="email" type="email" required /></label>
-					<div style="display: flex; gap: 8px; flex-wrap: wrap">
+					<div style="display: flex; gap: var(--soft-grid-8); flex-wrap: wrap">
 						<gv-button type="submit">Send</gv-button>
 						<gv-button type="reset" variant="outlined" color="gray">Clear</gv-button>
 						<gv-button variant="ghost" color="gray">Does nothing here</gv-button>
@@ -187,10 +187,10 @@ export const InForm: Story = {
 /** Each submit button adds its name and value to the form data its own submission builds. */
 export const NamedSubmits: Story = {
 	render: () => html`
-		<div class="story-form" style="display: grid; gap: 12px; max-width: 28rem">
-			<form @submit=${handleSubmit} style="display: grid; gap: 8px">
+		<div class="story-form" style="display: grid; gap: var(--soft-grid-12); max-width: 28rem">
+			<form @submit=${handleSubmit} style="display: grid; gap: var(--soft-grid-8)">
 				<label>Title <input name="title" value="Field notes" /></label>
-				<div style="display: flex; gap: 8px">
+				<div style="display: flex; gap: var(--soft-grid-8)">
 					<gv-button type="submit" name="intent" value="draft" variant="tonal"
 						>Save draft</gv-button
 					>
