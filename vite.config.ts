@@ -25,6 +25,102 @@ const ariaSnapshot: BrowserCommand<[selector: string]> = async (ctx, selector) =
 	return ctx.iframe.locator(selector).ariaSnapshot();
 };
 
+interface AxNode {
+	role: string;
+	name: string;
+	description: string;
+	/** The DOM node the accessibility node belongs to: a tag name, or `#text`. */
+	node: string;
+	focusable?: boolean;
+	focused?: boolean;
+	checked?: string;
+	disabled?: boolean;
+}
+
+interface DomNode {
+	nodeType: number;
+	nodeName: string;
+	backendNodeId: number;
+	attributes?: string[];
+	children?: DomNode[];
+	shadowRoots?: DomNode[];
+	contentDocument?: DomNode;
+	nodeValue?: string;
+}
+
+/**
+ * Chrome's own accessibility tree for an element in the test page and everything under it, shadow roots
+ * included: one entry per exposed node, in tree order. `ariaSnapshot` is Playwright's re-implementation
+ * of name computation; this reads what Chrome computed, over the DevTools protocol.
+ */
+const axNodes: BrowserCommand<[selector: string]> = async (ctx, selector) => {
+	if (ctx.provider.name !== 'playwright') throw new Error('axNodes needs the playwright provider');
+	const frame = await ctx.frame();
+	const token = `ax-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+	const host = frame.locator(selector).first();
+	await host.evaluate((el, t) => el.setAttribute('data-ax-probe', t), token);
+	const cdp = await ctx.context.newCDPSession(ctx.page);
+	try {
+		const { root } = (await cdp.send('DOM.getDocument', { depth: -1, pierce: true })) as {
+			root: DomNode;
+		};
+		const find = (node: DomNode): DomNode | undefined => {
+			const attrs = node.attributes ?? [];
+			for (let i = 0; i < attrs.length; i += 2)
+				if (attrs[i] === 'data-ax-probe' && attrs[i + 1] === token) return node;
+			for (const child of [
+				...(node.shadowRoots ?? []),
+				...(node.contentDocument ? [node.contentDocument] : []),
+				...(node.children ?? [])
+			]) {
+				const found = find(child);
+				if (found) return found;
+			}
+		};
+		const start = find(root);
+		if (!start) throw new Error(`axNodes: nothing matches ${selector}`);
+		const nodes: DomNode[] = [];
+		const walk = (node: DomNode) => {
+			if (node.nodeType === 1 || (node.nodeType === 3 && node.nodeValue?.trim())) nodes.push(node);
+			for (const child of [...(node.shadowRoots ?? []), ...(node.children ?? [])]) walk(child);
+		};
+		walk(start);
+		const out: AxNode[] = [];
+		for (const node of nodes) {
+			const { nodes: ax } = (await cdp.send('Accessibility.getPartialAXTree', {
+				backendNodeId: node.backendNodeId,
+				fetchRelatives: false
+			})) as {
+				nodes: {
+					backendDOMNodeId?: number;
+					ignored: boolean;
+					role?: { value: string };
+					name?: { value: string };
+					description?: { value: string };
+					properties?: { name: string; value: { value: unknown } }[];
+				}[];
+			};
+			const own = ax.find((n) => n.backendDOMNodeId === node.backendNodeId);
+			if (!own || own.ignored) continue;
+			const props = Object.fromEntries((own.properties ?? []).map((p) => [p.name, p.value.value]));
+			out.push({
+				role: own.role?.value ?? '',
+				name: own.name?.value ?? '',
+				description: own.description?.value ?? '',
+				node: node.nodeType === 3 ? '#text' : node.nodeName.toLowerCase(),
+				...(props.focusable !== undefined && { focusable: Boolean(props.focusable) }),
+				...(props.focused !== undefined && { focused: Boolean(props.focused) }),
+				...(props.checked !== undefined && { checked: String(props.checked) }),
+				...(props.disabled !== undefined && { disabled: Boolean(props.disabled) })
+			});
+		}
+		return out;
+	} finally {
+		await cdp.detach();
+		await host.evaluate((el) => el.removeAttribute('data-ax-probe'));
+	}
+};
+
 /**
  * Every story runs once per Grove theme. OS dark leaves `data-theme` off and sets the browser's colour
  * scheme, so the `prefers-color-scheme` block of tokens.css is what gets tested.
@@ -147,7 +243,7 @@ export default defineConfig({
 						headless: true,
 						provider: playwright(),
 						instances: [{ browser: 'chromium' }],
-						commands: { emulateMedia, ariaSnapshot }
+						commands: { emulateMedia, ariaSnapshot, axNodes }
 					}
 				}
 			},
