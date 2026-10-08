@@ -11,7 +11,7 @@ export const FeedbackStripMetadata = {
 		type: 'display',
 		version: '1.2.0',
 		created: '2026/09/16',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: null,
@@ -153,7 +153,7 @@ export const FeedbackStripMetadata = {
 				name: 'Icon',
 				customElement: 'gv-icon',
 				source: '../Icon/Icon.js',
-				role: 'Filled status glyph, fixed per type (check-circle / warning-circle / info), aria-hidden and sized by the header font. The host app must register the fixed glyphs listed in the phosphor field (PhCheckCircle, PhWarningCircle, PhInfo).'
+				role: 'Filled status glyph, fixed per type (check-circle / warning-circle / info), aria-hidden and sized by the header font. The host app must register the fixed glyphs listed in the phosphor field.'
 			}
 		],
 		commonPartners: [],

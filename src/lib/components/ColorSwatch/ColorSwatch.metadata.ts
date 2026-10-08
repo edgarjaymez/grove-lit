@@ -11,7 +11,7 @@ export const ColorSwatchMetadata = {
 		type: 'documentation',
 		version: '1.3.0',
 		created: '2026/05/31',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: null,
@@ -101,7 +101,7 @@ export const ColorSwatchMetadata = {
 		parentConstraints: [
 			'Should be placed inside a surface that loads tokens.css — the component relies on CSS custom properties from the Grove token system',
 			'Both tooltips are pinned outside the left edge of the 9rem column, right-aligned 8px clear of it — keep a left gutter of at least 80px so the wider "Copied!" bubble is not clipped by a scroll container',
-			'The consuming app must register the fixed glyph listed in the phosphor field (copy, @phosphor-icons/webcomponents/PhCopy) for the tooltip icon to render'
+			'The consuming app must register the fixed glyph listed in the phosphor field for the tooltip icon to render'
 		]
 	},
 

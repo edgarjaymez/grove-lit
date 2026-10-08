@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -21,6 +21,47 @@ describe('component metadata glyphs (#38 FR-12, FR-13)', () => {
 		expect(prop === null || typeof prop === 'string').toBe(true);
 		for (const glyph of [fallback, ...fixed].filter((g): g is string => g !== null))
 			expect(existsSync(join(icons, `${phosphorModule(glyph)}.mjs`)), glyph).toBe(true);
+	});
+});
+
+/** The tag a metadata file describes, from the component module next to it. */
+const tagOf = (path: string) =>
+	readFileSync(new URL(path.replace('.metadata.ts', '.ts'), import.meta.url), 'utf-8').match(
+		/@customElement\('([a-z0-9-]+)'\)/
+	)?.[1];
+
+/** `<tag> <PhModule>` for every default and fixed glyph the metadata declares. */
+const declaredPairs = Object.entries(modules)
+	.flatMap(([path, module]) =>
+		Object.values(module).flatMap(({ phosphor }) =>
+			[phosphor.default, ...phosphor.fixed]
+				.filter((glyph) => glyph !== null)
+				.map((glyph) => `${tagOf(path)} ${phosphorModule(glyph)}`)
+		)
+	)
+	.sort();
+
+const phosphorImports = (file: string) =>
+	[
+		...readFileSync(new URL(file, import.meta.url), 'utf-8').matchAll(
+			/^import '@phosphor-icons\/webcomponents\/(Ph\w+)';(.*)$/gm
+		)
+	].map(([, module, comment]) => ({ module, comment }));
+
+describe('glyph lists copied from the metadata (#47)', () => {
+	it('the Home.mdx recipe pairs each component with exactly the glyphs it declares', () => {
+		const documented = phosphorImports('../../stories/Home.mdx')
+			.flatMap(({ module, comment }) =>
+				[...comment.matchAll(/gv-[a-z0-9-]+/g)].map(([tag]) => `${tag} ${module}`)
+			)
+			.sort();
+		expect([...new Set(documented)]).toEqual([...new Set(declaredPairs)]);
+	});
+
+	it('the browser test setup registers exactly the declared glyphs', () => {
+		const registered = phosphorImports('../../test/browser-setup.ts').map(({ module }) => module);
+		const declared = new Set(declaredPairs.map((pair) => pair.split(' ')[1]));
+		expect(registered.sort()).toEqual([...declared].sort());
 	});
 });
 
