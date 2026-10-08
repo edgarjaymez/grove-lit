@@ -81,6 +81,7 @@ class ResetConsumer extends LitElement {
 
 			/* The escape hatch: a gentler alternative instead of none. */
 			@media (prefers-reduced-motion: reduce) {
+				:host(.gentle),
 				.gentle {
 					transition-duration: 150ms !important;
 				}
@@ -308,6 +309,8 @@ describe('a consumer component that adopts componentReset', () => {
 		expect(timings(box, '::before').transitionDuration).toBeLessThanOrEqual(0.001);
 		expect(await within(150, ended)).toBe(true);
 		expect(timings(gentle).transitionDuration).toBe(0.15);
+		el.classList.add('gentle');
+		expect(timings(el).transitionDuration).toBe(0.15);
 	});
 
 	it('inherits hidden, against a page !important rule too', async () => {
