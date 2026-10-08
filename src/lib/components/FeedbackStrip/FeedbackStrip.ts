@@ -34,7 +34,7 @@ const REGIONS = {
  */
 @customElement('gv-feedback-strip')
 export class FeedbackStrip extends LitElement {
-	private readonly _slots = new SlotContent(this, ['heading', 'message']);
+	private readonly _slots = new SlotContent(this, ['heading', 'message'], { phrasingOnly: true });
 
 	@property({ type: String, reflect: true }) type: FeedbackStripType = 'success';
 	@property({ type: String }) heading = '';

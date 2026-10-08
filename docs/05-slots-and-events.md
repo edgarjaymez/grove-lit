@@ -67,12 +67,25 @@ asks `this._slots.has('heading')`.
 
 ### What may go in a slot
 
-Slots take **text and phrasing content** (text, `<strong>`, `<em>`, `<span>`, links where the
-component allows them). Never a form control. A slotted `<input>` stays in the page's light DOM, so it
-would join the surrounding form on its own, next to the component's own control. In development,
-`SlotContent` logs one console warning per component when it sees a form control in a slot. The
-warning turns off when the consumer's bundler sets `process.env.NODE_ENV` to `"production"`
-(`src/lib/utils/dev.ts`).
+It depends on the slot.
+
+- **Phrasing-only slots** take **text and phrasing content** (text, `<strong>`, `<em>`, `<span>`,
+  links where the component allows them), never a form control. A slot is phrasing-only when it sits
+  inside an interactive element or a popup (gv-button, gv-checkbox's label, gv-menu-item's link,
+  gv-tooltip), where a control can't be nested or reached, or when the component is static chrome by
+  design (gv-title, gv-feedback-strip). The component says so when it creates the controller:
+
+  ```ts
+  private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
+  ```
+
+  In development, `SlotContent` then logs one console warning per component when it sees a form
+  control in a slot. The warning turns off when the consumer's bundler sets `process.env.NODE_ENV` to
+  `"production"` (`src/lib/utils/dev.ts`).
+
+- **Container slots** (no option, the default) accept controls. A slotted `<input>` or gv-button
+  stays in the page's light DOM, so it belongs to whatever `<form>` it sits in there, like any other
+  control. That is what a card with an action, or a form layout, needs.
 
 ### How slots are checked
 

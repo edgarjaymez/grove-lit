@@ -30,7 +30,7 @@ type MenuItemSize = 'md' | 'sm';
  */
 @customElement('gv-menu-item')
 export class MenuItem extends LitElement {
-	private readonly _slots = new SlotContent(this, ['']);
+	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 
 	@property({ type: String }) label = '';
 	@property({ type: String }) href?: string;

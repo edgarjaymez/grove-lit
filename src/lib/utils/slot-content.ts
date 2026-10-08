@@ -13,17 +13,27 @@ export const resetSlotWarnings = () => warned.clear();
  *
  * A native `<slot>` fallback is not enough: the whitespace between a host's tags is assigned to the
  * default slot and would suppress it. Here whitespace-only text and comments don't count.
+ *
+ * Slots are containers by default and may hold controls. Pass `phrasingOnly` when the slots sit inside
+ * an interactive element or a popup, or take phrasing content by design: outside production builds,
+ * the component then logs one warning when a slot holds a form control.
  */
 export class SlotContent implements ReactiveController {
 	private readonly _host: ReactiveControllerHost & HTMLElement;
 	private readonly _names: readonly string[];
+	private readonly _phrasingOnly: boolean;
 	private _observer?: MutationObserver;
 	private _state = new Map<string, boolean>();
 
 	/** `names` lists the slots to track; '' is the default slot. */
-	constructor(host: ReactiveControllerHost & HTMLElement, names: readonly string[] = ['']) {
+	constructor(
+		host: ReactiveControllerHost & HTMLElement,
+		names: readonly string[] = [''],
+		{ phrasingOnly = false }: { phrasingOnly?: boolean } = {}
+	) {
 		this._host = host;
 		this._names = names;
+		this._phrasingOnly = phrasingOnly;
 		host.addController(this);
 	}
 
@@ -66,12 +76,12 @@ export class SlotContent implements ReactiveController {
 			const has = nodes.length > 0;
 			if (this._state.get(name) !== has) changed = true;
 			this._state.set(name, has);
-			this._warnOnFormControls(name, nodes);
+			if (this._phrasingOnly) this._warnOnFormControls(name, nodes);
 		}
 		if (changed) this._host.requestUpdate();
 	}
 
-	/** Slots take text and phrasing content: a projected control would join the form twice. */
+	/** A control can't sit inside the component's own control or popup, nor in a phrasing-only slot. */
 	private _warnOnFormControls(name: string, nodes: Node[]) {
 		const tag = this._host.localName;
 		if (warned.has(tag) || !warningsEnabled()) return;
@@ -87,8 +97,7 @@ export class SlotContent implements ReactiveController {
 		warned.add(tag);
 		console.warn(
 			`[grove] <${tag}> ${name ? `slot "${name}"` : 'default slot'} contains <${control.localName}>. ` +
-				'Slots take text and phrasing content only; a form control there would take part in the ' +
-				'form alongside the component. Place it next to the component instead.'
+				`<${tag}> slots take text and phrasing content only. Place controls next to the component instead.`
 		);
 	}
 }

@@ -19,7 +19,7 @@ export class Checkbox extends LitElement {
 	@property({ type: String }) responsive: CheckboxResponsive = 'default';
 	@property({ type: Boolean, reflect: true }) disabled = false;
 
-	private readonly _slots = new SlotContent(this, ['']);
+	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 
 	static styles = [
 		componentReset,

@@ -9,9 +9,9 @@ export const FeedbackStripMetadata = {
 		description:
 			'A full-width status strip: a summit-depth colored band with a filled Phosphor status icon, a subheading-scale heading, and an indented message. Three semantic types — success, danger, information — each swapping surface, block borders, both text colors and the icon. The live region follows the type (polite, or assertive for danger) unless live chooses the announcement separately.',
 		type: 'display',
-		version: '1.2.0',
+		version: '1.2.1',
 		created: '2026/09/16',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: null,
@@ -100,7 +100,7 @@ export const FeedbackStripMetadata = {
 			{
 				scenario: 'Putting buttons, form controls or other interactive content in a slot',
 				reason:
-					'Slots take text and phrasing content only. A projected control would take part in a surrounding form alongside the strip, and the strip styles no focus or hover state for it.',
+					'Slots take text and phrasing content only. The strip is a static band: it styles no focus or hover state for a control, and gives an action no room of its own.',
 				alternative: 'Place an action next to the strip, outside the component'
 			},
 			{

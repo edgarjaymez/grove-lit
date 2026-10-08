@@ -17,7 +17,7 @@ type ButtonType = 'button' | 'submit' | 'reset';
  */
 @customElement('gv-button')
 export class Button extends LitElement {
-	private readonly _slots = new SlotContent(this, ['']);
+	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 
 	@property({ type: String }) text = '';
 	@property({ type: String }) variant: ButtonVariant = 'filled';

@@ -28,7 +28,7 @@ export type TooltipColor = 'accent' | 'gray';
  */
 @customElement('gv-tooltip')
 export class Tooltip extends LitElement {
-	private readonly _slots = new SlotContent(this, ['heading', 'message']);
+	private readonly _slots = new SlotContent(this, ['heading', 'message'], { phrasingOnly: true });
 
 	@property({ type: String, reflect: true }) type: TooltipType = 'simple';
 	@property({ type: String, reflect: true }) color: TooltipColor = 'accent';

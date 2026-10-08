@@ -1,11 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MockInstance } from 'vitest';
 import { commands } from 'vitest/browser';
-import { html, render } from 'lit';
-import type { LitElement } from 'lit';
+import { html, LitElement, nothing, render } from 'lit';
 import { groveTags } from '../test/grove-tags.js';
 import type { ComponentMetadata } from './components/metadata.js';
-import { resetSlotWarnings } from './utils/slot-content.js';
+import { resetSlotWarnings, SlotContent } from './utils/slot-content.js';
 
 const modules = import.meta.glob<Record<string, ComponentMetadata>>(
 	'./components/*/*.metadata.ts',
@@ -221,13 +220,25 @@ describe('gv-checkbox label slot (#34)', () => {
 	});
 });
 
-describe('slots take no form controls (#34 slot contract)', () => {
+/** A container: its slot accepts controls, as gv-card's body or a form layout's would. */
+class SlotContainer extends LitElement {
+	private readonly _slots = new SlotContent(this, ['']);
+	render() {
+		return html`<slot></slot>${this._slots.has() ? nothing : 'empty'}`;
+	}
+}
+customElements.define('test-slot-container', SlotContainer);
+
+describe('phrasing-only slots take no form controls (#34 slot contract, #49 C6)', () => {
 	let warn: MockInstance<typeof console.warn>;
 	beforeEach(() => {
 		resetSlotWarnings();
 		warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 	});
 	afterEach(() => warn.mockRestore());
+
+	const settle = () =>
+		Promise.all([...host.children].map((el) => (el as LitElement).updateComplete));
 
 	it('warns once per component when a slot holds a form control', async () => {
 		render(
@@ -238,9 +249,38 @@ describe('slots take no form controls (#34 slot contract)', () => {
 				<gv-feedback-strip><span slot="message">Plain text</span></gv-feedback-strip>`,
 			host
 		);
-		await Promise.all([...host.children].map((el) => (el as LitElement).updateComplete));
+		await settle();
 		expect(warn).toHaveBeenCalledTimes(1);
 		expect(String(warn.mock.calls[0][0])).toContain('<gv-button> default slot contains <input>');
+		expect(String(warn.mock.calls[0][0])).toContain(
+			'<gv-button> slots take text and phrasing content only'
+		);
+	});
+
+	it('warns for every component whose slots are phrasing-only', async () => {
+		render(
+			html`<gv-button><input /></gv-button>
+				<gv-checkbox><select></select></gv-checkbox>
+				<gv-menu-item href="#"><button>Go</button></gv-menu-item>
+				<gv-title><textarea></textarea></gv-title>
+				<gv-tooltip
+					><span slot="message"><input /></span
+				></gv-tooltip>
+				<gv-feedback-strip
+					><span slot="message"><button>Undo</button></span></gv-feedback-strip
+				>`,
+			host
+		);
+		await settle();
+		const warned = warn.mock.calls.map(([message]) => String(message).match(/<(gv-[a-z-]+)>/)?.[1]);
+		expect(warned.sort()).toEqual([
+			'gv-button',
+			'gv-checkbox',
+			'gv-feedback-strip',
+			'gv-menu-item',
+			'gv-title',
+			'gv-tooltip'
+		]);
 	});
 
 	it('stays quiet for text and phrasing content', async () => {
@@ -250,6 +290,17 @@ describe('slots take no form controls (#34 slot contract)', () => {
 				><span slot="message"><strong>Done</strong>, <a href="#">view</a></span></gv-feedback-strip
 			>`,
 			'gv-feedback-strip'
+		);
+		expect(warn).not.toHaveBeenCalled();
+	});
+
+	it('stays quiet for a control in a container slot', async () => {
+		await mount(
+			html`<test-slot-container
+				><label>Name <input name="name" /></label
+				><button type="submit">Send</button></test-slot-container
+			>`,
+			'test-slot-container'
 		);
 		expect(warn).not.toHaveBeenCalled();
 	});
