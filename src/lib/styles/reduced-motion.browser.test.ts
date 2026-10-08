@@ -16,7 +16,10 @@ interface Timing {
 const fade = (properties: string[], duration: string, easing: string, delay = '0s'): Timing[] =>
 	properties.map((property) => ({ property, duration, easing, delay }));
 
-/** gv-color-swatch's Figma pair: hiding waits for the fade before visibility flips; revealing doesn't. */
+/**
+ * gv-color-swatch's pair in #42's Context table: hiding waits for the fade before visibility
+ * flips; revealing doesn't.
+ */
 const swatchTip = {
 	hiding: [
 		...fade(['opacity'], '0.3s', 'ease-out'),
@@ -175,7 +178,7 @@ describe('without a motion preference', () => {
 		}
 	});
 
-	it('gv-color-swatch reveals and dismisses its bubbles with the Figma timings', async () => {
+	it("gv-color-swatch reveals and dismisses its bubbles with #42's Context table timings", async () => {
 		const el = await mount('gv-color-swatch');
 		const root = el.shadowRoot!;
 		const trigger = root.querySelector('.oklch-group')!;
