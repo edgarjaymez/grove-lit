@@ -525,6 +525,16 @@ describe('name and value (#40 OD1 b)', () => {
 		]);
 		expect(buttons[0].getAttribute('name')).toBe('intent');
 	});
+
+	it('reflects value like a native button, with no attribute until it is set', async () => {
+		const { button } = await mount(html`<gv-button type="submit">Send</gv-button>`);
+		expect(button.hasAttribute('value')).toBe(false);
+		button.value = 'send';
+		await button.updateComplete;
+		expect(button.getAttribute('value')).toBe('send');
+		button.removeAttribute('value');
+		expect(button.value).toBe('');
+	});
 });
 
 describe('supported compositions (#49 C2)', () => {

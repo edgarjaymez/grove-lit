@@ -104,12 +104,18 @@ export class Button extends FormControl(LitElement) {
 	@property({ type: String }) type: ButtonType = 'button';
 	/** With `type="submit"`, the form data name this button's `value` is submitted under. */
 	@property({ type: String, reflect: true }) name?: string;
-	/** Submitted under `name`, in the form data its own submission builds. */
-	@property({ type: String }) value = '';
+	/**
+	 * Submitted under `name`, in the form data its own submission builds. Reflected like a native
+	 * button's, with no attribute until it is set.
+	 */
+	@property({ type: String, reflect: true, useDefault: true }) value = '';
 	/** Renders a real link to this URL, with the button's look, instead of a button. */
 	@property({ type: String }) href?: string;
-	/** Where the link opens. `_blank` without `rel` gets `rel="noopener noreferrer"`. */
-	@property({ type: String }) target?: '_blank' | '_self';
+	/**
+	 * Where the link opens: `_self`, `_blank`, `_parent`, `_top` or a named browsing context. `_blank`
+	 * without `rel` gets `rel="noopener noreferrer"`.
+	 */
+	@property({ type: String }) target?: string;
 	/** The link's relationship to its target; passed through untouched when set. */
 	@property({ type: String }) rel?: string;
 	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
@@ -124,6 +130,7 @@ Each line is one public input. The patterns to notice:
 | `type`      | defaults to `'button'`, so a `gv-button` inside a form does not submit it by accident                            |
 | `disabled`  | from `FormControl`, reflected: page CSS can match `gv-button[disabled]`; the button also sets it once it submits |
 | `name`      | `reflect: true`: the form data entry is named by the `name` attribute, as on a native control                    |
+| `value`     | `reflect: true, useDefault: true`: no attribute until set; removing it restores `''`, as on a native button      |
 | `href`      | switches the render to a link (Stop 8); `target` and `rel` only mean something with it                           |
 | `ariaLabel` | **ARIA property**: `string \| null = null`, its attribute named explicitly, `?? nothing` in the template         |
 

@@ -15,7 +15,8 @@ interface Args {
 	name: string;
 	value: string;
 	href: string;
-	target: '' | '_blank' | '_self';
+	/** Any browsing context name; the select offers the keywords. */
+	target: string;
 	rel: string;
 }
 
@@ -66,7 +67,7 @@ const meta: Meta<Args> = {
 		name: { control: 'text' },
 		value: { control: 'text' },
 		href: { control: 'text' },
-		target: { control: 'select', options: ['', '_blank', '_self'] },
+		target: { control: 'select', options: ['', '_self', '_blank', '_parent', '_top'] },
 		rel: { control: 'text' }
 	},
 	args: {
