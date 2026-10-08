@@ -72,8 +72,12 @@ Example markup in metadata is written in **attribute names**, the way HTML would
 
 `src/lib/components/glyphs.browser.test.ts` (browser project) renders every component with no glyph
 attribute, and once per variant value, and requires the glyphs it draws to be exactly `default` plus
-`fixed`. It also checks that `prop` is the attribute that changes the glyph. When you change a
-component's default glyph, these two tests name every copy left to update.
+`fixed`. It also checks that `prop` is the attribute that changes the glyph. It sets a variant through
+the attribute of the same name, or the one its `variantAliases` table names (`gv-button`'s `style`
+is the `variant` attribute), and fails on a variant key that is neither. When you change a
+component's default glyph, these two tests name every copy left to update. Both read the metadata
+through `metadataByTag` (`src/test/component-metadata.ts`), which pairs each metadata file with the
+`@customElement` tag of the module next to it.
 
 ## The custom elements manifest
 

@@ -166,6 +166,10 @@ through `commands` from `vitest/browser`:
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 
+`src/test/shadow.ts` is for tests that look into nested shadow roots: `deepElements()` lists every
+element below a root, walking each open shadow root right after its host; `settleDeep()` waits until
+all of them have updated and no new one appears; `frames()` waits a number of animation frames.
+
 The `browser` project picks up every `src/**/*.browser.test.ts`, so a new browser test needs no
 entry here: a shared test sits next to the code it checks, a component's own test in its directory.
 `git ls-files '*.browser.test.ts'` lists them all.
