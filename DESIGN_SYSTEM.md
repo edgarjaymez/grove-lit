@@ -1110,7 +1110,7 @@ APCA is a supplementary measure, not a W3C standard. It comes from the unmodifie
 
 `src/lib/tokens/contrast.test.ts` checks every pair in both themes on each `pnpm test`, reading the built `tokens.css`, and fails when that file is out of date with the JSON sources.
 
-Rendered components are checked too. `pnpm test` runs every Storybook story through axe-core (WCAG 2.0 to 2.2 A and AA rules) in headless Chromium, once each in light, dark and OS dark. The gate is report-only while the known checkbox-name violations are open (#50) and switches to failing once they are fixed. Two more local checks keep it honest:
+Rendered components are checked too. `pnpm test` runs every Storybook story through axe-core (WCAG 2.0 to 2.2 A and AA rules) in headless Chromium, once each in light, dark and OS dark. The gate is report-only by default while the known checkbox-name violations are open (#50) and switches to failing once they are fixed. Meanwhile a component whose stories are already clean opts in to failing in its stories file, as `gv-menu-item` does. Two more local checks keep it honest:
 
 - `pnpm test:a11y-canary` passes only when a story with two planted contrast failures, one inside a shadow root, fails in all three themes.
 - `pnpm test:storybook-static` builds the static Storybook and fails if any story ships an undefined or un-upgraded `gv-*` element.

@@ -23,7 +23,7 @@ the mismatch; do not change the code to match a stale document.
 | some primitive colours have a `hex` note that does not exactly match their OKLCH value              | those colours are outside the sRGB range, so any hex is an approximation; the OKLCH value is what renders   | `palette/color.tokens.json`                         |
 | `gv-tooltip` sits on a **summit** surface, while its Figma component still uses aurora              | the code is deliberately ahead of the design file; aurora is a transient highlight, not a resting surface   | `Tooltip.ts`, `DESIGN_SYSTEM.md` (elevation rule 8) |
 | `pnpm check-ledger` (and so `pnpm prepack`) fails on `main`                                         | a component added since the last release has no ledger entry yet; the next release records it               | chapter 09                                          |
-| Storybook's a11y checks report violations but never fail                                            | report-only until known issues are fixed; the canary proves the checks still work                           | `.storybook/preview.ts`, chapter 08                 |
+| most Storybook a11y checks report violations but do not fail                                        | report-only by default (#50); clean components opt in (`gv-menu-item`); the canary proves the checks work   | `.storybook/preview.ts`, chapter 08                 |
 | `package.json` has a higher version than npm                                                        | the version was bumped in a branch and the release has not been published yet                               | `pnpm view @edgarjaymez/grove version`              |
 
 ## Naming quirks
