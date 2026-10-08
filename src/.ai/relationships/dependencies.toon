@@ -270,7 +270,7 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Icon/phosphor.ts":
-    exports[8]: GRACE_MS,missingGlyphMessage,claimReport,wasReported,phosphorTag,warningsEnabled,resetReports,phosphorModule
+    exports[7]: GRACE_MS,missingGlyphMessage,claimReport,phosphorTag,warningsEnabled,resetReports,phosphorModule
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Icon/Icon.metadata.ts":
