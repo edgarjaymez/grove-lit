@@ -1,17 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import { metadataByTag } from '../../test/component-metadata.js';
 import { groveTags } from '../../test/grove-tags.js';
 import type { ComponentMetadata } from './metadata.js';
 
-const modules = import.meta.glob<Record<string, ComponentMetadata>>('./*/*.metadata.ts', {
-	eager: true
-});
-/** Each component's metadata, by the class name its tag registers. */
-const metadata = new Map(
-	Object.values(modules)
-		.flatMap((module) => Object.values(module))
-		.map((meta) => [meta.component.name, meta])
-);
-const metaOf = (tag: string) => metadata.get(customElements.get(tag)!.name)!;
+const metaOf = (tag: string) => metadataByTag.get(tag)!;
 
 const host = document.body.appendChild(document.createElement('div'));
 afterEach(() => host.replaceChildren());
@@ -56,8 +48,7 @@ const variantAttributes = (meta: ComponentMetadata) =>
 
 describe('the phosphor metadata matches what each component draws (#47)', () => {
 	it('pairs every registered tag with one metadata file', () => {
-		const names = groveTags.map((tag) => customElements.get(tag)!.name).sort();
-		expect(names).toEqual([...metadata.keys()].sort());
+		expect([...metadataByTag.keys()].sort()).toEqual([...groveTags].sort());
 	});
 
 	it.each(groveTags)('<%s> draws exactly its default and fixed glyphs', async (tag) => {

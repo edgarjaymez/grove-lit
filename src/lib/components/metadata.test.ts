@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { metadataByTag } from '../../test/component-metadata.js';
 import { phosphorModule } from './Icon/phosphor.js';
 import type { ComponentMetadata } from './metadata.js';
 
@@ -24,20 +25,12 @@ describe('component metadata glyphs (#38 FR-12, FR-13)', () => {
 	});
 });
 
-/** The tag a metadata file describes, from the component module next to it. */
-const tagOf = (path: string) =>
-	readFileSync(new URL(path.replace('.metadata.ts', '.ts'), import.meta.url), 'utf-8').match(
-		/@customElement\('([a-z0-9-]+)'\)/
-	)?.[1];
-
 /** `<tag> <PhModule>` for every default and fixed glyph the metadata declares. */
-const declaredPairs = Object.entries(modules)
-	.flatMap(([path, module]) =>
-		Object.values(module).flatMap(({ phosphor }) =>
-			[phosphor.default, ...phosphor.fixed]
-				.filter((glyph) => glyph !== null)
-				.map((glyph) => `${tagOf(path)} ${phosphorModule(glyph)}`)
-		)
+const declaredPairs = [...metadataByTag]
+	.flatMap(([tag, { phosphor }]) =>
+		[phosphor.default, ...phosphor.fixed]
+			.filter((glyph) => glyph !== null)
+			.map((glyph) => `${tag} ${phosphorModule(glyph)}`)
 	)
 	.sort();
 
