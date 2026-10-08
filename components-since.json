@@ -13,6 +13,7 @@
 		"Texture": "0.28.0",
 		"Title": "0.41.0",
 		"ToDoCategoryToggler": "0.28.0",
-		"ToDoListItem": "0.31.0"
+		"ToDoListItem": "0.31.0",
+		"Tooltip": "0.45.0"
 	}
 }
