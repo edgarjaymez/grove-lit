@@ -60,6 +60,7 @@ export class Button extends LitElement {
 				gap: var(--soft-grid-8);
 				padding: var(--soft-grid-12) var(--soft-grid-20);
 				font: var(--typography-single-line-base-base);
+				letter-spacing: var(--typography-single-line-base-base-letter-spacing);
 			}
 			.btn--lg.btn--has-icon {
 				padding-inline-start: var(--soft-grid-16);
@@ -69,6 +70,7 @@ export class Button extends LitElement {
 				gap: var(--soft-grid-6);
 				padding: var(--soft-grid-8) var(--soft-grid-16);
 				font: var(--typography-single-line-subtle-emphasis);
+				letter-spacing: var(--typography-single-line-subtle-emphasis-letter-spacing);
 			}
 			.btn--md.btn--has-icon {
 				padding-inline-start: var(--soft-grid-12);
@@ -78,6 +80,7 @@ export class Button extends LitElement {
 				gap: var(--soft-grid-4);
 				padding: var(--soft-grid-4) var(--soft-grid-12);
 				font: var(--typography-single-line-label-base);
+				letter-spacing: var(--typography-single-line-label-base-letter-spacing);
 			}
 			.btn--sm.btn--has-icon {
 				padding-inline-start: var(--soft-grid-8);

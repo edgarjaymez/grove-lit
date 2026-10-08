@@ -20,6 +20,7 @@
 							--border-width-base: var(--soft-grid-1);
 							--border-width-hairline: 0.03125rem;
 							--border-width-heavy: var(--soft-grid-2);
+							--border-width-none: var(--soft-grid-0);
 							--border-width-thick: var(--soft-grid-4);
 							--breakpoints-desktop: 1536px;
 							--breakpoints-laptop: 1280px;
@@ -791,6 +792,7 @@
 							--border-width-base: var(--soft-grid-1);
 							--border-width-hairline: 0.03125rem;
 							--border-width-heavy: var(--soft-grid-2);
+							--border-width-none: var(--soft-grid-0);
 							--border-width-thick: var(--soft-grid-4);
 							--breakpoints-desktop: 1536px;
 							--breakpoints-laptop: 1280px;
@@ -1563,6 +1565,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -2149,6 +2152,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -3106,6 +3110,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -3880,6 +3885,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -4466,6 +4472,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -5434,6 +5441,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -6208,6 +6216,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -6794,6 +6803,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -7762,6 +7772,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -8536,6 +8547,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -9122,6 +9134,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -10091,6 +10104,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -10867,6 +10881,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -11641,6 +11656,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;
@@ -12415,6 +12431,7 @@
 								--border-width-base: var(--soft-grid-1);
 								--border-width-hairline: 0.03125rem;
 								--border-width-heavy: var(--soft-grid-2);
+								--border-width-none: var(--soft-grid-0);
 								--border-width-thick: var(--soft-grid-4);
 								--breakpoints-desktop: 1536px;
 								--breakpoints-laptop: 1280px;

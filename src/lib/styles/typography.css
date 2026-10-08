@@ -1,71 +1,93 @@
 /* Single Line -------------------- */
 .hero.singleline {
 	font: var(--typography-single-line-hero-base);
+	letter-spacing: var(--typography-single-line-hero-base-letter-spacing);
 }
 .display.singleline {
 	font: var(--typography-single-line-display-base);
+	letter-spacing: var(--typography-single-line-display-base-letter-spacing);
 }
 .title.singleline {
 	font: var(--typography-single-line-title-base);
+	letter-spacing: var(--typography-single-line-title-base-letter-spacing);
 }
 .heading.singleline {
 	font: var(--typography-single-line-heading-base);
+	letter-spacing: var(--typography-single-line-heading-base-letter-spacing);
 }
 .subheading.singleline {
 	font: var(--typography-single-line-subheading-base);
+	letter-spacing: var(--typography-single-line-subheading-base-letter-spacing);
 }
 .base.singleline {
 	font: var(--typography-single-line-base-base);
+	letter-spacing: var(--typography-single-line-base-base-letter-spacing);
 }
 .subtle.singleline {
 	font: var(--typography-single-line-subtle-base);
+	letter-spacing: var(--typography-single-line-subtle-base-letter-spacing);
 }
 .quote.singleline {
 	font: var(--typography-single-line-quote-base);
+	letter-spacing: var(--typography-single-line-quote-base-letter-spacing);
 }
 .label.singleline {
 	font: var(--typography-single-line-label-base);
+	letter-spacing: var(--typography-single-line-label-base-letter-spacing);
 }
 .caption.singleline {
 	font: var(--typography-single-line-caption-base);
+	letter-spacing: var(--typography-single-line-caption-base-letter-spacing);
 }
 .footnote.singleline {
 	font: var(--typography-single-line-footnote-base);
+	letter-spacing: var(--typography-single-line-footnote-base-letter-spacing);
 }
 
 /* Multi Line -------------------- */
 .hero.multiline {
 	font: var(--typography-multi-line-hero-base);
+	letter-spacing: var(--typography-multi-line-hero-base-letter-spacing);
 }
 .display.multiline {
 	font: var(--typography-multi-line-display-base);
+	letter-spacing: var(--typography-multi-line-display-base-letter-spacing);
 }
 .title.multiline {
 	font: var(--typography-multi-line-title-base);
+	letter-spacing: var(--typography-multi-line-title-base-letter-spacing);
 }
 .heading.multiline {
 	font: var(--typography-multi-line-heading-base);
+	letter-spacing: var(--typography-multi-line-heading-base-letter-spacing);
 }
 .subheading.multiline {
 	font: var(--typography-multi-line-subheading-base);
+	letter-spacing: var(--typography-multi-line-subheading-base-letter-spacing);
 }
 .base.multiline {
 	font: var(--typography-multi-line-base-base);
+	letter-spacing: var(--typography-multi-line-base-base-letter-spacing);
 }
 .subtle.multiline {
 	font: var(--typography-multi-line-subtle-base);
+	letter-spacing: var(--typography-multi-line-subtle-base-letter-spacing);
 }
 .quote.multiline {
 	font: var(--typography-multi-line-quote-base);
+	letter-spacing: var(--typography-multi-line-quote-base-letter-spacing);
 }
 .label.multiline {
 	font: var(--typography-multi-line-label-base);
+	letter-spacing: var(--typography-multi-line-label-base-letter-spacing);
 }
 .caption.multiline {
 	font: var(--typography-multi-line-caption-base);
+	letter-spacing: var(--typography-multi-line-caption-base-letter-spacing);
 }
 .footnote.multiline {
 	font: var(--typography-multi-line-footnote-base);
+	letter-spacing: var(--typography-multi-line-footnote-base-letter-spacing);
 }
 
 /* Emphasis -------------------- */

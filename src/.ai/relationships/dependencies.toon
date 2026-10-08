@@ -1,23 +1,107 @@
-generated: "2026-07-10T20:23:44.500637+00:00"
+generated: "2026-10-07T21:06:40.361161+00:00"
 npmPackages:
   lit:
     version: 3.3.3
-    usedIn[10]: src/lib/components/Isotype/Isotype.ts,src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts,src/lib/components/ToDoListItem/ToDoListItem.ts,src/lib/components/TextInput/TextInput.ts,src/lib/components/Checkbox/Checkbox.ts,src/lib/components/Button/Button.ts,src/lib/components/ColorSwatch/ColorSwatch.ts,src/lib/components/Texture/Texture.ts,src/lib/components/IconButton/IconButton.ts,src/lib/components/Icon/Icon.ts
+    usedIn[15]: src/lib/components/FeedbackStrip/FeedbackStrip.ts,src/lib/components/Isotype/Isotype.ts,src/lib/components/Tooltip/Tooltip.ts,src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts,src/lib/components/ToDoListItem/ToDoListItem.ts,src/lib/components/Title/Title.ts,src/lib/components/TextInput/TextInput.ts,src/lib/components/Checkbox/Checkbox.ts,src/lib/components/MenuItem/MenuItem.ts,src/lib/components/Button/Button.ts,src/lib/components/ColorSwatch/ColorSwatch.ts,src/lib/components/Texture/Texture.ts,src/lib/components/IconButton/IconButton.ts,src/lib/components/Icon/Icon.ts,src/lib/components/BackButton/BackButton.ts
     purpose: "Package: lit"
 utilities:
+  "src/lib/utils/dev.ts":
+    exports[1]: warningsEnabled
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/utils/slot-content.ts":
+    exports[2]: SlotContent,resetSlotWarnings
+    usedIn[6]: src/lib/components/FeedbackStrip/FeedbackStrip.ts,src/lib/components/Tooltip/Tooltip.ts,src/lib/components/Title/Title.ts,src/lib/components/Checkbox/Checkbox.ts,src/lib/components/MenuItem/MenuItem.ts,src/lib/components/Button/Button.ts
+    purpose: Utility functions
+  "src/lib/utils/link-attributes.ts":
+    exports[1]: linkAttribute
+    usedIn[1]: src/lib/components/MenuItem/MenuItem.ts
+    purpose: Utility functions
   "src/lib/utils/index.ts":
     exports[0]:
     usedIn[0]:
     purpose: Utility functions
+  "src/lib/slots.browser.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/events.browser.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/events.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/surfaces.ts":
+    exports[2]: isAurora,GROVE_SURFACES
+    usedIn[0]:
+    purpose: Utility functions
   "src/lib/index.ts":
-    exports[21]: IconButton,IconMetadata,ToDoListItem,TextureMetadata,ButtonMetadata,componentReset,TextInputMetadata,IsotypeMetadata,ColorSwatch,IconButtonMetadata,Icon,ToDoCategoryTogglerMetadata,CheckboxMetadata,Checkbox,Button,ColorSwatchMetadata,Isotype,ToDoListItemMetadata,ToDoCategoryToggler,Texture,TextInput
+    exports[35]: TextInput,BackButtonMetadata,Icon,MenuItemMetadata,TitleMetadata,focusRing,IconButtonMetadata,Button,FeedbackStripMetadata,IconMetadata,componentReset,ToDoListItem,CheckboxMetadata,TextureMetadata,ColorSwatchMetadata,ToDoCategoryTogglerMetadata,Checkbox,Isotype,TextInputMetadata,ColorSwatch,Texture,ToDoListItemMetadata,ToDoCategoryToggler,IconButton,Title,isAurora,BackButton,ButtonMetadata,Tooltip,TooltipMetadata,IsotypeMetadata,GROVE_SURFACES,MenuItem,FeedbackStrip,visuallyHidden
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/styles/reduced-motion.browser.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/styles/focus-ring.ts":
+    exports[1]: focusRing
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/styles/focus.test.ts":
+    exports[0]:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/styles/component-reset.ts":
     exports[1]: componentReset
     usedIn[0]:
     purpose: Utility functions
+  "src/lib/styles/host-hidden.browser.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/styles/focus-ring.browser.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/styles/visually-hidden.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/styles/visually-hidden.ts":
+    exports[1]: visuallyHidden
+    usedIn[0]:
+    purpose: Utility functions
   "src/lib/components/index.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/metadata.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/metadata.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/tokens/contrast.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/FeedbackStrip/FeedbackStrip.stories.ts":
+    exports[9]: HeadingOnly,Default,Information,Danger,StaticNotice,LongMessage,Slotted,QuietFailure,Announce
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/FeedbackStrip/FeedbackStrip.ts":
+    exports[1]: FeedbackStrip
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/FeedbackStrip/FeedbackStrip.metadata.ts":
+    exports[1]: FeedbackStripMetadata
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/FeedbackStrip/FeedbackStrip.browser.test.ts":
     exports[0]:
     usedIn[0]:
     purpose: Utility functions
@@ -26,15 +110,27 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Isotype/Isotype.stories.ts":
-    exports[8]: Large,Small,BrandDark,AccentDark,Accent,Default,Base,WithLabel
+    exports[9]: Large,Accent,Default,AccentDark,Small,WithLabel,Base,BrandDark,BrandLight
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Isotype/Isotype.metadata.ts":
     exports[1]: IsotypeMetadata
     usedIn[0]:
     purpose: Utility functions
+  "src/lib/components/Tooltip/Tooltip.ts":
+    exports[1]: Tooltip
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Tooltip/Tooltip.metadata.ts":
+    exports[1]: TooltipMetadata
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Tooltip/Tooltip.stories.ts":
+    exports[7]: Default,WithoutIcon,Complete,Pressed,SimpleGray,CompleteGray,Slotted
+    usedIn[0]:
+    purpose: Utility functions
   "src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.stories.ts":
-    exports[9]: Brand,Selected,WithIcon,Gray,Accent,Default,Information,SelectedAccent,Disabled
+    exports[9]: Accent,Default,Gray,Information,Disabled,SelectedAccent,Brand,Selected,WithIcon
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.metadata.ts":
@@ -50,11 +146,27 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/ToDoListItem/ToDoListItem.stories.ts":
-    exports[2]: Done,Default
+    exports[2]: Default,Done
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/ToDoListItem/ToDoListItem.metadata.ts":
     exports[1]: ToDoListItemMetadata
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Title/Title.ts":
+    exports[1]: Title
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Title/Title.browser.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Title/Title.stories.ts":
+    exports[9]: Default,Narrow,LongHeading,Level1,Surfaces,NoIcon,Level3,Slotted,NarrowNoIcon
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Title/Title.metadata.ts":
+    exports[1]: TitleMetadata
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/TextInput/TextInput.metadata.ts":
@@ -66,7 +178,7 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/TextInput/TextInput.stories.ts":
-    exports[5]: Filled,Gray,Default,Error,Disabled
+    exports[5]: Default,Gray,Disabled,Filled,Error
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Checkbox/Checkbox.ts":
@@ -78,11 +190,27 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Checkbox/Checkbox.stories.ts":
-    exports[6]: XL,DisabledChecked,Checked,XLChecked,Default,Disabled
+    exports[8]: Default,Disabled,LabelledXL,Labelled,XLChecked,Checked,XL,DisabledChecked
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/MenuItem/MenuItem.stories.ts":
+    exports[7]: Default,Small,SmallActive,LanguageSwitcher,Active,Sidebar,Slotted
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/MenuItem/MenuItem.metadata.ts":
+    exports[1]: MenuItemMetadata
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/MenuItem/MenuItem.ts":
+    exports[1]: MenuItem
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/MenuItem/MenuItem.browser.test.ts":
+    exports[0]:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Button/Button.stories.ts":
-    exports[9]: Large,Outlined,Small,WithIcon,Gray,Default,Ghost,Tonal,Disabled
+    exports[10]: Large,Gray,Default,Small,Disabled,Outlined,WithIcon,Ghost,Slotted,Tonal
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Button/Button.ts":
@@ -98,11 +226,15 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/ColorSwatch/ColorSwatch.stories.ts":
-    exports[6]: Danger,DarkShade,Accent,Default,BaseDark,BaseLight
+    exports[11]: Accent,Default,OklchCopyFocused,BaseNight,HexCopyFocused,BaseLight,DarkShade,Danger,OklchCopied,BaseDark,HexCopied
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/ColorSwatch/ColorSwatch.metadata.ts":
     exports[1]: ColorSwatchMetadata
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Texture/Texture.browser.test.ts":
+    exports[0]:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Texture/Texture.ts":
@@ -110,7 +242,7 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Texture/Texture.stories.ts":
-    exports[3]: OnGround,Default,OnTerrace
+    exports[6]: Coarse,Default,WithContent,Tinted,OnTerrace,OnGround
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Texture/Texture.metadata.ts":
@@ -126,25 +258,59 @@ utilities:
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/IconButton/IconButton.stories.ts":
-    exports[8]: Disabled,Outlined,Small,Gray,Default,Ghost,Tonal,Medium
+    exports[8]: Gray,Default,Medium,Small,Disabled,Outlined,Ghost,Tonal
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Icon/Icon.stories.ts":
-    exports[3]: FillOnHover,Filled,Default
+    exports[5]: Default,Filled,Labelled,Unregistered,FillOnHover
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Icon/Icon.browser.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/Icon/phosphor.ts":
+    exports[7]: GRACE_MS,missingGlyphMessage,claimReport,phosphorTag,warningsEnabled,resetReports,phosphorModule
     usedIn[0]:
     purpose: Utility functions
   "src/lib/components/Icon/Icon.metadata.ts":
     exports[1]: IconMetadata
     usedIn[0]:
     purpose: Utility functions
+  "src/lib/components/Icon/phosphor.test.ts":
+    exports[0]:
+    usedIn[0]:
+    purpose: Utility functions
   "src/lib/components/Icon/Icon.ts":
     exports[1]: Icon
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/BackButton/BackButton.metadata.ts":
+    exports[1]: BackButtonMetadata
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/BackButton/BackButton.ts":
+    exports[1]: BackButton
+    usedIn[0]:
+    purpose: Utility functions
+  "src/lib/components/BackButton/BackButton.stories.ts":
+    exports[3]: Default,LogsBackEvent,CustomIcon
     usedIn[0]:
     purpose: Utility functions
 styles:
   "src/lib/styles/typography.css":
     type: stylesheet
     classes[3]: emphasis,multiline,singleline
+    purpose: Stylesheet
+    usedIn: global
+  "src/lib/styles/a11y.css":
+    type: stylesheet
+    classes[1]: visually-hidden
+    purpose: Stylesheet
+    usedIn: global
+  "src/lib/styles/surfaces.css":
+    type: stylesheet
+    classes[21]: gv-surface-accent-aurora,gv-surface-accent-summit,gv-surface-accent-terrace,gv-surface-brand-aurora,gv-surface-brand-path,gv-surface-brand-summit,gv-surface-brand-terrace,gv-surface-danger-aurora,gv-surface-danger-summit,gv-surface-danger-terrace,gv-surface-gray-aurora,gv-surface-gray-path,gv-surface-gray-summit,gv-surface-gray-terrace,gv-surface-ground,gv-surface-information-aurora,gv-surface-information-summit,gv-surface-information-terrace,gv-surface-success-aurora,gv-surface-success-summit,gv-surface-success-terrace
     purpose: Stylesheet
     usedIn: global
   "src/lib/styles/grove.css":
