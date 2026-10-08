@@ -88,6 +88,7 @@ export default defineConfig({
 				const { copyFile, cp, mkdir } = await import('node:fs/promises');
 				await mkdir('dist/tokens', { recursive: true });
 				await copyFile('src/lib/tokens/tokens.css', 'dist/tokens/tokens.css');
+				await copyFile('components-since.json', 'dist/components-since.json');
 				await cp('src/lib/fonts', 'dist/fonts', { recursive: true });
 				await mkdir('dist/styles', { recursive: true });
 				const { readdir } = await import('node:fs/promises');

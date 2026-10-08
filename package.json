@@ -18,7 +18,9 @@
 	"scripts": {
 		"build": "pnpm build-tokens && vite build && pnpm build-manifest",
 		"build-manifest": "cem analyze --config custom-elements-manifest.config.mjs && node scripts/generate-framework-types.mjs && node scripts/check-manifest.mjs",
-		"prepack": "pnpm build && publint",
+		"prepack": "pnpm check-ledger && pnpm build && publint",
+		"record-release": "node scripts/record-release.mjs",
+		"check-ledger": "node scripts/check-ledger.mjs",
 		"check": "tsc --noEmit",
 		"check:watch": "tsc --noEmit --watch",
 		"lint": "prettier --check . && eslint .",

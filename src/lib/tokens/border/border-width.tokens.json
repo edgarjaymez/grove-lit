@@ -1,7 +1,7 @@
 {
 	"borderWidth": {
 		"$type": "dimension",
-		"none": "{softGrid.0}",
+		"none": { "$value": "{softGrid.0}" },
 		"hairline": {
 			"$value": {
 				"value": 0.03125,

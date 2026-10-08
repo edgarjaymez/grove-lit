@@ -33,6 +33,7 @@ export class BackButton extends LitElement {
 				padding-inline: var(--soft-grid-24);
 				padding-block: var(--soft-grid-24);
 				font: var(--typography-single-line-title-base);
+				letter-spacing: var(--typography-single-line-title-base-letter-spacing);
 				transition: color 300ms ease-in-out;
 			}
 
