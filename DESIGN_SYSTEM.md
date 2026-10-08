@@ -1079,10 +1079,12 @@ At night the grove keeps its shape: the same tracks, depths, text roles and comp
 | `divider-on/{ground, X/terrace, X/path, X/summit, X/aurora}`    | `gray/200` / `X/300` / `X/400` / `X/50` / `X/100`         | `gray/700` / `X/600` / `X/500` / `X/100` / `X/50`         |
 | `selected-text-on/{ground, X/terrace, X/summit, X/aurora}` ²³   | `accent/100` / `accent/500` / `accent/100` / `accent/100` | `accent/800` / `accent/700` / `accent/800` / `accent/800` |
 | `ring-on` colour — Ground, Terrace, Path / Summit ²             | `accent/500` / `accent/100`                               | `accent/300` / `accent/100`                               |
+| Texture grain (`gv-texture color="X"`) ⁴                        | `X/700` at 10 %                                           | `X/50` at 10 %                                            |
 
 ¹ Where a track is itself a link colour, that link borrows brand instead: the accent track's unvisited link and the information track's visited link (`brand/800` by day, `brand/100` at night).
 ² The accent track uses `brand` in place of `accent`.
 ³ A `selected-text-on` summit token exists only for the brand and gray tracks (no path variant either); the other tracks have ground, terrace and aurora.
+⁴ The day tones are the Figma Texture variants. Figma has no night grain: at night the paper fibre catches the moonlight, so the grain turns light in its own hue, as a moonlit rim does.
 
 #### Shadows at night
 

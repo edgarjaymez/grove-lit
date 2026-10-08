@@ -1,13 +1,27 @@
 import { afterAll, afterEach, describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { commands, page } from 'vitest/browser';
 import { html, render } from 'lit';
 import { applyTheme, themes } from '../../../test/themes.js';
 import './Texture.js';
-import type { Texture } from './Texture.js';
+import type { Texture, TextureColor } from './Texture.js';
 
-const LIGHT_DEFAULT = 'rgba(38, 77, 40, 0.1)';
+/** Figma's Texture `color` variants: {track}/700 at 10 %, read from the Grove library. */
+const DAY: Record<TextureColor, string> = {
+	accent: 'rgba(98, 24, 122, 0.1)',
+	brand: 'rgba(38, 77, 40, 0.1)',
+	danger: 'rgba(128, 4, 26, 0.1)',
+	gray: 'rgba(70, 66, 61, 0.1)',
+	information: 'rgba(0, 72, 113, 0.1)',
+	success: 'rgba(0, 82, 56, 0.1)'
+};
+const TRACKS = Object.keys(DAY) as TextureColor[];
+/** The night grain: {track}/50 at 10 % (DESIGN_SYSTEM.md, Dark Theme). */
+const night = (track: TextureColor) =>
+	`color-mix(in srgb, var(--color-${track}-50) 10%, transparent)`;
+const LIGHT_DEFAULT = DAY.brand;
 
 const host = document.body.appendChild(document.createElement('div'));
+host.id = 'texture-host';
 
 afterEach(() => {
 	render(html``, host);
@@ -38,8 +52,21 @@ const baseFrequency = (el: Texture) =>
 	el.shadowRoot!.querySelector('feTurbulence')!.getAttribute('baseFrequency');
 
 const shot = (element: Element) => page.screenshot({ element, save: false });
+const surfaceShot = () => shot(host.querySelector('.surface')!);
 
-/** The 0.45.0 overlay, verbatim apart from the filter id, as the pixel reference for the default grain. */
+/** A colour as the page resolves it under the current theme, through a probe element. */
+const resolve = (color: string) => {
+	const probe = host.appendChild(document.createElement('span'));
+	probe.style.color = color;
+	const value = getComputedStyle(probe).color;
+	probe.remove();
+	return value;
+};
+const alpha = (color: string) =>
+	/\/|rgba/.test(color) ? Number(color.match(/([\d.]+)\)$/)![1]) : 1;
+const channels = (color: string) => color.match(/\d+/g)!.slice(0, 3).map(Number);
+
+/** The 0.44.0 overlay, before tint, verbatim apart from the filter id: the default grain's pixel reference. */
 const legacy = html`
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -91,6 +118,22 @@ describe('gv-texture is hidden from assistive technology (#32)', () => {
 		expect(el.hasAttribute('aria-hidden')).toBe(false);
 	});
 
+	it('leaves no node in the accessibility tree at any opacity', async () => {
+		const [el] = await mount(
+			surface(
+				html`<gv-texture opacity="0"></gv-texture>
+					<p>Surface copy</p>`
+			)
+		);
+		for (const opacity of [0, 1]) {
+			el.opacity = opacity;
+			await el.updateComplete;
+			const tree = await commands.ariaSnapshot('#texture-host');
+			expect(tree).toContain('Surface copy');
+			expect(tree).not.toMatch(/- img\b/);
+		}
+	});
+
 	it('stays hidden at every opacity and after opacity changes', async () => {
 		const [el] = await mount(surface(html`<gv-texture opacity="0"></gv-texture>`));
 		for (const opacity of [0, 0.25, 0.4, 1]) {
@@ -118,9 +161,35 @@ describe('gv-texture is hidden from assistive technology (#32)', () => {
 	});
 });
 
+describe('gv-texture stacking (#32 FR-05)', () => {
+	// The test frame is scaled, so a screenshot's edge pixels blend with what lies just outside the
+	// element. The probe sits inset in the box, so its edges blend only with the box's own white.
+	const box = (style: string) =>
+		html`<div style="${style} padding: 8px; background: white">
+			<div class="content" style="width: 64px; height: 44px; background: white"></div>
+		</div>`;
+	const boxShot = () => shot(host.querySelector('.content')!);
+
+	it('paints positioned content that follows it above the grain', async () => {
+		await mount(
+			surface(html`<gv-texture tint="rgb(255, 0, 0)"></gv-texture>${box('position: relative;')}`)
+		);
+		const over = await boxShot();
+		await mount(surface(box('position: relative;')));
+		expect(over === (await boxShot())).toBe(true);
+	});
+
+	it('paints over unpositioned content, which is why the rule exists', async () => {
+		await mount(surface(html`<gv-texture tint="rgb(255, 0, 0)"></gv-texture>${box('')}`));
+		const under = await boxShot();
+		await mount(surface(box('')));
+		expect(under === (await boxShot())).toBe(false);
+	});
+});
+
 describe('gv-texture tint (#20)', () => {
 	// Filter output depends on where the surface sits on the page, so both renders use the same spot.
-	it('renders the default grain pixel-identical to 0.45.0 in the light theme', async () => {
+	it('renders the default grain pixel-identical to 0.44.0 in the light theme', async () => {
 		await applyTheme(themes[0]);
 		const [el] = await mount(surface(html`<gv-texture></gv-texture>`));
 		expect(grain(el)).toBe(LIGHT_DEFAULT);
@@ -137,6 +206,23 @@ describe('gv-texture tint (#20)', () => {
 		expect(grain(el)).toBe(LIGHT_DEFAULT);
 	});
 
+	it('repaints the grain when a tint is set, replaced by an invalid one, or removed', async () => {
+		await applyTheme(themes[0]);
+		const [el] = await mount(surface(html`<gv-texture></gv-texture>`));
+		const plain = await surfaceShot();
+		el.tint = 'rgb(255, 0, 0)';
+		await el.updateComplete;
+		expect(plain === (await surfaceShot())).toBe(false);
+		el.tint = 'not-a-colour';
+		await el.updateComplete;
+		expect(plain === (await surfaceShot())).toBe(true);
+		el.tint = 'rgb(255, 0, 0)';
+		await el.updateComplete;
+		el.removeAttribute('tint');
+		await el.updateComplete;
+		expect(plain === (await surfaceShot())).toBe(true);
+	});
+
 	it.each(['not-a-colour', 'var(--gv-missing)', ''])(
 		'falls back to the default for tint="%s" instead of painting black',
 		async (tint) => {
@@ -148,10 +234,7 @@ describe('gv-texture tint (#20)', () => {
 
 	it('resolves Grove tokens through var() against the page', async () => {
 		const tint = 'color-mix(in srgb, var(--color-accent-700) 12%, transparent)';
-		const probe = host.appendChild(document.createElement('span'));
-		probe.style.color = tint;
-		const expected = getComputedStyle(probe).color;
-		probe.remove();
+		const expected = resolve(tint);
 		const [el] = await mount(surface(html`<gv-texture tint=${tint}></gv-texture>`));
 		expect(expected).not.toBe('rgb(0, 0, 0)');
 		expect(grain(el)).toBe(expected);
@@ -206,25 +289,25 @@ describe('gv-texture frequency (#20)', () => {
 });
 
 describe('gv-texture in the dark theme (#20 FR-DT1 to FR-DT4)', () => {
-	it('uses a lighter default at night and the light default by day', async () => {
+	it('uses brand/700 at 10 % by day and brand/50 at 10 % at night', async () => {
 		const [el] = await mount(surface(html`<gv-texture></gv-texture>`));
 		for (const theme of themes) {
 			await applyTheme(theme);
-			const expected =
-				theme.name === 'light' ? LIGHT_DEFAULT : expect.not.stringMatching(/^rgba\(38, 77, 40/);
-			expect(grain(el)).toEqual(expected);
+			expect(grain(el)).toBe(theme.name === 'light' ? LIGHT_DEFAULT : resolve(night('brand')));
 		}
 	});
 
-	it('switches the default with data-theme at runtime, without a re-render, and back', async () => {
+	it('repaints the default on a data-theme switch, without a re-render, and back', async () => {
 		await applyTheme(themes[0]);
 		const [el] = await mount(surface(html`<gv-texture></gv-texture>`));
 		const before = svg(el);
+		const day = await surfaceShot();
 		await applyTheme(themes[1]);
-		const night = grain(el);
-		expect(night).not.toBe(LIGHT_DEFAULT);
+		expect(grain(el)).toBe(resolve(night('brand')));
+		expect(day === (await surfaceShot())).toBe(false);
 		await applyTheme(themes[0]);
 		expect(grain(el)).toBe(LIGHT_DEFAULT);
+		expect(day === (await surfaceShot())).toBe(true);
 		expect(svg(el)).toBe(before);
 	});
 
@@ -277,5 +360,80 @@ describe('gv-texture in the dark theme (#20 FR-DT1 to FR-DT4)', () => {
 		);
 		expect(grain(invalid)).toBe(grain(plain));
 		await applyTheme(themes[0]);
+	});
+});
+
+describe('gv-texture color, the Figma variants (#48)', () => {
+	it.each(TRACKS)('paints the %s grain from its day and night tones', async (track) => {
+		const [el] = await mount(surface(html`<gv-texture color=${track}></gv-texture>`));
+		for (const theme of themes) {
+			await applyTheme(theme);
+			const expected = theme.name === 'light' ? DAY[track] : resolve(night(track));
+			expect(grain(el)).toBe(expected);
+			expect(alpha(grain(el))).toBeLessThanOrEqual(0.1);
+		}
+		await applyTheme(themes[0]);
+	});
+
+	it.each(['', 'purple', 'toString'])('treats color="%s" as brand', async (color) => {
+		await applyTheme(themes[0]);
+		const [el] = await mount(surface(html`<gv-texture color=${color}></gv-texture>`));
+		expect(grain(el)).toBe(DAY.brand);
+	});
+
+	// Figma rounds its noise colours to 8 bits; the literals must stay on the palette they come from.
+	it.each(TRACKS)('keeps the %s day tone on its --color-…-700 token', async (track) => {
+		await applyTheme(themes[0]);
+		const ctx = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
+		ctx.fillStyle = resolve(`var(--color-${track}-700)`);
+		ctx.fillRect(0, 0, 1, 1);
+		const token = [...ctx.getImageData(0, 0, 1, 1).data.slice(0, 3)];
+		channels(DAY[track]).forEach((channel, i) =>
+			expect(Math.abs(channel - token[i])).toBeLessThanOrEqual(1)
+		);
+	});
+
+	it('lets tint override the colour in every theme', async () => {
+		const [el] = await mount(
+			surface(html`<gv-texture color="accent" tint="rgb(255, 0, 0)"></gv-texture>`)
+		);
+		for (const theme of themes) {
+			await applyTheme(theme);
+			expect(grain(el)).toBe('rgb(255, 0, 0)');
+		}
+		await applyTheme(themes[0]);
+	});
+
+	it.each(['not-a-colour', 'var(--missing)'])(
+		'falls back to the colour’s own default for tint="%s", not to brand',
+		async (tint) => {
+			const [plain, el] = await mount(
+				surface(html`
+					<gv-texture color="accent"></gv-texture>
+					<gv-texture color="accent" tint=${tint}></gv-texture>
+				`)
+			);
+			for (const theme of themes) {
+				await applyTheme(theme);
+				expect(grain(el)).toBe(grain(plain));
+			}
+			await applyTheme(themes[0]);
+			expect(grain(el)).toBe(DAY.accent);
+		}
+	);
+
+	it('repaints a colour change in place, and back', async () => {
+		await applyTheme(themes[0]);
+		const [el] = await mount(surface(html`<gv-texture></gv-texture>`));
+		const before = svg(el);
+		const brand = await surfaceShot();
+		el.color = 'accent';
+		await el.updateComplete;
+		expect(grain(el)).toBe(DAY.accent);
+		expect(brand === (await surfaceShot())).toBe(false);
+		el.color = 'brand';
+		await el.updateComplete;
+		expect(brand === (await surfaceShot())).toBe(true);
+		expect(svg(el)).toBe(before);
 	});
 });
