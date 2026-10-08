@@ -1,10 +1,10 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { html, render } from 'lit';
-import type { LitElement } from 'lit';
 import '../index.js';
 import './effects.css';
 import './surfaces.css';
+import { frames, settleDeep } from '../../test/shadow.js';
 import { applyTheme, themes } from '../../test/themes.js';
 
 const host = document.body.appendChild(document.createElement('div'));
@@ -18,14 +18,6 @@ afterAll(async () => {
 	await commands.emulateMedia({ reducedMotion: 'no-preference' });
 	await applyTheme(themes[0]);
 });
-
-const frame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-const settle = async () => {
-	const all = [...host.querySelectorAll('*')].filter((el) => el.localName.startsWith('gv-'));
-	await Promise.all(all.map((el) => (el as LitElement).updateComplete));
-	await Promise.all(all.map((el) => (el as LitElement).updateComplete));
-};
 
 /** The element inside a Grove control that receives focus. */
 const inner = (el: Element): HTMLElement => {
@@ -53,7 +45,7 @@ const tabTo = async (target: Element) => {
 	start.focus();
 	await userEvent.keyboard('{Tab}');
 	start.remove();
-	await frame();
+	await frames(2);
 };
 
 const CONTROLS = [
@@ -77,18 +69,18 @@ for (const theme of themes)
 		for (const [tag, template] of CONTROLS)
 			it(`<${tag}> draws the Ground ring on keyboard focus and drops it on blur`, async () => {
 				render(template, host);
-				await settle();
+				await settleDeep(host);
 				const el = host.querySelector(tag)!;
 				await tabTo(el);
 				expect(shadow(el).startsWith(ring('--ring-on-ground'))).toBe(true);
 				inner(el).blur();
-				await frame();
+				await frames(2);
 				expect(shadow(el).startsWith(ring('--ring-on-ground'))).toBe(false);
 			});
 
 		it('<gv-menu-item> falls back to the brand-terrace ring', async () => {
 			render(html`<gv-menu-item label="Home" href="#"></gv-menu-item>`, host);
-			await settle();
+			await settleDeep(host);
 			const el = host.querySelector('gv-menu-item')!;
 			await tabTo(el);
 			expect(shadow(el).startsWith(ring('--ring-on-brand-terrace'))).toBe(true);
@@ -104,7 +96,7 @@ for (const theme of themes)
 				</div>`,
 				host
 			);
-			await settle();
+			await settleDeep(host);
 			const outer = host.querySelector('gv-button')!;
 			const item = host.querySelector('gv-todo-list-item')!;
 			await tabTo(outer);
@@ -120,13 +112,13 @@ for (const theme of themes)
 				</div>`,
 				host
 			);
-			await settle();
+			await settleDeep(host);
 			const wrapper = host.firstElementChild as HTMLElement;
 			const el = host.querySelector('gv-button')!;
 			await tabTo(el);
 			expect(shadow(el).startsWith(ring('--ring-on-success-terrace'))).toBe(true);
 			wrapper.style.removeProperty('--gv-focus-ring');
-			await frame();
+			await frames(2);
 			expect(shadow(el).startsWith(ring('--ring-on-ground'))).toBe(true);
 		});
 
@@ -137,7 +129,7 @@ for (const theme of themes)
 				</div>`,
 				host
 			);
-			await settle();
+			await settleDeep(host);
 			const el = host.querySelector('gv-button')!;
 			await tabTo(el);
 			expect(shadow(el).startsWith(ring('--ring-on-brand-terrace'))).toBe(true);
@@ -150,7 +142,7 @@ for (const theme of themes)
 				</div>`,
 				host
 			);
-			await settle();
+			await settleDeep(host);
 			const island = host.querySelector('[data-theme]')!;
 			const el = host.querySelector('gv-button')!;
 			await tabTo(el);
@@ -159,15 +151,15 @@ for (const theme of themes)
 
 		it('draws the ring over the drop shadow, which stays', async () => {
 			render(html`<gv-button text="Save"></gv-button>`, host);
-			await settle();
+			await settleDeep(host);
 			const el = host.querySelector('gv-button')!;
 			await userEvent.hover(el);
-			await frame();
+			await frames(2);
 			const drop = shadow(el);
 			await userEvent.unhover(el);
 			await tabTo(el);
 			await userEvent.hover(el);
-			await frame();
+			await frames(2);
 			const focused = shadow(el);
 			expect(focused.startsWith(ring('--ring-on-ground'))).toBe(true);
 			expect(focused.endsWith(drop)).toBe(true);
@@ -182,7 +174,7 @@ for (const theme of themes)
 				</div>`,
 				host
 			);
-			await settle();
+			await settleDeep(host);
 			for (const el of host.querySelectorAll('.surface-ground > *')) {
 				await tabTo(el);
 				expect(getComputedStyle(el).boxShadow).toBe('none');
@@ -199,28 +191,28 @@ describe('focus ring behaviour', () => {
 				<gv-text-input placeholder="Name"></gv-text-input>`,
 			host
 		);
-		await settle();
+		await settleDeep(host);
 		const ground = ring('--ring-on-ground');
 		for (const tag of ['gv-button', 'gv-checkbox']) {
 			const el = host.querySelector(tag)!;
 			await userEvent.click(inner(el));
-			await frame();
+			await frames(2);
 			expect(shadow(el).startsWith(ground)).toBe(false);
 		}
 		const input = host.querySelector('gv-text-input')!;
 		await userEvent.click(inner(input));
-		await frame();
+		await frames(2);
 		expect(shadow(input).startsWith(ground)).toBe(true);
 	});
 
 	it('updates the ring colour when the theme changes while focused', async () => {
 		render(html`<gv-button text="Save"></gv-button>`, host);
-		await settle();
+		await settleDeep(host);
 		const el = host.querySelector('gv-button')!;
 		await tabTo(el);
 		const light = shadow(el);
 		await applyTheme(themes[1]);
-		await frame();
+		await frames(2);
 		expect(shadow(el)).not.toBe(light);
 		expect(shadow(el).startsWith(ring('--ring-on-ground'))).toBe(true);
 	});
@@ -231,7 +223,7 @@ describe('focus ring behaviour', () => {
 				<gv-text-input error placeholder="B"></gv-text-input>`,
 			host
 		);
-		await settle();
+		await settleDeep(host);
 		for (const el of host.querySelectorAll('gv-text-input')) {
 			await tabTo(el);
 			expect(shadow(el).startsWith(ring('--ring-on-ground'))).toBe(true);
@@ -243,7 +235,7 @@ describe('focus ring behaviour', () => {
 			html`<gv-button text="Off" disabled></gv-button><gv-button text="On"></gv-button>`,
 			host
 		);
-		await settle();
+		await settleDeep(host);
 		const [off, on] = host.querySelectorAll('gv-button');
 		await tabTo(off);
 		expect(on.shadowRoot!.activeElement).toBe(inner(on));
@@ -251,7 +243,7 @@ describe('focus ring behaviour', () => {
 
 	it('shows a system-colour outline under forced colours, and no outline otherwise', async () => {
 		render(html`<gv-button text="Save"></gv-button>`, host);
-		await settle();
+		await settleDeep(host);
 		const el = host.querySelector('gv-button')!;
 		await tabTo(el);
 		expect(getComputedStyle(inner(el)).outlineColor).toBe('rgba(0, 0, 0, 0)');

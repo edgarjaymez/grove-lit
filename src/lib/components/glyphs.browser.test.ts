@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { metadataByTag } from '../../test/component-metadata.js';
 import { groveTags } from '../../test/grove-tags.js';
+import { deepElements, settleDeep } from '../../test/shadow.js';
 import type { ComponentMetadata } from './metadata.js';
 
 const metaOf = (tag: string) => metadataByTag.get(tag)!;
@@ -8,26 +9,14 @@ const metaOf = (tag: string) => metadataByTag.get(tag)!;
 const host = document.body.appendChild(document.createElement('div'));
 afterEach(() => host.replaceChildren());
 
-/** Every element under `root`, through nested shadow roots. */
-const deep = (root: ParentNode): Element[] =>
-	[...root.querySelectorAll('*')].flatMap((el) => [
-		el,
-		...(el.shadowRoot ? deep(el.shadowRoot) : [])
-	]);
-
 /** Mounts `tag` with `attributes`, lets nested components render, and returns the glyphs drawn. */
 const glyphsOf = async (tag: string, attributes: readonly (readonly [string, string])[] = []) => {
 	const el = document.createElement(tag);
 	for (const [name, value] of attributes) el.setAttribute(name, value);
 	host.replaceChildren(el);
-	for (let count = -1; count !== deep(host).length; ) {
-		count = deep(host).length;
-		await Promise.all(
-			deep(host).map((node) => (node as { updateComplete?: unknown }).updateComplete)
-		);
-	}
+	await settleDeep(host);
 	return new Set(
-		deep(host)
+		deepElements(host)
 			.map((node) => node.localName)
 			.filter((name) => name.startsWith('ph-'))
 			.map((name) => name.slice(3))
