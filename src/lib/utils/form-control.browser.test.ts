@@ -10,6 +10,7 @@ import {
 	resetFormControlWarnings
 } from './form-control.js';
 import type { FormRole } from './form-control.js';
+import { cancelFormSubmits, nextTask, recordSubmits, settle } from '../../test/forms.js';
 
 /** A submit, reset or plain button, by its `type`, like gv-button in button mode. */
 @customElement('test-submitter')
@@ -73,33 +74,19 @@ class TestNoSlot extends LitElement {
 
 const host = document.body.appendChild(document.createElement('div'));
 
-/** Submissions never navigate the test page; the counts come from listeners on each form. */
-const cancelSubmit = (e: Event) => e.preventDefault();
-document.addEventListener('submit', cancelSubmit);
+cancelFormSubmits();
 
 afterEach(() => render(html``, host));
 
-const nextTask = () => new Promise((resolve) => setTimeout(resolve));
-
 const mount = async (template: unknown) => {
 	render(template, host);
-	const controls = [...host.querySelectorAll<LitElement>('test-submitter, test-field')];
-	await Promise.all(controls.map((el) => el.updateComplete));
+	await settle(host);
 	return {
 		form: host.querySelector('form')!,
 		submitter: host.querySelector<TestSubmitter>('test-submitter')!,
 		submitters: [...host.querySelectorAll<TestSubmitter>('test-submitter')],
 		field: host.querySelector<TestField>('test-field')!
 	};
-};
-
-/** Counts submit events on a form and keeps each one's form data, built while the event fires. */
-const recordSubmits = (form: HTMLFormElement) => {
-	const log: { data: [string, FormDataEntryValue][]; submitter: HTMLElement | null }[] = [];
-	form.addEventListener('submit', (e) =>
-		log.push({ data: [...new FormData(form)], submitter: (e as SubmitEvent).submitter })
-	);
-	return log;
 };
 
 const submitting = (el: Element) => el.matches(':state(submitting)');

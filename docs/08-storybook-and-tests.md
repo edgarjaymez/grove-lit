@@ -179,6 +179,11 @@ untrusted ones. `Button.browser.test.ts` relies on it: `userEvent.click(inner)`,
 `userEvent.keyboard('{Enter}')`, `userEvent.keyboard('[Space]')`. Playwright waits for an element it
 considers disabled; pass `{ force: true }` to click one on purpose.
 
+`src/test/forms.ts` has the helpers for controls in forms: `cancelFormSubmits()` stops every
+submission from navigating the page, `recordSubmits()` logs each submit with its form data,
+`nextTask()` waits until a control has acted on its form, and `settle()` waits until every Lit
+element under a root has updated.
+
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 

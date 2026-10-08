@@ -208,7 +208,8 @@ component yourself. Say the control is `gv-field`.
    `name` property.
 6. If its slot sits inside the control, create `SlotContent` with `{ phrasingOnly: true }`.
 7. Copy the cases that apply from `Button.browser.test.ts`: in a form, `form="id"`, a disabled
-   fieldset, reset, Enter, and one supported composition.
+   fieldset, reset, Enter, and one supported composition. Import their helpers (`nextTask`,
+   `recordSubmits`, `cancelFormSubmits`, `settle`) from `src/test/forms.ts`; don't copy them.
 
 The mixin isn't exported from the package. Exporting it for consumers' own controls is decided once
 gv-checkbox and gv-text-input have used its hooks.

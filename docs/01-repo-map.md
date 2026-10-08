@@ -147,7 +147,8 @@ release time.
 ## Where to see it in Button.ts
 
 - `src/lib/components/Button/` holds `Button.ts`, `Button.metadata.ts`, `Button.stories.ts` and
-  `Button.browser.test.ts`.
+  `Button.browser.test.ts`. The browser test takes its form helpers from `src/test/forms.ts`, as the
+  mixin's own test does.
 - `Button.ts` extends the form base in `src/lib/utils/form-control.ts`, the one module there that the
   manifest analyzer also reads.
 - `gv-button` reaches the package through two lines in `src/lib/index.ts` (`Button` and

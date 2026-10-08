@@ -4,6 +4,7 @@ import { LitElement, html, render } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import './Button.js';
 import type { Button } from './Button.js';
+import { cancelFormSubmits, nextTask, recordSubmits, settle } from '../../../test/forms.js';
 import { applyTheme, themes } from '../../../test/themes.js';
 
 /** A page shell around a slotted light-DOM form: supported (#49 C2). */
@@ -63,23 +64,13 @@ class TestLitForm extends LitElement {
 const host = document.body.appendChild(document.createElement('div'));
 host.id = 'button-host';
 
-/** Submissions never navigate the test page; the counts come from listeners on each form. */
-document.addEventListener('submit', (e) => e.preventDefault());
+cancelFormSubmits();
 
 afterEach(() => render(html``, host));
 
-const nextTask = () => new Promise((resolve) => setTimeout(resolve));
-
-const settle = async () => {
-	for (let i = 0; i < 2; i++) {
-		const all = [...host.querySelectorAll('*')].filter((el) => el instanceof LitElement);
-		await Promise.all(all.map((el) => (el as LitElement).updateComplete));
-	}
-};
-
 const mount = async (template: unknown) => {
 	render(template, host);
-	await settle();
+	await settle(host);
 	return {
 		form: host.querySelector('form')!,
 		buttons: [...host.querySelectorAll<Button>('gv-button')],
@@ -88,15 +79,6 @@ const mount = async (template: unknown) => {
 };
 
 const inner = (el: Button) => el.shadowRoot!.querySelector<HTMLElement>('.btn')!;
-
-/** Counts submit events on a form and keeps each one's form data and submitter. */
-const recordSubmits = (form: HTMLFormElement) => {
-	const log: { data: [string, FormDataEntryValue][]; submitter: HTMLElement | null }[] = [];
-	form.addEventListener('submit', (e) =>
-		log.push({ data: [...new FormData(form)], submitter: (e as SubmitEvent).submitter })
-	);
-	return log;
-};
 
 /** Records, once each click has finished dispatching, whether anything cancelled it at the anchor. */
 const recordLinkClicks = (anchor: HTMLElement) => {
@@ -365,7 +347,7 @@ describe('disabled (#40 FR-14, FR-15)', () => {
 		await nextTask();
 		expect(log).toHaveLength(0);
 		form.querySelector('fieldset')!.disabled = false;
-		await settle();
+		await settle(host);
 		expect(inner(inFieldset).matches(':disabled')).toBe(false);
 		inFieldset.click();
 		await nextTask();
@@ -608,7 +590,7 @@ describe('supported compositions (#49 C2)', () => {
 		render(html`<test-lit-form></test-lit-form>`, host);
 		const litForm = host.querySelector<TestLitForm>('test-lit-form')!;
 		await litForm.updateComplete;
-		await settle();
+		await settle(host);
 		const send = litForm.submitButton;
 		await send.updateComplete;
 		await userEvent.click(inner(send));
@@ -619,7 +601,7 @@ describe('supported compositions (#49 C2)', () => {
 		await litForm.request;
 		expect(send.disabled).toBe(false);
 		expect(send.matches(':state(submitting)')).toBe(false);
-		await settle();
+		await settle(host);
 		expect(inner(send).matches(':disabled')).toBe(false);
 		await userEvent.click(inner(send));
 		await nextTask();
