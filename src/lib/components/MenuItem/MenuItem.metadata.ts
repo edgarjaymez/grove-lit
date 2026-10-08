@@ -9,9 +9,9 @@ export const MenuItemMetadata = {
 		description:
 			'A sidebar/docs navigation item rendered as a native anchor with a leading Phosphor icon and a wrapping label. Two sizes model the two navigation levels: md for primary entries and sm for sub-entries. The item is transparent — its parent paints the brand terrace surface — and it has four visual states driven by hover and the is-active attribute.',
 		type: 'navigation',
-		version: '1.2.0',
+		version: '1.2.1',
 		created: '2026/09/16',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -27,7 +27,7 @@ export const MenuItemMetadata = {
 			'table-of-contents-link',
 			'language-switcher'
 		],
-		requiredProps: ['label', 'href'],
+		requiredProps: ['href'],
 		commonPatterns: [
 			{
 				name: 'slotted-label',
@@ -166,7 +166,7 @@ export const MenuItemMetadata = {
 		keyboardSupport:
 			'Native anchor behavior — Tab focuses the link, Enter activates it. No custom key handling.',
 		screenReader:
-			'The accessible name is the label text; the icon is aria-hidden="true" and is not announced. When active, aria-current="page" announces the entry as the current page.',
+			'The accessible name is the slotted content when present, else label; the icon is aria-hidden="true" and is not announced. When active, aria-current="page" announces the entry as the current page.',
 		focusManagement:
 			"The internal anchor receives focus and draws the Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else --ring-on-brand-terrace, the surface its parent paints.",
 		wcag: 'AA',
