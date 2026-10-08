@@ -6,7 +6,7 @@ import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
 import { SlotContent } from '../../utils/slot-content.js';
-import { linkAttribute } from '../../utils/link-attributes.js';
+import { linkAttribute, linkRel } from '../../utils/link-attributes.js';
 
 type MenuItemSize = 'md' | 'sm';
 
@@ -21,7 +21,9 @@ type MenuItemSize = 'md' | 'sm';
  * The consuming app must register the Phosphor icon it uses, e.g.
  * `import '@phosphor-icons/webcomponents/PhHouse'` for `icon="house"`.
  *
- * `hreflang` names the destination's language and is forwarded to the link only when `href` is set.
+ * `hreflang` names the destination's language, `target` where the link opens and `rel` its
+ * relationship to the destination. All three are forwarded to the link only when `href` is set, and
+ * `target="_blank"` without `rel` gets `rel="noopener noreferrer"`, as on `gv-button`.
  * When the label itself is in another language, put `lang` on the element
  * (`<gv-menu-item lang="es" hreflang="es" …>`): the shadow link inherits the host's language, so
  * screen readers switch voice (WCAG 3.1.2). `lang` is deliberately not a property.
@@ -30,11 +32,19 @@ type MenuItemSize = 'md' | 'sm';
  */
 @customElement('gv-menu-item')
 export class MenuItem extends LitElement {
-	private readonly _slots = new SlotContent(this, ['']);
+	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 
 	@property({ type: String }) label = '';
 	@property({ type: String }) href?: string;
+	/** The language of the link's destination, such as `es`; forwarded only when `href` is set. */
 	@property({ type: String }) hreflang?: string;
+	/**
+	 * Where the link opens: `_self`, `_blank`, `_parent`, `_top` or a named browsing context. `_blank`
+	 * without `rel` gets `rel="noopener noreferrer"`.
+	 */
+	@property({ type: String }) target?: string;
+	/** The link's relationship to its target; passed through untouched when set. */
+	@property({ type: String }) rel?: string;
 	@property({ type: String }) icon = 'house';
 	@property({ type: String }) size: MenuItemSize = 'md';
 	@property({ type: Boolean, attribute: 'is-active', reflect: true }) isActive = false;
@@ -120,6 +130,8 @@ export class MenuItem extends LitElement {
 				})}
 				href=${ifDefined(this.href)}
 				hreflang=${ifDefined(linkAttribute(this.href, this.hreflang))}
+				target=${ifDefined(linkAttribute(this.href, this.target))}
+				rel=${ifDefined(linkRel(this.href, this.target, this.rel))}
 				aria-current=${this.isActive ? 'page' : nothing}
 			>
 				${this.icon

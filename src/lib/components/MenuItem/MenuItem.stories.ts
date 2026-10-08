@@ -7,6 +7,9 @@ interface Args {
 	label: string;
 	href: string;
 	hreflang: string;
+	/** Any browsing context name; the select offers the keywords. */
+	target: string;
+	rel: string;
 	icon: string;
 	size: 'md' | 'sm';
 	isActive: boolean;
@@ -25,11 +28,15 @@ const meta: Meta<Args> = {
 	title: 'Components/gv-menu-item',
 	tags: ['autodocs'],
 	decorators: [terrace],
-	render: ({ label, href, hreflang, icon, size, isActive }) => html`
+	// Already clean, so it gates now: Sidebar locks SC 2.5.8 before the library-wide switch (#50).
+	parameters: { a11y: { test: 'error' } },
+	render: ({ label, href, hreflang, target, rel, icon, size, isActive }) => html`
 		<gv-menu-item
 			label=${label}
 			href=${ifDefined(href || undefined)}
 			hreflang=${ifDefined(hreflang || undefined)}
+			target=${ifDefined(target || undefined)}
+			rel=${ifDefined(rel || undefined)}
 			icon=${icon}
 			size=${size}
 			?is-active=${isActive}
@@ -39,6 +46,8 @@ const meta: Meta<Args> = {
 		label: { control: 'text' },
 		href: { control: 'text' },
 		hreflang: { control: 'text' },
+		target: { control: 'select', options: ['', '_self', '_blank', '_parent', '_top'] },
+		rel: { control: 'text' },
 		icon: { control: 'text' },
 		size: { control: 'select', options: ['md', 'sm'] },
 		isActive: { control: 'boolean' }
@@ -47,6 +56,8 @@ const meta: Meta<Args> = {
 		label: 'Getting started',
 		href: '#',
 		hreflang: '',
+		target: '',
+		rel: '',
 		icon: 'house',
 		size: 'md',
 		isActive: false
@@ -90,6 +101,11 @@ export const LanguageSwitcher: Story = {
 			<gv-menu-item lang="es" hreflang="es" href="#" label="Español" icon=""></gv-menu-item>
 		</nav>
 	`
+};
+
+/** target="_blank" without rel gets rel="noopener noreferrer". */
+export const External: Story = {
+	args: { label: 'Status page', href: '#status', target: '_blank', icon: 'arrow-square-out' }
 };
 
 /** The label as content. */

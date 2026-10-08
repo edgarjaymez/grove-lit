@@ -25,7 +25,7 @@ import './Button.js';
 const meta: Meta<Args> = {
 	title: 'Components/gv-button',
 	tags: ['autodocs'],
-	render: ({ text, variant, color, size, icon, disabled }) => html`
+	render: ({ text, variant, color, size, icon, disabled, type, name, value, href, target, rel, hreflang }) => html`
 		…
 			<gv-button
 				text=${text}
@@ -34,6 +34,9 @@ const meta: Meta<Args> = {
 				size=${size}
 				icon=${icon}
 				?disabled=${disabled}
+				type=${type}
+				name=${ifDefined(name || undefined)}
+				…
 			></gv-button>
 		…
 	`,
@@ -45,7 +48,9 @@ const meta: Meta<Args> = {
 		variant: 'filled',
 		color: 'accent',
 		size: 'md',
-		disabled: false
+		disabled: false,
+		type: 'button',
+		…
 	}
 };
 export default meta;
@@ -65,6 +70,10 @@ export const Tonal: Story = { args: { variant: 'tonal' } };
 - Slots are shown by writing light-DOM children, as in the `Slotted` story:
   `<gv-button …>Save changes</gv-button>`. A component with events can attach listeners in the
   template with `@gv-*=${…}`.
+- A story can render the page around the component. `InForm` puts `gv-button` in a `<form>`, cancels
+  `submit`, and writes each event and its form data into an `<output>` next to it; its handler
+  re-enables the button after a one-second stand-in request. Link stories use `href="#…"`, so the
+  Storybook iframe never navigates away.
 
 ### Global setup: `.storybook/preview.ts`
 
@@ -76,8 +85,10 @@ Every story gets what a consuming page would have:
   Storybook. A real app registers only the glyphs it uses (chapter 07);
 - a **theme toolbar** (System, Light, Dark). The `withTheme` decorator sets `data-theme` on `<html>`,
   or removes it for System, exactly as a consumer would;
-- the **a11y addon** (axe) in report-only mode (`test: 'todo'`): violations show in the panel but do
-  not fail tests yet. The comment there names the issue that has to be fixed first.
+- the **a11y addon** (axe), report-only by default (`test: 'todo'`): violations show in the panel but
+  do not fail tests. A component whose stories are already clean opts in to failing on violations
+  with `parameters: { a11y: { test: 'error' } }` in its stories file (`gv-menu-item` does today),
+  until #50 switches the library default to `'error'`.
 
 ### Repo-level pages
 
@@ -162,11 +173,23 @@ through `commands` from `vitest/browser`:
 - **`emulateMedia`** sets reduced motion, colour scheme or forced colours for the page.
 - **`ariaSnapshot`** returns what the accessibility tree exposes for a selector.
 
+For behaviour that depends on real input, use **`userEvent`** from `vitest/browser`. It sends trusted
+clicks and keys through Playwright, as a person would; `el.click()` and `dispatchEvent` send
+untrusted ones. `Button.browser.test.ts` relies on it: `userEvent.click(inner)`,
+`userEvent.keyboard('{Enter}')`, `userEvent.keyboard('[Space]')`. Playwright waits for an element it
+considers disabled; pass `{ force: true }` to click one on purpose.
+
+`src/test/forms.ts` has the helpers for controls in forms: `cancelFormSubmits()` stops every
+submission from navigating the page, `recordSubmits()` logs each submit with its form data,
+`nextTask()` waits until a control has acted on its form, and `settle()` waits until every Lit
+element under a root has updated.
+
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 
-The browser tests today: `events`, `slots`, `focus-ring`, `host-hidden`, `reduced-motion`, and five
-components (`FeedbackStrip`, `Icon`, `MenuItem`, `Texture`, `Title`).
+The `browser` project picks up every `src/**/*.browser.test.ts`, so a new browser test needs no
+entry here: a shared test sits next to the code it checks, a component's own test in its directory.
+`git ls-files '*.browser.test.ts'` lists them all.
 
 ### Tests that keep two copies in step
 
@@ -181,16 +204,20 @@ If one of these fails after your change, update the other copy; don't loosen the
 
 ### The a11y canary
 
-The Storybook project runs axe on every story, but in report-only mode. To prove that the checking
-itself still works, `src/stories/A11yCanary.stories.ts` plants known faults, and
+The Storybook project runs axe on every story. It only reports, except where a stories file opts in
+to `test: 'error'` (today `gv-menu-item`) until #50 makes that the default. To prove that the
+checking itself still works, `src/stories/A11yCanary.stories.ts` plants known faults, and
 `pnpm test:a11y-canary` runs only that story and **inverts the result**: it passes only if the run
 failed in every theme and reported both planted nodes (`scripts/a11y-canary.mjs`).
 
 ## Where to see it in Button.ts
 
-- `Button.stories.ts` imports `./Button.js`, has ten stories, and a `Slotted` story that passes the
-  label as light-DOM text.
-- The `storybook` project runs all ten stories three times, once per theme, with axe reporting.
-- Button has no browser test of its own. Shared tests cover it: `slots`, `host-hidden` and
-  `reduced-motion` loop over every tag in `groveTags`, and `focus-ring` renders `gv-button`
-  directly.
+- `Button.stories.ts` imports `./Button.js` and has 18 stories: variants, colours, sizes, icon,
+  disabled, a `Slotted` story that passes the label as light-DOM text, link stories, and `InForm` and
+  `NamedSubmits` with a visible event log.
+- The `storybook` project runs all of them three times, once per theme, with axe reporting.
+- `Button.browser.test.ts` covers the form and link behaviour with trusted input: submit, reset,
+  `form="id"`, a disabled fieldset, Enter, self-disable, named submits, the supported form
+  compositions, and link mode's look in all three themes. Shared tests cover it too: `slots`,
+  `host-hidden` and `reduced-motion` loop over every tag in `groveTags`, and `focus-ring` renders
+  `gv-button` directly.

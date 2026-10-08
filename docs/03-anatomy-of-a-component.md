@@ -2,7 +2,7 @@
 
 > **What you need from this chapter**
 >
-> - A full read of `src/lib/components/Button/Button.ts`, top to bottom, in eight stops.
+> - A full read of `src/lib/components/Button/Button.ts`, top to bottom, in nine stops.
 > - Why each part is written the way it is, so you can copy the pattern into another component.
 > - How the two sibling files (metadata and stories) and the two export lists fit around it.
 
@@ -18,6 +18,9 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
+import { FormControl } from '../../utils/form-control.js';
+import type { FormRole } from '../../utils/form-control.js';
+import { linkAttribute, linkRel } from '../../utils/link-attributes.js';
 import { SlotContent } from '../../utils/slot-content.js';
 ```
 
@@ -27,7 +30,11 @@ import { SlotContent } from '../../utils/slot-content.js';
 - **Imports end in `.js`, even though the files are `.ts`.** TypeScript resolves `Icon.js` to
   `Icon.ts` while compiling, and the built output then has correct paths. Lit's publishing guide
   recommends file extensions on imports (<https://lit.dev/docs/tools/publishing/>).
+- **`import type` brings in a type only.** `FormRole` exists for the compiler and leaves nothing in
+  the built JavaScript.
 - `componentReset`, `focusRing` and `SlotContent` are shared helpers covered in chapters 04 and 05.
+  `FormControl` is the form base (Stop 4 and Stop 7), and `linkAttribute` and `linkRel` resolve the
+  link attributes (Stop 8).
 
 ## Stop 2 · Local types
 
@@ -46,28 +53,47 @@ out as its union of values (chapter 07).
 
 ```ts
 /**
+ * A button that takes part in its form: `type="submit"` submits it and `type="reset"` resets it, after
+ * the click has finished propagating, so any listener can cancel. Form association follows the DOM
+ * tree, so the button and its `<form>` must be in the same tree (a slot doesn't carry it across).
+ *
+ * With `href`, it renders a real link with the same look instead, and takes no part in its form.
+ * `target`, `rel` and `hreflang` are forwarded to that link only while it has an `href`, so a disabled
+ * link drops them too.
+ *
  * @slot - The button text. Falls back to `text` when empty.
+ * @attr {string} form - The id of the `<form>` this button belongs to, when it isn't inside it.
  */
 ```
 
-This comment is read by tools, not just by people. `@slot -` declares the default slot. Components
-that dispatch events also carry `@fires {CustomEvent<T>} gv-*` lines, and components with public
-custom properties carry `@cssprop` lines. The build fails if these tags and the code disagree
-(chapter 07).
+This comment is read by tools, not just by people. The prose becomes the component's description in
+the manifest. `@slot -` declares the default slot. `@attr` declares an attribute the class has no
+`@property` for: `form` is handled by the browser, and declaring it lets the Astro types accept
+`form="checkout"`. Components that dispatch events also carry `@fires {CustomEvent<T>} gv-*` lines,
+and components with public custom properties carry `@cssprop` lines. The build fails if these tags
+and the code disagree (chapter 07).
 
 ## Stop 4 · Registration and the class
 
 ```ts
 @customElement('gv-button')
-export class Button extends LitElement {
-	private readonly _slots = new SlotContent(this, ['']);
+export class Button extends FormControl(LitElement) {
+	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 ```
 
 - `@customElement` registers the tag when the module loads. Lit's publishing guide asks components to
   define themselves and to export their class, so consumers can import or subclass it
   (<https://lit.dev/docs/tools/publishing/>).
-- `_slots` is a **reactive controller** that tracks whether the default slot (`''`) has content. The
-  leading underscore and `private` mark it as internal. Chapter 05 explains it.
+- **`FormControl(LitElement)` is a class mixin**: a function that takes a base class and returns a
+  subclass of it (<https://lit.dev/docs/composition/mixins/>). `FormControl` makes the host a
+  form-associated custom element, so the button has a form owner, is listed in `form.elements` and
+  is disabled by a `<fieldset disabled>`. It also runs submit, reset, Enter and self-disable. It has
+  to be a mixin, not a controller: the browser reads `static formAssociated` and the `form*Callback`
+  methods from the element's own class when the tag is defined. Every Grove control that takes part
+  in forms extends it (chapter 10, recipe 14).
+- `_slots` is a **reactive controller** that tracks whether the default slot (`''`) has content.
+  `phrasingOnly` says the slot takes text, never a control: it sits inside the button. The leading
+  underscore and `private` mark it as internal. Chapter 05 explains it.
 
 ## Stop 5 · Properties
 
@@ -78,19 +104,39 @@ export class Button extends LitElement {
 	@property({ type: String }) size: ButtonSize = 'md';
 	@property({ type: String }) icon?: string;
 	@property({ type: String }) type: ButtonType = 'button';
-	@property({ type: Boolean, reflect: true }) disabled = false;
+	/** With `type="submit"`, the form data name this button's `value` is submitted under. */
+	@property({ type: String, reflect: true }) name?: string;
+	/**
+	 * Submitted under `name`, in the form data its own submission builds. Reflected like a native
+	 * button's, with no attribute until it is set.
+	 */
+	@property({ type: String, reflect: true, useDefault: true }) value = '';
+	/** Renders a real link to this URL, with the button's look, instead of a button. */
+	@property({ type: String }) href?: string;
+	/**
+	 * Where the link opens: `_self`, `_blank`, `_parent`, `_top` or a named browsing context. `_blank`
+	 * without `rel` gets `rel="noopener noreferrer"`.
+	 */
+	@property({ type: String }) target?: string;
+	/** The link's relationship to its target; passed through untouched when set. */
+	@property({ type: String }) rel?: string;
+	/** The language of the link's destination, such as `es`; forwarded only on a real link. */
+	@property({ type: String }) hreflang?: string;
 	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
 ```
 
 Each line is one public input. The patterns to notice:
 
-| Property    | Pattern                                                                                                  |
-| ----------- | -------------------------------------------------------------------------------------------------------- |
-| `text`      | the **fallback** for the slot: shown only when no content is slotted                                     |
-| `icon?`     | **optional string**: typed `string \| undefined`, written with `ifDefined()` in the template             |
-| `type`      | defaults to `'button'`, so a `gv-button` inside a form does not submit it by accident                    |
-| `disabled`  | `reflect: true`, so page CSS can match `gv-button[disabled]`                                             |
-| `ariaLabel` | **ARIA property**: `string \| null = null`, its attribute named explicitly, `?? nothing` in the template |
+| Property    | Pattern                                                                                                          |
+| ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| `text`      | the **fallback** for the slot: shown only when no content is slotted                                             |
+| `icon?`     | **optional string**: typed `string \| undefined`, written with `ifDefined()` in the template                     |
+| `type`      | defaults to `'button'`, so a `gv-button` inside a form does not submit it by accident                            |
+| `disabled`  | from `FormControl`, reflected: page CSS can match `gv-button[disabled]`; the button also sets it once it submits |
+| `name`      | `reflect: true`: the form data entry is named by the `name` attribute, as on a native control                    |
+| `value`     | `reflect: true, useDefault: true`: no attribute until set; removing it restores `''`, as on a native button      |
+| `href`      | switches the render to a link (Stop 8); `target`, `rel` and `hreflang` only mean something with it               |
+| `ariaLabel` | **ARIA property**: `string \| null = null`, its attribute named explicitly, `?? nothing` in the template         |
 
 Properties come before `static styles`, and styles come before methods. That is the order in every
 component.
@@ -134,53 +180,122 @@ also show a native tooltip on the host. Components with a heading and a body use
   into it:
 
   ```css
-  .btn:not(:disabled):hover gv-icon {
+  .btn:not(.btn--disabled):hover gv-icon {
   	--gv-icon-regular-display: none;
   	--gv-icon-fill-display: inline-flex;
   }
   ```
 
+- Disabled is a class, `btn--disabled`, not the `:disabled` pseudo-class. An `<a>` can't be
+  `:disabled`, so one class lets both renders (Stop 8) dim and freeze the same way.
+
 - Selectors are flat: `.btn--outlined.btn--lg`, never nested CSS. Nesting would work in today's
   browsers; flat selectors are a house convention because they are easy to search for and their
   specificity is obvious.
 
-## Stop 7 · `render()`
+## Stop 7 · The form hooks
+
+```ts
+	/** @internal */
+	protected formRole(): FormRole {
+		if (this._isLink) return null;
+		return this.type === 'submit' || this.type === 'reset' ? this.type : null;
+	}
+
+	/** @internal */
+	protected renderedControl() {
+		return this.renderRoot.querySelector<HTMLElement>('.btn');
+	}
+
+	/** @internal */
+	protected submissionValue() {
+		return this.name ? this.value : null;
+	}
+
+	/** @internal A link stays a working link inside a disabled fieldset, as a native `<a>` does. */
+	protected honoursFormDisabled() {
+		return !this._isLink;
+	}
+```
+
+`FormControl` does the form work; these `protected` methods tell it what this component is.
+
+- `formRole()` says what the button does in its form: submit, reset, or nothing.
+- `renderedControl()` is the element checked for visibility, so a hidden button never becomes the
+  form's Enter button.
+- `submissionValue()` is what a named submit adds to the form data.
+- `honoursFormDisabled()` lets link mode ignore a disabled fieldset.
+
+`@internal` keeps them out of the manifest: they are for subclasses, not page authors.
+
+Form behaviour does **not** come from the inner `<button>`. A button in a shadow root has no form
+owner in the page's tree, which is why the inner button is always `type="button"` and the host does
+the form work. The host and its `<form>` must be in the same tree: a slot doesn't carry a control
+into a `<form>` in another component's shadow root (chapter 05).
+
+## Stop 8 · `render()`
 
 ```ts
 	render() {
 		const hasIcon = Boolean(this.icon);
+		const disabled = this.effectivelyDisabled;
+		const classes = classMap({
+			btn: true,
+			'gv-focusable': true,
+			[`btn--${this.variant}`]: true,
+			[`btn--${this.color}`]: true,
+			[`btn--${this.size}`]: true,
+			'btn--has-icon': hasIcon,
+			'btn--disabled': disabled
+		});
+		const content = html`
+			${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}
+			<slot></slot>${this._slots.has() ? nothing : this.text}
+		`;
+		if (this._isLink) {
+			// A link can't be disabled natively: without href it leaves the tab order and goes nowhere.
+			const href = disabled ? undefined : this.href;
+			return html`<a
+				class=${classes}
+				href=${ifDefined(href)}
+				target=${ifDefined(linkAttribute(href, this.target))}
+				rel=${ifDefined(linkRel(href, this.target, this.rel))}
+				hreflang=${ifDefined(linkAttribute(href, this.hreflang))}
+				role=${disabled ? 'link' : nothing}
+				aria-disabled=${disabled ? 'true' : nothing}
+				aria-label=${this.ariaLabel ?? nothing}
+				>${content}</a
+			>`;
+		}
 		return html`
 			<button
-				class=${classMap({
-					btn: true,
-					'gv-focusable': true,
-					[`btn--${this.variant}`]: true,
-					[`btn--${this.color}`]: true,
-					[`btn--${this.size}`]: true,
-					'btn--has-icon': hasIcon
-				})}
-				type=${this.type}
-				?disabled=${this.disabled}
+				class=${classes}
+				type="button"
+				?disabled=${disabled}
 				aria-label=${this.ariaLabel ?? nothing}
 			>
-				${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}
-				<slot></slot>${this._slots.has() ? nothing : this.text}
+				${content}
 			</button>
 		`;
 	}
 ```
 
-- The host (`<gv-button>`) is not the button. A real `<button>` inside the shadow root is, so keyboard
-  support, form behaviour and the accessibility role come from the browser for free.
-- `classMap` builds the class list from the properties. The `gv-focusable` class is what the focus
-  ring targets.
-- `?disabled` adds or removes the native `disabled` attribute.
+- The host (`<gv-button>`) is not the button. A real `<button>`, or a real `<a>` with `href`, inside
+  the shadow root is, so keyboard support and the accessibility role come from the browser. A link
+  keeps everything a native link does: middle click, modified clicks, the context menu.
+- `classMap` builds the class list once, and both renders use it, so the two modes look identical. The
+  `gv-focusable` class is what the focus ring targets.
+- `effectivelyDisabled` comes from `FormControl`: the `disabled` property, or a disabled fieldset
+  around the button. `?disabled` adds or removes the native `disabled` attribute.
+- A disabled link drops `href`, which takes it out of the tab order, and says it is a disabled link
+  with `role="link"` and `aria-disabled`. `linkAttribute` and `linkRel` return `undefined` without an
+  `href`, so `ifDefined` drops `target`, `rel` and `hreflang` too.
 - The icon renders only when `icon` is set; `nothing` renders nothing otherwise.
 - `<slot></slot>${this._slots.has() ? nothing : this.text}` shows slotted content when there is some,
   and the `text` property when there is none. Both `<gv-button>Save</gv-button>` and
   `<gv-button text="Save"></gv-button>` work.
 
-## Stop 8 · The tag map
+## Stop 9 · The tag map
 
 ```ts
 declare global {
@@ -195,15 +310,17 @@ Every component file ends with it.
 
 ## The files around it
 
-| File                          | What it adds                                                                                        |
-| ----------------------------- | --------------------------------------------------------------------------------------------------- |
-| `Button.metadata.ts`          | `ButtonMetadata`: use cases, anti-patterns, the slot list, states, accessibility notes (chapter 07) |
-| `Button.stories.ts`           | ten stories, one per variant, colour, size, icon, disabled, and a slotted one (chapter 08)          |
-| `src/lib/index.ts`            | exports `Button` and `ButtonMetadata` from the package                                              |
-| `src/lib/components/index.ts` | `export * from './Button/Button.js';`                                                               |
+| File                          | What it adds                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `Button.metadata.ts`          | `ButtonMetadata`: use cases, anti-patterns, the slot list, states, accessibility notes (chapter 07)           |
+| `Button.stories.ts`           | stories per variant, colour, size, icon and disabled, a slotted one, links, and two in-form ones (chapter 08) |
+| `Button.browser.test.ts`      | the form and link behaviour, with real clicks and keys (chapter 08)                                           |
+| `src/lib/index.ts`            | exports `Button` and `ButtonMetadata` from the package                                                        |
+| `src/lib/components/index.ts` | `export * from './Button/Button.js';`                                                                         |
 
 ## Where to see it in Button.ts
 
-This whole chapter is Button.ts. To check yourself, find in the file: the side-effect import, the one
-reflected property, the property whose attribute name is set by hand, the three entries of
-`static styles`, and the class that the focus ring targets.
+This whole chapter is Button.ts. To check yourself, find in the file: the side-effect import, the two
+reflected properties, the property whose attribute name is set by hand, the three entries of
+`static styles`, the class that the focus ring targets, the mixin the class extends, and the one line
+that decides between a link and a button.

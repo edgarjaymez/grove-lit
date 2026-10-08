@@ -23,7 +23,7 @@ export type TitleSurface = GroveSurface;
  */
 @customElement('gv-title')
 export class Title extends LitElement {
-	private readonly _slots = new SlotContent(this, ['']);
+	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 
 	@property({ type: String }) heading = '';
 	@property({ type: Number }) level: HeadingLevel = 2;

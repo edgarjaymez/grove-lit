@@ -104,3 +104,84 @@ describe('gv-menu-item hreflang and lang (#43)', () => {
 		expect(anchor(el).matches(':lang(es)')).toBe(false);
 	});
 });
+
+describe('gv-menu-item target and rel (#49)', () => {
+	const attrs = (el: MenuItem) => [
+		anchor(el).getAttribute('target'),
+		anchor(el).getAttribute('rel')
+	];
+
+	it('forwards target when href is set, and drops it when absent or empty', async () => {
+		const [set, unset, empty] = await mount(html`
+			<gv-menu-item label="Docs" href="/docs" target="_self"></gv-menu-item>
+			<gv-menu-item label="Docs" href="/docs"></gv-menu-item>
+			<gv-menu-item label="Docs" href="/docs" target=""></gv-menu-item>
+		`);
+		expect(attrs(set)).toEqual(['_self', null]);
+		expect(attrs(unset)).toEqual([null, null]);
+		expect(attrs(empty)).toEqual([null, null]);
+	});
+
+	it('adds rel="noopener noreferrer" to target="_blank" without rel', async () => {
+		const [noRel, emptyRel] = await mount(html`
+			<gv-menu-item label="Status" href="https://example.com" target="_blank"></gv-menu-item>
+			<gv-menu-item label="Status" href="https://example.com" target="_blank" rel=""></gv-menu-item>
+		`);
+		expect(attrs(noRel)).toEqual(['_blank', 'noopener noreferrer']);
+		expect(attrs(emptyRel)).toEqual(['_blank', 'noopener noreferrer']);
+		noRel.target = undefined;
+		await noRel.updateComplete;
+		expect(attrs(noRel)).toEqual([null, null]);
+	});
+
+	it('passes an explicit rel through untouched, with or without _blank', async () => {
+		const [blank, plain] = await mount(html`
+			<gv-menu-item
+				label="Status"
+				href="https://example.com"
+				target="_blank"
+				rel="external"
+			></gv-menu-item>
+			<gv-menu-item label="Author" href="/about" rel="author"></gv-menu-item>
+		`);
+		expect(attrs(blank)).toEqual(['_blank', 'external']);
+		expect(attrs(plain)).toEqual([null, 'author']);
+	});
+
+	it('renders neither without href, and both once href is set', async () => {
+		const [blank, explicit] = await mount(html`
+			<gv-menu-item label="Status" target="_blank"></gv-menu-item>
+			<gv-menu-item label="Status" target="_top" rel="external"></gv-menu-item>
+		`);
+		expect(attrs(blank)).toEqual([null, null]);
+		expect(attrs(explicit)).toEqual([null, null]);
+		blank.href = explicit.href = 'https://example.com';
+		await Promise.all([blank.updateComplete, explicit.updateComplete]);
+		expect(attrs(blank)).toEqual(['_blank', 'noopener noreferrer']);
+		expect(attrs(explicit)).toEqual(['_top', 'external']);
+		blank.href = undefined;
+		await blank.updateComplete;
+		expect(attrs(blank)).toEqual([null, null]);
+	});
+
+	it('treats the properties and the attributes alike', async () => {
+		const [byProp, byAttr] = await mount(html`
+			<gv-menu-item label="Status" href="https://example.com"></gv-menu-item>
+			<gv-menu-item label="Status" href="https://example.com"></gv-menu-item>
+		`);
+		byProp.target = '_blank';
+		byAttr.setAttribute('target', '_blank');
+		await Promise.all([byProp.updateComplete, byAttr.updateComplete]);
+		expect(attrs(byProp)).toEqual(['_blank', 'noopener noreferrer']);
+		expect(attrs(byAttr)).toEqual(['_blank', 'noopener noreferrer']);
+		byProp.rel = 'external';
+		byAttr.setAttribute('rel', 'external');
+		await Promise.all([byProp.updateComplete, byAttr.updateComplete]);
+		expect(attrs(byProp)).toEqual(['_blank', 'external']);
+		expect(attrs(byAttr)).toEqual(['_blank', 'external']);
+		byAttr.removeAttribute('target');
+		byAttr.removeAttribute('rel');
+		await byAttr.updateComplete;
+		expect(attrs(byAttr)).toEqual([null, null]);
+	});
+});

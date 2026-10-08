@@ -67,12 +67,40 @@ asks `this._slots.has('heading')`.
 
 ### What may go in a slot
 
-Slots take **text and phrasing content** (text, `<strong>`, `<em>`, `<span>`, links where the
-component allows them). Never a form control. A slotted `<input>` stays in the page's light DOM, so it
-would join the surrounding form on its own, next to the component's own control. In development,
-`SlotContent` logs one console warning per component when it sees a form control in a slot. The
-warning turns off when the consumer's bundler sets `process.env.NODE_ENV` to `"production"`
-(`src/lib/utils/dev.ts`).
+It depends on the slot.
+
+- **Phrasing-only slots** take **text and phrasing content** (text, `<strong>`, `<em>`, `<span>`,
+  links where the component allows them), never a form control. A slot is phrasing-only when it sits
+  inside an interactive element or a popup (gv-button, gv-checkbox's label, gv-menu-item's link,
+  gv-tooltip), where a control can't be nested or reached, or when the component is static chrome by
+  design (gv-title, gv-feedback-strip). The component says so when it creates the controller:
+
+  ```ts
+  private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
+  ```
+
+  In development, `SlotContent` then logs one console warning per component when it sees a form
+  control in a slot. The warning turns off when the consumer's bundler sets `process.env.NODE_ENV` to
+  `"production"` (`src/lib/utils/dev.ts`).
+
+- **Container slots** (no option, the default) accept controls. A slotted `<input>` or gv-button
+  stays in the page's light DOM, so it belongs to whatever `<form>` it sits in there, like any other
+  control. That is what a card with an action, or a form layout, needs.
+
+### Slots and forms
+
+Slots change where content is **shown**, not which tree it is **in**. That matters for forms: the
+browser decides a control's form, `<fieldset disabled>`, `<label for>` and Enter's default button
+from the DOM tree, never through a slot. So:
+
+- A control written inside a page's `<form>` belongs to that form, even when a layout component
+  slots it somewhere else on screen.
+- A control slotted into a `<form>` that another component renders in its **shadow root** belongs to
+  no form. `gv-button` warns once in development when that happens (chapter 03, Stop 7).
+- Events are the exception: they follow the composed path, through slots, so a listener on that
+  shadow-root `<form>` hears a slotted control's events. That doesn't make it the form's control.
+
+`DESIGN_SYSTEM.md` ("Forms and Slots") lists the compositions that work.
 
 ### How slots are checked
 
@@ -223,8 +251,11 @@ merging an interface into a class is exactly what the overloads need.
 
 ## Where to see it in Button.ts
 
-- `private readonly _slots = new SlotContent(this, ['']);` tracks the default slot.
+- `private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });` tracks the default
+  slot, which takes text only: it sits inside the button.
 - `<slot></slot>${this._slots.has() ? nothing : this.text}` renders the slot with `text` as fallback.
 - The JSDoc has one `@slot -` tag, matching `composition.slots` in `Button.metadata.ts`.
 - Button dispatches **no** custom events. A click is the native `click` event from the inner
-  `<button>`, which bubbles and is composed by the browser, so the page hears it on `gv-button`.
+  `<button>` or `<a>`, which bubbles and is composed by the browser, so the page hears it on
+  `gv-button`. With `type="submit"` or `"reset"`, the form acts in the next task, after that click has
+  reached every listener, so `event.preventDefault()` anywhere on its path cancels it.

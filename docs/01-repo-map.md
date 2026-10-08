@@ -41,7 +41,7 @@ grove-lit/
 │   │   ├── tokens/                       token JSON (border/ effects/ palette/ spacing/ text/),
 │   │   │                                 main.resolver.json, tokens.css GENERATED, contrast.test.ts
 │   │   ├── fonts/                        display/ (Cakra) · sans-serif/ (Inclusive Sans) · fonts.css
-│   │   ├── utils/                        slot-content.ts · dev.ts · link-attributes.ts
+│   │   ├── utils/                        form-control.ts · slot-content.ts · dev.ts · link-attributes.ts
 │   │   └── __screenshots__/              (gitignored) browser-test failure screenshots
 │   ├── stories/                          repo-level Storybook pages: Home.mdx, Accessibility.mdx,
 │   │                                     FocusRing.stories.ts, A11yCanary.stories.ts
@@ -146,8 +146,11 @@ release time.
 
 ## Where to see it in Button.ts
 
-- `src/lib/components/Button/` holds `Button.ts`, `Button.metadata.ts` and `Button.stories.ts`. It has
-  no browser test.
+- `src/lib/components/Button/` holds `Button.ts`, `Button.metadata.ts`, `Button.stories.ts` and
+  `Button.browser.test.ts`. The browser test takes its form helpers from `src/test/forms.ts`, as the
+  mixin's own test does.
+- `Button.ts` extends the form base in `src/lib/utils/form-control.ts`, the one module there that the
+  manifest analyzer also reads.
 - `gv-button` reaches the package through two lines in `src/lib/index.ts` (`Button` and
   `ButtonMetadata`) and one in `src/lib/components/index.ts`.
 - `components-since.json` records that `Button` first shipped in `0.28.0`.

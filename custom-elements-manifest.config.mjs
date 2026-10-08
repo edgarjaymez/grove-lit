@@ -2,7 +2,8 @@
 import { expandTypesPlugin } from './scripts/manifest-types.mjs';
 
 export default {
-	globs: ['src/lib/components/*/*.ts'],
+	// The form-control mixin is analyzed too, so components that extend it list its public members.
+	globs: ['src/lib/components/*/*.ts', 'src/lib/utils/form-control.ts'],
 	exclude: [
 		'src/lib/components/**/*.stories.ts',
 		'src/lib/components/**/*.test.ts',

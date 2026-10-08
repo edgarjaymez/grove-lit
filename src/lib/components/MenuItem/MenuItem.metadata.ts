@@ -9,9 +9,9 @@ export const MenuItemMetadata = {
 		description:
 			'A sidebar/docs navigation item rendered as a native anchor with a leading Phosphor icon and a wrapping label. Two sizes model the two navigation levels: md for primary entries and sm for sub-entries. The item is transparent — its parent paints the brand terrace surface — and it has four visual states driven by hover and the is-active attribute.',
 		type: 'navigation',
-		version: '1.2.0',
+		version: '1.3.0',
 		created: '2026/09/16',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -27,7 +27,7 @@ export const MenuItemMetadata = {
 			'table-of-contents-link',
 			'language-switcher'
 		],
-		requiredProps: ['label', 'href'],
+		requiredProps: ['href'],
 		commonPatterns: [
 			{
 				name: 'slotted-label',
@@ -75,6 +75,13 @@ export const MenuItemMetadata = {
   <gv-menu-item lang="en" hreflang="en" href="/" label="English" icon="" is-active></gv-menu-item>
   <gv-menu-item lang="es" hreflang="es" href="/es/" label="Español" icon=""></gv-menu-item>
 </nav>`
+			},
+			{
+				name: 'external-link',
+				description:
+					'An entry that leaves the site and opens in a new tab; rel="noopener noreferrer" is added unless rel is set. target and rel are forwarded only while href is set.',
+				composition:
+					'<gv-menu-item label="Status page" href="https://example.com/status" target="_blank" icon="arrow-square-out"></gv-menu-item>'
 			}
 		],
 		antiPatterns: [
@@ -166,7 +173,7 @@ export const MenuItemMetadata = {
 		keyboardSupport:
 			'Native anchor behavior — Tab focuses the link, Enter activates it. No custom key handling.',
 		screenReader:
-			'The accessible name is the label text; the icon is aria-hidden="true" and is not announced. When active, aria-current="page" announces the entry as the current page.',
+			'The accessible name is the slotted content when present, else label; the icon is aria-hidden="true" and is not announced. When active, aria-current="page" announces the entry as the current page.',
 		focusManagement:
 			"The internal anchor receives focus and draws the Grove focus ring on :focus-visible: the surrounding surface's --gv-focus-ring, else --ring-on-brand-terrace, the surface its parent paints.",
 		wcag: 'AA',
@@ -196,9 +203,11 @@ export const MenuItemMetadata = {
 			'current page',
 			'active link',
 			'language-switcher',
-			'hreflang'
+			'hreflang',
+			'external link',
+			'new tab'
 		],
 		context:
-			'Use for entries in a documentation or app sidebar where each row is a link with an icon and a label. Pick size="md" for top-level entries and size="sm" for the nested level, and set is-active on the entry matching the current route. Always place it inside a container that paints var(--semantic-color-surface-brand-terrace).'
+			'Use for entries in a documentation or app sidebar where each row is a link with an icon and a label. Pick size="md" for top-level entries and size="sm" for the nested level, and set is-active on the entry matching the current route. To open a destination in a new tab, set target="_blank"; rel="noopener noreferrer" is added unless rel is set. Always place it inside a container that paints var(--semantic-color-surface-brand-terrace).'
 	}
 } satisfies ComponentMetadata;

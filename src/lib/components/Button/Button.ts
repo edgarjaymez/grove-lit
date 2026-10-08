@@ -5,6 +5,9 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
+import { FormControl } from '../../utils/form-control.js';
+import type { FormRole } from '../../utils/form-control.js';
+import { linkAttribute, linkRel } from '../../utils/link-attributes.js';
 import { SlotContent } from '../../utils/slot-content.js';
 
 type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost';
@@ -13,11 +16,20 @@ type ButtonSize = 'lg' | 'md' | 'sm';
 type ButtonType = 'button' | 'submit' | 'reset';
 
 /**
+ * A button that takes part in its form: `type="submit"` submits it and `type="reset"` resets it, after
+ * the click has finished propagating, so any listener can cancel. Form association follows the DOM
+ * tree, so the button and its `<form>` must be in the same tree (a slot doesn't carry it across).
+ *
+ * With `href`, it renders a real link with the same look instead, and takes no part in its form.
+ * `target`, `rel` and `hreflang` are forwarded to that link only while it has an `href`, so a disabled
+ * link drops them too.
+ *
  * @slot - The button text. Falls back to `text` when empty.
+ * @attr {string} form - The id of the `<form>` this button belongs to, when it isn't inside it.
  */
 @customElement('gv-button')
-export class Button extends LitElement {
-	private readonly _slots = new SlotContent(this, ['']);
+export class Button extends FormControl(LitElement) {
+	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 
 	@property({ type: String }) text = '';
 	@property({ type: String }) variant: ButtonVariant = 'filled';
@@ -25,7 +37,24 @@ export class Button extends LitElement {
 	@property({ type: String }) size: ButtonSize = 'md';
 	@property({ type: String }) icon?: string;
 	@property({ type: String }) type: ButtonType = 'button';
-	@property({ type: Boolean, reflect: true }) disabled = false;
+	/** With `type="submit"`, the form data name this button's `value` is submitted under. */
+	@property({ type: String, reflect: true }) name?: string;
+	/**
+	 * Submitted under `name`, in the form data its own submission builds. Reflected like a native
+	 * button's, with no attribute until it is set.
+	 */
+	@property({ type: String, reflect: true, useDefault: true }) value = '';
+	/** Renders a real link to this URL, with the button's look, instead of a button. */
+	@property({ type: String }) href?: string;
+	/**
+	 * Where the link opens: `_self`, `_blank`, `_parent`, `_top` or a named browsing context. `_blank`
+	 * without `rel` gets `rel="noopener noreferrer"`.
+	 */
+	@property({ type: String }) target?: string;
+	/** The link's relationship to its target; passed through untouched when set. */
+	@property({ type: String }) rel?: string;
+	/** The language of the link's destination, such as `es`; forwarded only on a real link. */
+	@property({ type: String }) hreflang?: string;
 	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
 
 	static styles = [
@@ -103,11 +132,11 @@ export class Button extends LitElement {
 				color: var(--semantic-color-text-on-accent-summit-base);
 				--_drop: var(--drop-shadow-under-accent-summit);
 			}
-			.btn--filled.btn--accent:not(:disabled):hover {
+			.btn--filled.btn--accent:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 			}
-			.btn--filled.btn--accent:not(:disabled):active {
+			.btn--filled.btn--accent:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				--_drop: 0 0 #0000;
@@ -118,11 +147,11 @@ export class Button extends LitElement {
 				color: var(--semantic-color-text-on-gray-summit-base);
 				--_drop: var(--drop-shadow-under-gray-summit);
 			}
-			.btn--filled.btn--gray:not(:disabled):hover {
+			.btn--filled.btn--gray:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 			}
-			.btn--filled.btn--gray:not(:disabled):active {
+			.btn--filled.btn--gray:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				--_drop: 0 0 #0000;
@@ -134,11 +163,11 @@ export class Button extends LitElement {
 				color: var(--semantic-color-text-on-accent-terrace-base);
 				--_drop: var(--drop-shadow-under-accent-summit);
 			}
-			.btn--tonal.btn--accent:not(:disabled):hover {
+			.btn--tonal.btn--accent:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 			}
-			.btn--tonal.btn--accent:not(:disabled):active {
+			.btn--tonal.btn--accent:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				--_drop: 0 0 #0000;
@@ -149,11 +178,11 @@ export class Button extends LitElement {
 				color: var(--semantic-color-text-on-gray-terrace-base);
 				--_drop: var(--drop-shadow-under-gray-summit);
 			}
-			.btn--tonal.btn--gray:not(:disabled):hover {
+			.btn--tonal.btn--gray:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 			}
-			.btn--tonal.btn--gray:not(:disabled):active {
+			.btn--tonal.btn--gray:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				--_drop: 0 0 #0000;
@@ -168,13 +197,13 @@ export class Button extends LitElement {
 			/* Figma doesn't account for the border in its box model — on hover/active keep the
 			 * border present but transparent (not removed) so the box dimensions stay constant;
 			 * paired with the padding-block compensation above. */
-			.btn--outlined.btn--accent:not(:disabled):hover {
+			.btn--outlined.btn--accent:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				border-color: transparent;
 				--_drop: var(--drop-shadow-under-accent-summit);
 			}
-			.btn--outlined.btn--accent:not(:disabled):active {
+			.btn--outlined.btn--accent:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				border-color: transparent;
@@ -186,13 +215,13 @@ export class Button extends LitElement {
 				border-color: var(--semantic-color-border-around-gray-aurora);
 				color: var(--semantic-color-text-on-gray-terrace-base);
 			}
-			.btn--outlined.btn--gray:not(:disabled):hover {
+			.btn--outlined.btn--gray:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				border-color: transparent;
 				--_drop: var(--drop-shadow-under-gray-summit);
 			}
-			.btn--outlined.btn--gray:not(:disabled):active {
+			.btn--outlined.btn--gray:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				border-color: transparent;
@@ -204,12 +233,12 @@ export class Button extends LitElement {
 				background: transparent;
 				color: var(--semantic-color-text-on-accent-terrace-base);
 			}
-			.btn--ghost.btn--accent:not(:disabled):hover {
+			.btn--ghost.btn--accent:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				--_drop: var(--drop-shadow-under-accent-summit);
 			}
-			.btn--ghost.btn--accent:not(:disabled):active {
+			.btn--ghost.btn--accent:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-accent-aurora);
 				color: var(--semantic-color-text-on-accent-aurora-base);
 				--_drop: 0 0 #0000;
@@ -219,51 +248,97 @@ export class Button extends LitElement {
 				background: transparent;
 				color: var(--semantic-color-text-on-gray-terrace-base);
 			}
-			.btn--ghost.btn--gray:not(:disabled):hover {
+			.btn--ghost.btn--gray:not(.btn--disabled):hover {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				--_drop: var(--drop-shadow-under-gray-summit);
 			}
-			.btn--ghost.btn--gray:not(:disabled):active {
+			.btn--ghost.btn--gray:not(.btn--disabled):active {
 				background: var(--semantic-color-surface-gray-aurora);
 				color: var(--semantic-color-text-on-gray-aurora-base);
 				--_drop: 0 0 #0000;
 			}
 
 			/* ---- Icon fill on hover (cross-shadow via inheriting custom properties) ---- */
-			.btn:not(:disabled):hover gv-icon {
+			.btn:not(.btn--disabled):hover gv-icon {
 				--gv-icon-regular-display: none;
 				--gv-icon-fill-display: inline-flex;
 			}
 
 			/* ---- Disabled ---- */
-			.btn:disabled {
+			.btn--disabled {
 				opacity: 0.5;
 			}
-			.btn:disabled:hover {
+			.btn--disabled:hover {
 				cursor: not-allowed;
 			}
 		`
 	];
 
+	/** @internal */
+	protected formRole(): FormRole {
+		if (this._isLink) return null;
+		return this.type === 'submit' || this.type === 'reset' ? this.type : null;
+	}
+
+	/** @internal */
+	protected renderedControl() {
+		return this.renderRoot.querySelector<HTMLElement>('.btn');
+	}
+
+	/** @internal */
+	protected submissionValue() {
+		return this.name ? this.value : null;
+	}
+
+	/** @internal A link stays a working link inside a disabled fieldset, as a native `<a>` does. */
+	protected honoursFormDisabled() {
+		return !this._isLink;
+	}
+
+	private get _isLink() {
+		return Boolean(this.href);
+	}
+
 	render() {
 		const hasIcon = Boolean(this.icon);
+		const disabled = this.effectivelyDisabled;
+		const classes = classMap({
+			btn: true,
+			'gv-focusable': true,
+			[`btn--${this.variant}`]: true,
+			[`btn--${this.color}`]: true,
+			[`btn--${this.size}`]: true,
+			'btn--has-icon': hasIcon,
+			'btn--disabled': disabled
+		});
+		const content = html`
+			${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}
+			<slot></slot>${this._slots.has() ? nothing : this.text}
+		`;
+		if (this._isLink) {
+			// A link can't be disabled natively: without href it leaves the tab order and goes nowhere.
+			const href = disabled ? undefined : this.href;
+			return html`<a
+				class=${classes}
+				href=${ifDefined(href)}
+				target=${ifDefined(linkAttribute(href, this.target))}
+				rel=${ifDefined(linkRel(href, this.target, this.rel))}
+				hreflang=${ifDefined(linkAttribute(href, this.hreflang))}
+				role=${disabled ? 'link' : nothing}
+				aria-disabled=${disabled ? 'true' : nothing}
+				aria-label=${this.ariaLabel ?? nothing}
+				>${content}</a
+			>`;
+		}
 		return html`
 			<button
-				class=${classMap({
-					btn: true,
-					'gv-focusable': true,
-					[`btn--${this.variant}`]: true,
-					[`btn--${this.color}`]: true,
-					[`btn--${this.size}`]: true,
-					'btn--has-icon': hasIcon
-				})}
-				type=${this.type}
-				?disabled=${this.disabled}
+				class=${classes}
+				type="button"
+				?disabled=${disabled}
 				aria-label=${this.ariaLabel ?? nothing}
 			>
-				${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}
-				<slot></slot>${this._slots.has() ? nothing : this.text}
+				${content}
 			</button>
 		`;
 	}

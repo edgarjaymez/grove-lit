@@ -75,7 +75,8 @@ export default defineConfig({
 				'src/lib/styles/component-reset.ts',
 				'src/lib/styles/visually-hidden.ts',
 				'src/lib/styles/focus-ring.ts',
-				'src/lib/surfaces.ts'
+				'src/lib/surfaces.ts',
+				'src/lib/utils/form-control.ts'
 			],
 			exclude: ['src/lib/components/**/*.stories.ts', 'src/lib/components/**/*.test.ts'],
 			outDirs: 'dist',

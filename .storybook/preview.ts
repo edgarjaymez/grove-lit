@@ -47,6 +47,8 @@ const preview: Preview = {
 	},
 	parameters: {
 		// Report-only until the known violations are fixed (#50: checkbox names); then 'error'.
+		// Meanwhile a component whose stories are already clean can opt in with
+		// `parameters: { a11y: { test: 'error' } }` in its stories file, as gv-menu-item does.
 		// The rule set matches the audit in #33, so results compare one to one.
 		a11y: {
 			test: 'todo',
