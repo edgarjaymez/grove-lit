@@ -46,14 +46,17 @@ export class IconButton extends LitElement {
 			.icon-btn--lg {
 				padding: var(--soft-grid-12);
 				font: var(--typography-single-line-base-base);
+				letter-spacing: var(--typography-single-line-base-base-letter-spacing);
 			}
 			.icon-btn--md {
 				padding: var(--soft-grid-8);
 				font: var(--typography-single-line-subtle-emphasis);
+				letter-spacing: var(--typography-single-line-subtle-emphasis-letter-spacing);
 			}
 			.icon-btn--sm {
 				padding: var(--soft-grid-4);
 				font: var(--typography-single-line-label-base);
+				letter-spacing: var(--typography-single-line-label-base-letter-spacing);
 			}
 
 			/* Outlined: compensate all-side padding for border to preserve dimensions */

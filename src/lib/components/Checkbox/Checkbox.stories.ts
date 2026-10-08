@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-import './Checkbox.ts';
+import './Checkbox.js';
 
 interface Args {
 	checked: boolean;
