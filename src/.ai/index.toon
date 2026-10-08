@@ -1,21 +1,21 @@
 version: 1.0.0
-generated: "2026-07-10T20:23:44.501236+00:00"
-generatedBy: index-codebase
+generated: "2026-10-07T21:06:40.362253+00:00"
+generatedBy: manage-codebase-index
 framework: lit
 format: toon
 summary:
-  totalComponents: 10
-  componentsWithMetadata: 10
-  utilities: 34
+  totalComponents: 15
+  componentsWithMetadata: 15
+  utilities: 73
   schemas: 0
-  styleFiles: 4
-  relationshipsMapped: 77
+  styleFiles: 6
+  relationshipsMapped: 143
 sources:
   componentMetadata:
     location: "**/*.metadata.{ts,tsx,json}"
     purpose: "Component API, props, variants, UX patterns"
     type: manual
-    count: 10
+    count: 15
     formats[3]: ts,tsx,json
   relationships:
     location: .ai/relationships/

@@ -1,5 +1,18 @@
-generated: "2026-07-10T20:23:44.499658+00:00"
+generated: "2026-10-07T21:06:40.360259+00:00"
 components:
+  "src/lib/components/FeedbackStrip/FeedbackStrip.ts":
+    path: src/lib/components/FeedbackStrip/FeedbackStrip.ts
+    type: molecules
+    framework: lit
+    tag: gv-feedback-strip
+    uses[1]: Icon
+    usedBy[0]:
+    hasStories: true
+    hasMetadata: true
+    externalDependencies[4]: lit,lit/decorators.js,lit/directives/class-map.js,lit/directives/if-defined.js
+    utilityDependencies[1]: ../../utils/slot-content.js
+    schemaDependencies[0]:
+    metadata: src/lib/components/FeedbackStrip/FeedbackStrip.metadata.ts
   "src/lib/components/Isotype/Isotype.ts":
     path: src/lib/components/Isotype/Isotype.ts
     type: atoms
@@ -9,10 +22,23 @@ components:
     usedBy[0]:
     hasStories: true
     hasMetadata: true
-    externalDependencies[2]: lit,lit/decorators.js
+    externalDependencies[3]: lit,lit/decorators.js,lit/directives/style-map.js
     utilityDependencies[0]:
     schemaDependencies[0]:
     metadata: src/lib/components/Isotype/Isotype.metadata.ts
+  "src/lib/components/Tooltip/Tooltip.ts":
+    path: src/lib/components/Tooltip/Tooltip.ts
+    type: molecules
+    framework: lit
+    tag: gv-tooltip
+    uses[1]: Icon
+    usedBy[1]: src/lib/components/ColorSwatch/ColorSwatch.ts
+    hasStories: true
+    hasMetadata: true
+    externalDependencies[3]: lit,lit/decorators.js,lit/directives/class-map.js
+    utilityDependencies[1]: ../../utils/slot-content.js
+    schemaDependencies[0]:
+    metadata: src/lib/components/Tooltip/Tooltip.metadata.ts
   "src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts":
     path: src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts
     type: atoms
@@ -39,6 +65,19 @@ components:
     utilityDependencies[0]:
     schemaDependencies[0]:
     metadata: src/lib/components/ToDoListItem/ToDoListItem.metadata.ts
+  "src/lib/components/Title/Title.ts":
+    path: src/lib/components/Title/Title.ts
+    type: atoms
+    framework: lit
+    tag: gv-title
+    uses[1]: Icon
+    usedBy[0]:
+    hasStories: true
+    hasMetadata: true
+    externalDependencies[3]: lit,lit/static-html.js,lit/decorators.js
+    utilityDependencies[1]: ../../utils/slot-content.js
+    schemaDependencies[0]:
+    metadata: src/lib/components/Title/Title.metadata.ts
   "src/lib/components/TextInput/TextInput.ts":
     path: src/lib/components/TextInput/TextInput.ts
     type: atoms
@@ -62,9 +101,22 @@ components:
     hasStories: true
     hasMetadata: true
     externalDependencies[3]: lit,lit/decorators.js,lit/directives/class-map.js
-    utilityDependencies[0]:
+    utilityDependencies[1]: ../../utils/slot-content.js
     schemaDependencies[0]:
     metadata: src/lib/components/Checkbox/Checkbox.metadata.ts
+  "src/lib/components/MenuItem/MenuItem.ts":
+    path: src/lib/components/MenuItem/MenuItem.ts
+    type: molecules
+    framework: lit
+    tag: gv-menu-item
+    uses[1]: Icon
+    usedBy[0]:
+    hasStories: true
+    hasMetadata: true
+    externalDependencies[4]: lit,lit/decorators.js,lit/directives/class-map.js,lit/directives/if-defined.js
+    utilityDependencies[2]: ../../utils/slot-content.js,../../utils/link-attributes.js
+    schemaDependencies[0]:
+    metadata: src/lib/components/MenuItem/MenuItem.metadata.ts
   "src/lib/components/Button/Button.ts":
     path: src/lib/components/Button/Button.ts
     type: atoms
@@ -75,19 +127,19 @@ components:
     hasStories: true
     hasMetadata: true
     externalDependencies[4]: lit,lit/decorators.js,lit/directives/class-map.js,lit/directives/if-defined.js
-    utilityDependencies[0]:
+    utilityDependencies[1]: ../../utils/slot-content.js
     schemaDependencies[0]:
     metadata: src/lib/components/Button/Button.metadata.ts
   "src/lib/components/ColorSwatch/ColorSwatch.ts":
     path: src/lib/components/ColorSwatch/ColorSwatch.ts
-    type: atoms
+    type: molecules
     framework: lit
     tag: gv-color-swatch
-    uses[0]:
+    uses[1]: Tooltip
     usedBy[0]:
     hasStories: true
     hasMetadata: true
-    externalDependencies[3]: lit,lit/decorators.js,lit/directives/style-map.js
+    externalDependencies[4]: lit,lit/decorators.js,lit/directives/style-map.js,lit/directives/if-defined.js
     utilityDependencies[0]:
     schemaDependencies[0]:
     metadata: src/lib/components/ColorSwatch/ColorSwatch.metadata.ts
@@ -100,7 +152,7 @@ components:
     usedBy[0]:
     hasStories: true
     hasMetadata: true
-    externalDependencies[2]: lit,lit/decorators.js
+    externalDependencies[3]: lit,lit/decorators.js,lit/directives/style-map.js
     utilityDependencies[0]:
     schemaDependencies[0]:
     metadata: src/lib/components/Texture/Texture.metadata.ts
@@ -123,14 +175,27 @@ components:
     framework: lit
     tag: gv-icon
     uses[0]:
-    usedBy[4]: src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts,src/lib/components/ToDoListItem/ToDoListItem.ts,src/lib/components/Button/Button.ts,src/lib/components/IconButton/IconButton.ts
+    usedBy[9]: src/lib/components/FeedbackStrip/FeedbackStrip.ts,src/lib/components/Tooltip/Tooltip.ts,src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts,src/lib/components/ToDoListItem/ToDoListItem.ts,src/lib/components/Title/Title.ts,src/lib/components/MenuItem/MenuItem.ts,src/lib/components/Button/Button.ts,src/lib/components/IconButton/IconButton.ts,src/lib/components/BackButton/BackButton.ts
     hasStories: true
     hasMetadata: true
     externalDependencies[3]: lit,lit/static-html.js,lit/decorators.js
     utilityDependencies[0]:
     schemaDependencies[0]:
     metadata: src/lib/components/Icon/Icon.metadata.ts
+  "src/lib/components/BackButton/BackButton.ts":
+    path: src/lib/components/BackButton/BackButton.ts
+    type: atoms
+    framework: lit
+    tag: gv-back-button
+    uses[1]: Icon
+    usedBy[0]:
+    hasStories: true
+    hasMetadata: true
+    externalDependencies[2]: lit,lit/decorators.js
+    utilityDependencies[0]:
+    schemaDependencies[0]:
+    metadata: src/lib/components/BackButton/BackButton.metadata.ts
 statistics:
-  totalComponents: 10
-  atoms: 9
-  molecules: 1
+  totalComponents: 15
+  molecules: 5
+  atoms: 10

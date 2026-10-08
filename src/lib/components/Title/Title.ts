@@ -136,6 +136,7 @@ export class Title extends LitElement {
 			.title__icon {
 				flex: none;
 				font: var(--typography-single-line-title-base);
+				letter-spacing: var(--typography-single-line-title-base-letter-spacing);
 			}
 
 			/* Keeps its natural width while it fits, so the row still centres it; when it doesn't, it
