@@ -162,6 +162,10 @@ through `commands` from `vitest/browser`:
 - **`emulateMedia`** sets reduced motion, colour scheme or forced colours for the page.
 - **`ariaSnapshot`** returns what the accessibility tree exposes for a selector.
 
+`src/test/shadow.ts` is for tests that reach into nested components: `deepElements()` lists every
+element below a root, through open shadow roots; `settleDeep()` waits until all of them have
+rendered; `frames()` waits for animation frames.
+
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 

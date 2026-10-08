@@ -46,7 +46,7 @@ grove-lit/
 │   ├── stories/                          repo-level Storybook pages: Home.mdx, Accessibility.mdx,
 │   │                                     FocusRing.stories.ts, A11yCanary.stories.ts
 │   ├── test/                             browser-setup.ts · commands.d.ts · events.types.ts ·
-│   │                                     grove-tags.ts · themes.ts
+│   │                                     grove-tags.ts · shadow.ts · themes.ts
 │   └── .ai/                              GENERATED machine-readable index of components and tokens
 ├── static/                               Storybook favicons and webmanifest
 ├── dist/                                 (gitignored) build output: what npm receives
