@@ -166,8 +166,9 @@ through `commands` from `vitest/browser`:
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 
-The browser tests today: `events`, `slots`, `glyphs`, `focus-ring`, `host-hidden`, `reduced-motion`,
-and five components (`FeedbackStrip`, `Icon`, `MenuItem`, `Texture`, `Title`).
+The `browser` project picks up every `src/**/*.browser.test.ts`, so a new browser test needs no
+entry here: a shared test sits next to the code it checks, a component's own test in its directory.
+`git ls-files '*.browser.test.ts'` lists them all.
 
 ### Tests that keep two copies in step
 
