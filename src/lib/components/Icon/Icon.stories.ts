@@ -58,7 +58,8 @@ export const Labelled: Story = {
 
 /**
  * A name Phosphor does not have. Storybook registers every glyph, so this is the only way to see the
- * missing-glyph warning here: the console logs it once, 2 s after load, with the import to add.
+ * missing-glyph warning here: under `pnpm storybook` the console logs it once, 2 s after load, with
+ * the import to add. The deployed Storybook is a production build, so it logs nothing.
  */
 export const Unregistered: Story = {
 	tags: ['missing-glyph'],

@@ -10,7 +10,7 @@ export const ToDoCategoryTogglerMetadata = {
 		path: 'src/lib/components/ToDoCategoryToggler/ToDoCategoryToggler.ts',
 		version: '1.2.0',
 		created: '2026/02/18',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -164,6 +164,6 @@ export const ToDoCategoryTogglerMetadata = {
 			'icon'
 		],
 		context:
-			'Use when the UI needs a compact, color-coded toggle button for filtering or selecting a task category. Choose the color track that matches the surrounding design language — brand (green) for primary, accent (purple) for secondary, information (blue) for informational, gray for neutral. Pass a Phosphor icon name to the optional icon prop to show a filled glyph in the header (e.g. icon="tree"); omit it to leave the icon slot empty. Always listen to the gv-toggle CustomEvent to react to state changes.'
+			'Use when the UI needs a compact, color-coded toggle button for filtering or selecting a task category. Choose the color track that matches the surrounding design language — brand (green) for primary, accent (purple) for secondary, information (blue) for informational, gray for neutral. Pass a Phosphor icon name to the icon prop to change the filled glyph in the header; omit it for the default tree, or set icon="" for no glyph. Always listen to the gv-toggle CustomEvent to react to state changes.'
 	}
 } satisfies ComponentMetadata;

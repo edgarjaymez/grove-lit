@@ -8,7 +8,8 @@ import {
 	claimReport,
 	missingGlyphMessage,
 	phosphorTag,
-	warningsEnabled
+	warningsEnabled,
+	wasReported
 } from './phosphor.js';
 
 const pageLoaded = () =>
@@ -95,10 +96,11 @@ export class Icon extends LitElement {
 	private async _checkRegistration() {
 		const tag = phosphorTag(this.name);
 		if (!tag || typeof customElements === 'undefined' || customElements.get(tag)) return;
-		if (!warningsEnabled()) return;
+		if (!warningsEnabled() || wasReported(tag)) return;
 		const name = this.name;
-		const root = this.getRootNode();
-		const host = root instanceof ShadowRoot ? root.host.localName : undefined;
+		const hosts: string[] = [];
+		for (let root = this.getRootNode(); root instanceof ShadowRoot; root = root.host.getRootNode())
+			hosts.unshift(root.host.localName);
 		try {
 			const registered = await Promise.race([
 				customElements.whenDefined(tag).then(() => true),
@@ -108,7 +110,7 @@ export class Icon extends LitElement {
 			]);
 			// Skip a glyph the element no longer renders: a later name has its own check.
 			if (registered || customElements.get(tag) || phosphorTag(this.name) !== tag) return;
-			if (claimReport(tag)) console.warn(missingGlyphMessage({ name, tag, host }));
+			if (claimReport(tag)) console.warn(missingGlyphMessage({ name, tag, hosts }));
 		} catch {
 			// whenDefined rejects a tag that is not a valid custom element name; nothing to report.
 		}
