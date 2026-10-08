@@ -84,13 +84,12 @@ framework tooling read it. Grove ships it at `dist/custom-elements.json` and poi
 
 ### How it is built
 
-`pnpm build-manifest` (the last step of `pnpm build`) runs four things in order:
+`pnpm build-manifest` (the last step of `pnpm build`) runs three things in order:
 
 ```sh
 cem analyze --config custom-elements-manifest.config.mjs
 node scripts/generate-framework-types.mjs
 node scripts/check-manifest.mjs
-node scripts/check-dist.mjs
 ```
 
 1. **The analyzer** (`@custom-elements-manifest/analyzer`) reads the component sources listed in
@@ -104,10 +103,14 @@ node scripts/check-dist.mjs
    projects (`@edgarjaymez/grove/astro` in `package.json` exports).
 3. **`check-manifest.mjs`** compares the manifest with the sources and **fails the build** if they
    disagree.
-4. **`check-dist.mjs`** fails the build when no `dist/*.js` reads `process.env.NODE_ENV`. The
-   development warnings (`src/lib/utils/dev.ts`) stay on unless the consumer's bundler replaces that
-   expression with `"production"`. If Grove's own build replaced it, the library would decide for
-   every consumer. Never add `process.env.NODE_ENV` to the `define` in `vite.config.ts`.
+
+`pnpm build` also runs **`check-dist.mjs`**, right after `vite build` and before `build-manifest`. It
+fails the build when no `dist/*.js` reads `process.env.NODE_ENV`. The development warnings
+(`src/lib/utils/dev.ts`) stay on unless the consumer's bundler replaces that expression with
+`"production"`. If Grove's own build replaced it, the library would decide for every consumer. Never
+add `process.env.NODE_ENV` to the `define` in `vite.config.ts`. It checks the bundle that `vite build`
+just wrote, so it is not part of `pnpm build-manifest`, which you can run on its own without a bundle
+(cookbook recipe 12).
 
 ### JSDoc tags the manifest reads
 

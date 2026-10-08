@@ -9,7 +9,7 @@
 ## `pnpm build`
 
 ```json
-"build": "pnpm build-tokens && vite build && pnpm build-manifest",
+"build": "pnpm build-tokens && vite build && node scripts/check-dist.mjs && pnpm build-manifest",
 ```
 
 1. **`pnpm build-tokens`** runs Terrazzo: token JSON → `src/lib/tokens/tokens.css` (chapter 06).
@@ -21,9 +21,11 @@
    - `unplugin-dts` writes the `.d.ts` type files, rooted at `src/lib`;
    - a small `copy-static-assets` plugin copies `tokens.css`, `fonts/`, every
      `src/lib/styles/*.css` and `components-since.json` into `dist/`.
-3. **`pnpm build-manifest`** writes the manifest and Astro types and runs the manifest and dist
-   checks (chapter 07). A component that breaks the manifest rules, or a build that compiles out
-   `process.env.NODE_ENV`, fails here.
+3. **`node scripts/check-dist.mjs`** fails the build when the bundle no longer reads
+   `process.env.NODE_ENV`, so the consumer's bundler still decides on the development warnings
+   (chapter 07).
+4. **`pnpm build-manifest`** writes the manifest and Astro types and runs the manifest check
+   (chapter 07). A component that breaks the manifest rules fails the build here.
 
 ### What `dist/` holds
 
