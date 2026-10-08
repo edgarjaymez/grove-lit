@@ -25,7 +25,7 @@ import './Button.js';
 const meta: Meta<Args> = {
 	title: 'Components/gv-button',
 	tags: ['autodocs'],
-	render: ({ text, variant, color, size, icon, disabled }) => html`
+	render: ({ text, variant, color, size, icon, disabled, type, name, value, href, target, rel }) => html`
 		…
 			<gv-button
 				text=${text}
@@ -34,6 +34,9 @@ const meta: Meta<Args> = {
 				size=${size}
 				icon=${icon}
 				?disabled=${disabled}
+				type=${type}
+				name=${ifDefined(name || undefined)}
+				…
 			></gv-button>
 		…
 	`,
@@ -45,7 +48,9 @@ const meta: Meta<Args> = {
 		variant: 'filled',
 		color: 'accent',
 		size: 'md',
-		disabled: false
+		disabled: false,
+		type: 'button',
+		…
 	}
 };
 export default meta;
@@ -65,6 +70,10 @@ export const Tonal: Story = { args: { variant: 'tonal' } };
 - Slots are shown by writing light-DOM children, as in the `Slotted` story:
   `<gv-button …>Save changes</gv-button>`. A component with events can attach listeners in the
   template with `@gv-*=${…}`.
+- A story can render the page around the component. `InForm` puts `gv-button` in a `<form>`, cancels
+  `submit`, and writes each event and its form data into an `<output>` next to it; its handler
+  re-enables the button after a one-second stand-in request. Link stories use `href="#…"`, so the
+  Storybook iframe never navigates away.
 
 ### Global setup: `.storybook/preview.ts`
 
@@ -153,6 +162,12 @@ const mount = async (template: unknown) => {
 4. Read inside the component through `el.shadowRoot`.
 5. Clear the host after each test.
 
+For behaviour that depends on real input, use **`userEvent`** from `vitest/browser`. It sends trusted
+clicks and keys through Playwright, as a person would; `el.click()` and `dispatchEvent` send
+untrusted ones. `Button.browser.test.ts` relies on it: `userEvent.click(inner)`,
+`userEvent.keyboard('{Enter}')`, `userEvent.keyboard('[Space]')`. Playwright waits for an element it
+considers disabled; pass `{ force: true }` to click one on purpose.
+
 `src/test/browser-setup.ts` loads the token CSS and registers the glyphs every component uses by
 default, so layout and icons are real.
 
@@ -165,8 +180,9 @@ through `commands` from `vitest/browser`:
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 
-The browser tests today: `events`, `slots`, `focus-ring`, `host-hidden`, `reduced-motion`, and five
-components (`FeedbackStrip`, `Icon`, `MenuItem`, `Texture`, `Title`).
+The browser tests today: `events`, `slots`, `focus-ring`, `host-hidden`, `reduced-motion`, the
+`FormControl` mixin (`utils/form-control`, with small test elements of its own), and six components
+(`Button`, `FeedbackStrip`, `Icon`, `MenuItem`, `Texture`, `Title`).
 
 ### Tests that keep two copies in step
 
@@ -188,9 +204,12 @@ failed in every theme and reported both planted nodes (`scripts/a11y-canary.mjs`
 
 ## Where to see it in Button.ts
 
-- `Button.stories.ts` imports `./Button.js`, has ten stories, and a `Slotted` story that passes the
-  label as light-DOM text.
-- The `storybook` project runs all ten stories three times, once per theme, with axe reporting.
-- Button has no browser test of its own. Shared tests cover it: `slots`, `host-hidden` and
-  `reduced-motion` loop over every tag in `groveTags`, and `focus-ring` renders `gv-button`
-  directly.
+- `Button.stories.ts` imports `./Button.js` and has 18 stories: variants, colours, sizes, icon,
+  disabled, a `Slotted` story that passes the label as light-DOM text, link stories, and `InForm` and
+  `NamedSubmits` with a visible event log.
+- The `storybook` project runs all of them three times, once per theme, with axe reporting.
+- `Button.browser.test.ts` covers the form and link behaviour with trusted input: submit, reset,
+  `form="id"`, a disabled fieldset, Enter, self-disable, named submits, the supported form
+  compositions, and link mode's look in all three themes. Shared tests cover it too: `slots`,
+  `host-hidden` and `reduced-motion` loop over every tag in `groveTags`, and `focus-ring` renders
+  `gv-button` directly.

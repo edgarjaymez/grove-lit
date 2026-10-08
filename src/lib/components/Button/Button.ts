@@ -5,9 +5,9 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
-import { linkAttribute, linkRel } from '../../utils/link-attributes.js';
 import { FormControl } from '../../utils/form-control.js';
 import type { FormRole } from '../../utils/form-control.js';
+import { linkAttribute, linkRel } from '../../utils/link-attributes.js';
 import { SlotContent } from '../../utils/slot-content.js';
 
 type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost';

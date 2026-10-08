@@ -37,6 +37,18 @@ replaces page colours with a small system palette and drops `box-shadow`. [04]
 **Constructable stylesheet**: a `CSSStyleSheet` created in JavaScript and attached to a shadow root
 through `adoptedStyleSheets`, so many roots can share one sheet. [04]
 
+**Form-associated custom element**: a custom element whose class sets `static formAssociated = true`
+and calls `attachInternals()`. The browser then treats the host as a form control: it has a form
+owner, is listed in `form.elements`, can add form data, and is disabled by a `<fieldset disabled>`.
+[03]
+
+**Form owner**: the `<form>` a control belongs to: the one named by its `form="id"` attribute, else
+its nearest ancestor `<form>`, both looked up in the control's own tree, never through a slot. [03, 05]
+
+**Default button**: the first submit button of a form, in tree order. Enter in a text field activates
+it (implicit submission). A form-associated custom element isn't one natively, so Grove's form base
+plays the part when the form has no native submit button. [03]
+
 ## Lit
 
 **Lit / `LitElement`**: a small library for writing custom elements. A component extends `LitElement`.
@@ -121,7 +133,14 @@ ring can stack on top. [04]
 documented with `@cssprop`. [04]
 
 **`SlotContent`**: Grove's reactive controller that knows whether a slot has real content, so a
-property can be shown as the fallback. [05]
+property can be shown as the fallback. With `phrasingOnly`, it also warns in development when the slot
+holds a form control. [05]
+
+**`FormControl`**: Grove's class mixin that makes a component a form-associated custom element and
+runs submit, reset, Enter and self-disable. The one way a Grove control joins a form. [03, 10]
+
+**Mixin**: a function that takes a class and returns a subclass of it (`FormControl(LitElement)`), to
+share behaviour that has to live on the element's own class. [03]
 
 **Metadata (`*Metadata`)**: the structured description exported from each `*.metadata.ts` file, for
 tools and AI assistants. [07]
@@ -157,8 +176,8 @@ breakpoint, media) that swaps some of them. [06]
 **Custom elements manifest**: `custom-elements.json`, a standard description of a package's elements,
 attributes, events, slots and CSS properties. [07]
 
-**JSDoc tags (`@slot`, `@fires`, `@cssprop`)**: comments on a component class that the manifest
-analyzer reads. [07]
+**JSDoc tags (`@slot`, `@fires`, `@cssprop`, `@attr`, `@internal`)**: comments on a component class
+that the manifest analyzer reads. [07]
 
 **Vitest project**: one named group of tests with its own files and environment (`unit`, `browser`,
 `storybook`, `a11y-canary`). [08]

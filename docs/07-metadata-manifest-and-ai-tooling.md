@@ -88,6 +88,11 @@ node scripts/check-manifest.mjs
    `custom-elements-manifest.config.mjs`, with Lit support on, and writes `dist/custom-elements.json`.
    It learns attributes and properties from `@property`, and events, slots and CSS properties from the
    JSDoc tags.
+   The globs also take `src/lib/utils/form-control.ts`, the `FormControl` mixin (chapter 03,
+   Stop 4), so `gv-button` lists the mixin and its public `form` getter as inherited. The mixin's
+   hooks carry `@internal`, which the analyzer skips; without it, a hook such as `disabled` would be
+   marked as inherited from the mixin on every component. `vite.config.ts` lists the same file in its
+   `dts()` include, so the published `Button.d.ts` can import the mixin's types.
    While it runs, a plugin from `scripts/manifest-types.mjs` fixes two gaps: it spells out type
    aliases (so `size` is typed `'lg' | 'md' | 'sm'`, not `ButtonSize`), and it drops `@state` fields,
    which are internal.
@@ -98,12 +103,14 @@ node scripts/check-manifest.mjs
 
 ### JSDoc tags the manifest reads
 
-| Tag                            | Example                                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------ |
-| `@slot`                        | `@slot - The button text. Falls back to \`text\` when empty.`                              |
-| `@slot name`                   | `@slot heading - The strip heading. Falls back to \`heading\` when empty.` (FeedbackStrip) |
-| `@fires {CustomEvent<T>} gv-*` | `@fires {CustomEvent<boolean>} gv-change - with the new \`checked\`.`                      |
-| `@cssprop --gv-*`              | `@cssprop --gv-icon-fill-display - \`display\` of the fill weight; …`                      |
+| Tag                            | Example                                                                                                     |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `@slot`                        | `@slot - The button text. Falls back to \`text\` when empty.`                                               |
+| `@slot name`                   | `@slot heading - The strip heading. Falls back to \`heading\` when empty.` (FeedbackStrip)                  |
+| `@fires {CustomEvent<T>} gv-*` | `@fires {CustomEvent<boolean>} gv-change - with the new \`checked\`.`                                       |
+| `@cssprop --gv-*`              | `@cssprop --gv-icon-fill-display - \`display\` of the fill weight; …`                                       |
+| `@attr {type} name`            | `@attr {string} form - The id of the \`<form>\` this button belongs to, …`(an attribute with no`@property`) |
+| `@internal`                    | on a member: left out of the manifest (the form hooks in `Button.ts` and the mixin)                         |
 
 ### When `check-manifest` fails
 
@@ -155,3 +162,7 @@ If a rule in an agent file and this guide disagree, check the code. The code win
 - The manifest types `variant` as `'filled' | 'tonal' | 'outlined' | 'ghost'` because the plugin
   expands `ButtonVariant`.
 - Button dispatches no custom event, so it needs no `@fires` tag.
+- `@attr {string} form` declares the `form` attribute, which the browser handles, so the Astro types
+  accept `<gv-button form="checkout">` and metadata snippets may use it.
+- The four form hooks (`formRole` and the others) are `@internal`, so the manifest lists only the
+  properties a page sets.

@@ -243,7 +243,10 @@ design decision, not a routine change:
 ## Where to see it in Button.ts
 
 - `@customElement('gv-button')` registers the tag; `HTMLElementTagNameMap` types it.
-- Eight `@property` fields; `disabled` reflects; `ariaLabel` names its attribute `aria-label`.
+- Thirteen `@property` fields; `disabled` and `name` reflect; `ariaLabel` names its attribute
+  `aria-label`.
 - `render()` uses a content binding, an attribute binding, `?disabled`, `classMap`, `ifDefined` and
   `nothing`.
-- It overrides no lifecycle hooks.
+- It overrides no lifecycle hooks itself. Its base, the `FormControl` mixin, extends
+  `connectedCallback`, `disconnectedCallback` and `requestUpdate` and adds the browser's form
+  callbacks (chapter 03).

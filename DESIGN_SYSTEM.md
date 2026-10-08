@@ -1197,10 +1197,70 @@ Text-bearing components take their text as content, projected through a `<slot>`
 
 - **Precedence.** Slotted content wins. With nothing slotted, the property renders, and removing the content brings the property back. Whitespace and comments between the tags don't count as content, so `<gv-button text="Save">` with a line break before its closing tag still shows "Save".
 - **Phrasing content only, in these slots.** All six slot-bearing components take text and inline elements (`strong`, `em`, `code`, `a` where the component isn't already a link), never a form control. Four slots sit inside an interactive element or a popup (`gv-button`, `gv-checkbox`, `gv-menu-item`, `gv-tooltip`), where a control can't be nested or reached. `gv-title` and `gv-feedback-strip` are static page chrome by design. Outside production builds, these components log one console warning when a slot holds a control.
-- **Containers accept controls.** A slot that is not inside a control and not phrasing-only by design, such as a card body or a form layout, may hold Grove controls and native ones. A slotted control stays in the page's light DOM, so it belongs to the page's form like any other control there.
+- **Containers accept controls.** A slot that is not inside a control and not phrasing-only by design, such as a card body or a form layout, may hold Grove controls and native ones. A slotted control stays in the page's light DOM, so it belongs to the page's form like any other control there (see Forms and Slots).
 - **Structure stays with the component.** `gv-title`'s heading element still comes from `level`, and `gv-menu-item`'s link from `href`.
 - **Declared.** Each component lists its slots in its metadata (`composition.slots`) and in `custom-elements.json`. A test fails if a component renders a slot it doesn't declare.
 - **Before upgrade.** Slotted content is plain light DOM, so it renders before the element is defined and with JavaScript off. Rendering the component's own markup on the server (Declarative Shadow DOM) is a separate, later spec.
+
+### Forms and Slots
+
+Grove controls take part in forms the way native controls do: they are form-associated custom elements, built on one shared base. `gv-button` is the first; `gv-checkbox`, `gv-text-input` and `gv-textarea` follow on the same base.
+
+**The rule.** Form association follows the DOM tree, not slots. A control belongs to the `<form>` it sits in, or to the one its `form="id"` names, in its own tree. A slot only changes where the control is shown, so a control slotted into a `<form>` that another component renders in its shadow root has no form.
+
+**Supported compositions.** Each keeps the `<form>` and its controls in one tree.
+
+```html
+<!-- A shell component around a light-DOM form: the form is slotted whole -->
+<page-section>
+	<form action="/contact" method="post">
+		<label>Email <input name="email" type="email" required /></label>
+		<gv-button type="submit">Send</gv-button>
+	</form>
+</page-section>
+
+<!-- A layout component inside a form: its slotted controls are still the form's children -->
+<form>
+	<two-columns>
+		<input name="first" />
+		<gv-button type="submit">Send</gv-button>
+	</two-columns>
+</form>
+```
+
+A Lit component that renders the `<form>` and its controls in the same template is the third.
+
+**Unsupported.** A component that renders `<form>` in its shadow root and takes its controls through a slot. The controls have no form: submit and reset do nothing, validation and `<fieldset disabled>` skip them, and Enter doesn't submit. Outside production builds, a `type="submit"` or `type="reset"` `gv-button` with no form logs one warning on its first click, naming the component whose shadow root holds the `<form>`. Listeners for `input` or `gv-change` on that `<form>` do hear slotted controls, because events cross slots, but that only moves data: the form still doesn't own them.
+
+**Submit and reset.**
+
+- `<gv-button type="submit">` submits its form like a native submit button: validation first, then a cancelable `submit` event. `type="reset"` resets it. The default `type="button"` does nothing in the form.
+- The form acts once the click has finished propagating, so a click listener anywhere, `window` included, can cancel it with `preventDefault()`. `el.click()` submits in the next task.
+- `name` and `value`: a named submit button adds its pair to the form data built during its own submission, natively or with `new FormData(form)` in a `submit` listener. Data built later, after an `await`, doesn't have it. `event.submitter` is `null`, and there is no `formaction` family.
+- `disabled`, or a `<fieldset disabled>` around the button (outside its first `<legend>`), blocks both. The fieldset doesn't write the `disabled` property.
+
+**Enter.** When a form has no native submit button (`<button>`, `<input type="submit">` or `<input type="image">`), Enter in a text field activates the first rendered `type="submit"` `gv-button` in source order. A disabled one blocks Enter, as a disabled native default button does. To veto Enter, cancel the `keydown` on the field, on the form or an ancestor in its tree, or in the capture phase; a `window` listener runs too late.
+
+**Self-disable.** After a submission it started has fired `submit`, `gv-button` sets its own `disabled` and matches `:state(submitting)`, so a double click or a second Enter sends nothing. It is enabled again when the page sets `disabled = false`, when the form is reset, or when the page comes back from the back/forward cache. A page that handles the submission itself owns the request, so it re-enables the button when the request settles:
+
+```ts
+@query('gv-button[type=submit]') private _send!: Button;
+
+private async _onSubmit(event: SubmitEvent) {
+	event.preventDefault();
+	const data = new FormData(event.target as HTMLFormElement); // at once, before any await
+	try {
+		await fetch('/contact', { method: 'POST', body: data });
+		this._status.focus(); // focus left the disabled button for the page body
+	} finally {
+		this._send.disabled = false;
+	}
+}
+```
+
+Without that last line, a form used more than once without a page load (search, filters, "add item") keeps a dead button. `form.querySelector(':state(submitting)')` finds the button too.
+
+**Links in forms.** A `gv-button` with `href` is a link: it never submits, resets or handles Enter, whatever its `type`. It is still listed in `form.elements`, and inside a `<fieldset disabled>` it stays a working link while its host matches `:disabled`, so style its disabled look with `gv-button[disabled]`, not `:disabled`.
 
 ---
 
