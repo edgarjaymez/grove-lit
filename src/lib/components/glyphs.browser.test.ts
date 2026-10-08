@@ -68,6 +68,10 @@ const variantAttributes = (tag: string) =>
 describe('the phosphor metadata matches what each component draws (#47)', () => {
 	it('pairs every registered tag with one metadata file', () => {
 		expect([...metadataByTag.keys()].sort()).toEqual([...groveTags].sort());
+		expect(
+			groveTags.map((tag) => [tag, metaOf(tag).component.name]),
+			'component.name is the class registered for the tag'
+		).toEqual(groveTags.map((tag) => [tag, customElements.get(tag)!.name]));
 	});
 
 	it.each(groveTags)('<%s> keys each plain-token variant by an attribute it observes', (tag) => {

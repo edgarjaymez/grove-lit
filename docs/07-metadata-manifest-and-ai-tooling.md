@@ -77,7 +77,8 @@ the attribute of the same name, or the one its `variantAliases` table names (`gv
 is the `variant` attribute), and fails on a variant key that is neither. When you change a
 component's default glyph, these two tests name every copy left to update. Both read the metadata
 through `metadataByTag` (`src/test/component-metadata.ts`), which pairs each metadata file with the
-`@customElement` tag of the module next to it.
+`@customElement` tag of the module next to it. The browser test also requires one metadata file per
+registered tag, whose `component.name` is the class registered for that tag.
 
 ## The custom elements manifest
 
