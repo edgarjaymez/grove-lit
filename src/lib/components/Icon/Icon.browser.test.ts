@@ -136,6 +136,27 @@ describe('consumers expose no glyph (#24 FR-10 to FR-12)', () => {
 		]);
 	});
 
+	it('hides the to-do glyph when done, and draws none with icon="" (#26 FR-10 to FR-12)', async () => {
+		await mount(html`
+			<gv-todo-list-item heading="Water the tree" category="Garden" is-done></gv-todo-list-item>
+			<gv-todo-list-item heading="Rake the leaves" category="Garden" icon=""></gv-todo-list-item>
+		`);
+		const [done, bare] = host.querySelectorAll('gv-todo-list-item');
+		const glyph = done.shadowRoot!.querySelector<Icon>('gv-icon')!;
+		await glyph.updateComplete;
+		expect(glyph.isFilled).toBe(false);
+		expect(glyph.shadowRoot!.querySelector('ph-tree')).not.toBeNull();
+		expect(bare.shadowRoot!.querySelector('gv-icon')).toBeNull();
+		expect((await tree()).split('\n')).toEqual([
+			'- checkbox [checked]',
+			'- paragraph: Water the tree',
+			'- paragraph: Garden',
+			'- checkbox',
+			'- paragraph: Rake the leaves',
+			'- paragraph: Garden'
+		]);
+	});
+
 	it('stays hidden where the consumer already hid it', async () => {
 		await mount(html`
 			<gv-menu-item label="Home" href="#"></gv-menu-item>
@@ -245,5 +266,31 @@ describe('missing-glyph warning (#38 FR-01 to FR-11)', () => {
 		await mount(html`<gv-back-button icon="missing-back"></gv-back-button>`);
 		await settle();
 		expect(String(warn.mock.calls[0][0])).toContain('(inside <gv-back-button>)');
+	});
+
+	it('names every host from the outermost in, as gv-color-swatch holds gv-tooltip (#47)', async () => {
+		const outer = document.createElement('div');
+		host.append(outer);
+		render(
+			html`<gv-back-button icon="missing-nested"></gv-back-button>`,
+			outer.attachShadow({ mode: 'open' })
+		);
+		const back = outer.shadowRoot!.querySelector('gv-back-button')!;
+		await back.updateComplete;
+		await back.shadowRoot!.querySelector<Icon>('gv-icon')!.updateComplete;
+		await settle();
+		expect(String(warn.mock.calls[0][0])).toContain('(inside <div>, in its <gv-back-button>)');
+	});
+
+	it('schedules nothing for a tag already reported (#47)', async () => {
+		await mount(html`<gv-icon name="missing-again"></gv-icon>`);
+		await settle();
+		expect(warn).toHaveBeenCalledTimes(1);
+		const whenDefined = vi.spyOn(customElements, 'whenDefined');
+		await mount(html`<gv-icon name="missing-again"></gv-icon>`);
+		await settle();
+		expect(whenDefined).not.toHaveBeenCalled();
+		expect(warn).toHaveBeenCalledTimes(1);
+		whenDefined.mockRestore();
 	});
 });

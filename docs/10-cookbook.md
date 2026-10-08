@@ -31,7 +31,8 @@ Say the new component is `gv-badge`.
 4. If it dispatches events, follow recipe 4.
 5. Create `Badge.metadata.ts` with a `BadgeMetadata` that `satisfies ComponentMetadata`. Copy an
    existing one and replace every section. List the same slots as the `@slot` tags, and the glyphs it
-   renders under `phosphor` (chapter 07).
+   renders under `phosphor` (chapter 07). A default or fixed glyph also goes into the `Home.mdx`
+   recipe and `src/test/browser-setup.ts`.
 6. Create `Badge.stories.ts` (recipe 6).
 7. Add `export * from './Badge/Badge.js';` to `src/lib/components/index.ts`, in alphabetical order.
 8. Add the class, `BadgeMetadata` and any public types to `src/lib/index.ts`.
@@ -41,7 +42,8 @@ Say the new component is `gv-badge`.
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | step 5             | `slots.browser.test.ts`: a component that renders a slot its metadata does not declare fails; tools get no description of it                                   |
 | step 5's slot list | `pnpm build`: `composition.slots … differ from <gv-badge>'s @slot tags`                                                                                        |
-| step 8             | the component is missing from the package, and `groveTags` does not include it, so the shared browser tests (slots, `hidden`, reduced motion) silently skip it |
+| step 5's glyphs    | `glyphs.browser.test.ts`: the glyphs it draws differ from `phosphor`; `metadata.test.ts`: the Home.mdx recipe or browser-setup.ts list differs                 |
+| step 8             | the component is missing from the package and from `groveTags`: `glyphs.browser.test.ts` fails on its unpaired metadata, though the other shared tests skip it |
 | step 9             | nothing fails yet, which is the problem: the manifest check only runs in `pnpm build`                                                                          |
 
 After this recipe, raise the hard-coded component count of 15 in `metadata.test.ts` and

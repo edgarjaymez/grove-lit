@@ -8,9 +8,9 @@ export const IconMetadata = {
 			'Phosphor icon rendered as an SVG via @phosphor-icons/webcomponents, supports regular and filled weights',
 		type: 'display',
 		path: 'src/lib/components/Icon/Icon.ts',
-		version: '2.1.0',
+		version: '2.1.1',
 		created: '2026/02/15',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: 'name',

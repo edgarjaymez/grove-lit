@@ -153,8 +153,13 @@ const mount = async (template: unknown) => {
 4. Read inside the component through `el.shadowRoot`.
 5. Clear the host after each test.
 
+`src/test/shadow.ts` is for tests that look into nested shadow roots: `deepElements()` lists every
+element below a root, walking each open shadow root right after its host; `settleDeep()` waits until
+all of them have updated and no new one appears; `frames()` waits a number of animation frames.
+
 `src/test/browser-setup.ts` loads the token CSS and registers the glyphs every component uses by
-default, so layout and icons are real.
+default, so layout and icons are real. Its glyph list must match the components' `phosphor`
+metadata; `metadata.test.ts` fails when it drifts.
 
 Two custom commands, defined in `vite.config.ts` and typed in `src/test/commands.d.ts`, are available
 through `commands` from `vitest/browser`:
@@ -165,17 +170,20 @@ through `commands` from `vitest/browser`:
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 
-The browser tests today: `events`, `slots`, `focus-ring`, `host-hidden`, `reduced-motion`, and five
-components (`FeedbackStrip`, `Icon`, `MenuItem`, `Texture`, `Title`).
+The `browser` project picks up every `src/**/*.browser.test.ts`, so a new browser test needs no
+entry here: a shared test sits next to the code it checks, a component's own test in its directory.
+`git ls-files '*.browser.test.ts'` lists them all.
 
 ### Tests that keep two copies in step
 
-Some rules exist in two places and a unit test guards that they match:
+Some rules exist in two places and a test guards that they match:
 
 - `visually-hidden.test.ts`: `.visually-hidden` in `a11y.css` and in `visually-hidden.ts`.
 - `focus.test.ts`: the `.gv-surface-*` classes and the `GroveSurface` type.
 - `contrast.test.ts`: `tokens.css` and the token JSON.
-- `metadata.test.ts`: metadata glyphs and the Phosphor package.
+- `metadata.test.ts`: metadata glyphs and the Phosphor package; metadata glyphs, the `Home.mdx`
+  recipe and `browser-setup.ts`.
+- `glyphs.browser.test.ts`: metadata glyphs and what each component draws.
 
 If one of these fails after your change, update the other copy; don't loosen the test.
 

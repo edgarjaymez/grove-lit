@@ -5,7 +5,8 @@ import {
 	phosphorModule,
 	phosphorTag,
 	resetReports,
-	warningsEnabled
+	warningsEnabled,
+	wasReported
 } from './phosphor.js';
 
 describe('phosphor naming (#38 FR-15)', () => {
@@ -32,6 +33,12 @@ describe('once-per-tag bookkeeping (#38 FR-02, FR-15)', () => {
 		expect(claimReport('ph-tree')).toBe(false);
 		expect(claimReport('ph-house')).toBe(true);
 	});
+
+	it('knows which tags were reported (#47)', () => {
+		expect(wasReported('ph-tree')).toBe(false);
+		claimReport('ph-tree');
+		expect(wasReported('ph-tree')).toBe(true);
+	});
 });
 
 describe('the warning (#38 FR-01, FR-07, FR-08)', () => {
@@ -45,11 +52,21 @@ describe('the warning (#38 FR-01, FR-07, FR-08)', () => {
 		const message = missingGlyphMessage({
 			name: 'ArrowLeft',
 			tag: 'ph-arrowleft',
-			host: 'gv-back-button'
+			hosts: ['gv-back-button']
 		});
 		expect(message).toContain('name="ArrowLeft" (read as "arrowleft")');
 		expect(message).toContain('(inside <gv-back-button>)');
 		expect(message).toContain('PhArrowleft');
+	});
+
+	it('names nested hosts from the outermost in (#47)', () => {
+		expect(
+			missingGlyphMessage({
+				name: 'copy',
+				tag: 'ph-copy',
+				hosts: ['gv-color-swatch', 'gv-tooltip']
+			})
+		).toContain('renders nothing (inside <gv-color-swatch>, in its <gv-tooltip>).');
 	});
 });
 

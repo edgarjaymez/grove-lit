@@ -25,6 +25,7 @@ grove-lit/
 ├── .github/ISSUE_TEMPLATE/               an issue template; there are no workflows
 ├── scripts/                              build, release and test helpers (Node, .mjs)
 │   ├── check-manifest.mjs                fails the build when manifest and sources disagree
+│   ├── check-dist.mjs                    fails the build when dist/ no longer reads process.env.NODE_ENV
 │   ├── manifest-types.mjs (+ .test.mjs)  spells out type aliases in the manifest
 │   ├── generate-framework-types.mjs      writes dist/types/astro.d.ts
 │   ├── record-release.mjs · check-ledger.mjs · components-since.mjs (+ .test.mjs)
@@ -36,7 +37,8 @@ grove-lit/
 │   │   ├── events.ts                     GroveEventMap: the type of every gv-* event
 │   │   ├── surfaces.ts                   GroveSurface, GroveTrack, GROVE_SURFACES, isAurora
 │   │   ├── events.browser.test.ts · slots.browser.test.ts
-│   │   ├── components/                   15 component directories + index.ts, metadata.ts, metadata.test.ts
+│   │   ├── components/                   15 component directories + index.ts, metadata.ts, metadata.test.ts,
+│   │   │                                 glyphs.browser.test.ts
 │   │   ├── styles/                       *.css for the page · *.ts Lit style fragments · their tests
 │   │   ├── tokens/                       token JSON (border/ effects/ palette/ spacing/ text/),
 │   │   │                                 main.resolver.json, tokens.css GENERATED, contrast.test.ts
@@ -45,8 +47,8 @@ grove-lit/
 │   │   └── __screenshots__/              (gitignored) browser-test failure screenshots
 │   ├── stories/                          repo-level Storybook pages: Home.mdx, Accessibility.mdx,
 │   │                                     FocusRing.stories.ts, A11yCanary.stories.ts
-│   ├── test/                             browser-setup.ts · commands.d.ts · events.types.ts ·
-│   │                                     grove-tags.ts · themes.ts
+│   ├── test/                             browser-setup.ts · commands.d.ts · component-metadata.ts ·
+│   │                                     events.types.ts · grove-tags.ts · shadow.ts · themes.ts
 │   └── .ai/                              GENERATED machine-readable index of components and tokens
 ├── static/                               Storybook favicons and webmanifest
 ├── dist/                                 (gitignored) build output: what npm receives

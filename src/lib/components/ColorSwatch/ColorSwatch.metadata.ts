@@ -9,9 +9,9 @@ export const ColorSwatchMetadata = {
 		description:
 			'Displays a primitive color token as a labeled swatch with a color preview, an OKLCH value and a hex value. Both value rows are copy buttons: the OKLCH row copies the DTCG (W3C Design Tokens) colour object, the hex row copies the plain #rrggbb string, and each reveals a gv-tooltip on hover and on focus. A successful copy flips that tooltip to "Copied!" and drops its shadow so the bubble reads as pressed, then dismisses it after three seconds. Used in design system documentation and Storybook color pages.',
 		type: 'documentation',
-		version: '1.3.0',
+		version: '1.3.1',
 		created: '2026/05/31',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: null,
@@ -101,7 +101,7 @@ export const ColorSwatchMetadata = {
 		parentConstraints: [
 			'Should be placed inside a surface that loads tokens.css — the component relies on CSS custom properties from the Grove token system',
 			'Both tooltips are pinned outside the left edge of the 9rem column, right-aligned 8px clear of it — keep a left gutter of at least 80px so the wider "Copied!" bubble is not clipped by a scroll container',
-			'The consuming app must register the fixed glyph listed in the phosphor field (copy, @phosphor-icons/webcomponents/PhCopy) for the tooltip icon to render'
+			'The consuming app must register the fixed glyph listed in the phosphor field for the tooltip icon to render'
 		]
 	},
 
