@@ -44,8 +44,8 @@ Say the new component is `gv-badge`.
 | step 8             | the component is missing from the package, and `groveTags` does not include it, so the shared browser tests (slots, `hidden`, reduced motion) silently skip it |
 | step 9             | nothing fails yet, which is the problem: the manifest check only runs in `pnpm build`                                                                          |
 
-After this recipe, raise the hard-coded component count of 15 in `metadata.test.ts` and
-`host-hidden.browser.test.ts`; both fail until you do. `pnpm check-ledger` will fail until the next release records the new
+After this recipe, raise the hard-coded component count of 15 in `metadata.test.ts`; it fails until
+you do. `pnpm check-ledger` will fail until the next release records the new
 component; that is expected (chapter 09).
 
 ## 3 · Add a property
