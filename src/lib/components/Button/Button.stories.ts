@@ -18,6 +18,7 @@ interface Args {
 	/** Any browsing context name; the select offers the keywords. */
 	target: string;
 	rel: string;
+	hreflang: string;
 }
 
 const meta: Meta<Args> = {
@@ -35,7 +36,8 @@ const meta: Meta<Args> = {
 		value,
 		href,
 		target,
-		rel
+		rel,
+		hreflang
 	}) => html`
 		<span
 			style="background-color: var(--semantic-color-surface-ground); padding: 16px; display: inline-block"
@@ -53,6 +55,7 @@ const meta: Meta<Args> = {
 				href=${ifDefined(href || undefined)}
 				target=${ifDefined(target || undefined)}
 				rel=${ifDefined(rel || undefined)}
+				hreflang=${ifDefined(hreflang || undefined)}
 			></gv-button>
 		</span>
 	`,
@@ -68,7 +71,8 @@ const meta: Meta<Args> = {
 		value: { control: 'text' },
 		href: { control: 'text' },
 		target: { control: 'select', options: ['', '_self', '_blank', '_parent', '_top'] },
-		rel: { control: 'text' }
+		rel: { control: 'text' },
+		hreflang: { control: 'text' }
 	},
 	args: {
 		text: 'Button',
@@ -81,7 +85,8 @@ const meta: Meta<Args> = {
 		value: '',
 		href: '',
 		target: '',
-		rel: ''
+		rel: '',
+		hreflang: ''
 	}
 };
 export default meta;

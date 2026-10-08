@@ -84,6 +84,12 @@ export const ButtonMetadata = {
 				composition: `<gv-button href="https://example.com/case" target="_blank" variant="outlined">Read the case</gv-button>`
 			},
 			{
+				name: 'link-in-another-language',
+				description:
+					"A link to a page in another language: hreflang names the destination's language and is forwarded only on a real link; lang on the element marks the label's own language, which the shadow link inherits",
+				composition: `<gv-button href="/es/" hreflang="es" lang="es" variant="tonal">Leer en español</gv-button>`
+			},
+			{
 				name: 'disabled-link',
 				description:
 					'A link that is not available yet: rendered without href, out of the tab order, announced as a disabled link',
@@ -262,12 +268,13 @@ export const ButtonMetadata = {
 			'form',
 			'link',
 			'href',
+			'hreflang',
 			'action',
 			'click',
 			'trigger',
 			'call-to-action'
 		],
 		context:
-			'Use for any user-initiated action. Choose style and color based on visual hierarchy: filled accent for primary, tonal for secondary, outlined/ghost for tertiary. Add icon for reinforcement, never as the sole label. Use href for navigation. In a <form>, type="submit" and "reset" act on it; keep the button in the same tree as the <form>, and re-enable it after handling submit yourself.'
+			'Use for any user-initiated action. Choose style and color based on visual hierarchy: filled accent for primary, tonal for secondary, outlined/ghost for tertiary. Add icon for reinforcement, never as the sole label. Use href for navigation; target, rel and hreflang then reach the link. In a <form>, type="submit" and "reset" act on it; keep the button in the same tree as the <form>, and re-enable it after handling submit yourself.'
 	}
 } satisfies ComponentMetadata;

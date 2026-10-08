@@ -720,6 +720,44 @@ describe('link mode (#14)', () => {
 		expect(inner(buttons[0]).hasAttribute('rel')).toBe(false);
 	});
 
+	it('forwards hreflang on a real link only, and drops it when empty, without href or disabled', async () => {
+		const { buttons } = await mount(html`
+			<gv-button href="/es/" hreflang="es">Español</gv-button>
+			<gv-button href="/es/" hreflang="">Empty</gv-button>
+			<gv-button hreflang="es">No href</gv-button>
+			<gv-button href="/es/" hreflang="es" disabled>Disabled</gv-button>
+		`);
+		const [link, empty, noHref, disabled] = buttons;
+		expect(inner(link).getAttribute('hreflang')).toBe('es');
+		expect(inner(empty).hasAttribute('hreflang')).toBe(false);
+		expect(inner(noHref).hasAttribute('hreflang')).toBe(false);
+		expect(inner(disabled).hasAttribute('hreflang')).toBe(false);
+		disabled.disabled = false;
+		await disabled.updateComplete;
+		expect(inner(disabled).getAttribute('hreflang')).toBe('es');
+		noHref.href = '/es/';
+		await noHref.updateComplete;
+		expect(inner(noHref).getAttribute('hreflang')).toBe('es');
+	});
+
+	it('treats the hreflang property and attribute alike', async () => {
+		const { buttons } = await mount(html`
+			<gv-button href="/es/">Español</gv-button>
+			<gv-button href="/es/">Español</gv-button>
+		`);
+		const [byProp, byAttr] = buttons;
+		byProp.hreflang = 'es';
+		byAttr.setAttribute('hreflang', 'es');
+		await Promise.all([byProp.updateComplete, byAttr.updateComplete]);
+		expect(inner(byProp).getAttribute('hreflang')).toBe('es');
+		expect(inner(byAttr).getAttribute('hreflang')).toBe('es');
+		byProp.hreflang = undefined;
+		byAttr.removeAttribute('hreflang');
+		await Promise.all([byProp.updateComplete, byAttr.updateComplete]);
+		expect(inner(byProp).hasAttribute('hreflang')).toBe(false);
+		expect(inner(byAttr).hasAttribute('hreflang')).toBe(false);
+	});
+
 	it('renders a disabled link without href, out of the tab order, going nowhere (FR-06)', async () => {
 		const { buttons } = await mount(html`
 			<button type="button">Before</button>

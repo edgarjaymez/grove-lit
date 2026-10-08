@@ -25,7 +25,7 @@ import './Button.js';
 const meta: Meta<Args> = {
 	title: 'Components/gv-button',
 	tags: ['autodocs'],
-	render: ({ text, variant, color, size, icon, disabled, type, name, value, href, target, rel }) => html`
+	render: ({ text, variant, color, size, icon, disabled, type, name, value, href, target, rel, hreflang }) => html`
 		…
 			<gv-button
 				text=${text}

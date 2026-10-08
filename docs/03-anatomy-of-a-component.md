@@ -58,6 +58,8 @@ out as its union of values (chapter 07).
  * tree, so the button and its `<form>` must be in the same tree (a slot doesn't carry it across).
  *
  * With `href`, it renders a real link with the same look instead, and takes no part in its form.
+ * `target`, `rel` and `hreflang` are forwarded to that link only while it has an `href`, so a disabled
+ * link drops them too.
  *
  * @slot - The button text. Falls back to `text` when empty.
  * @attr {string} form - The id of the `<form>` this button belongs to, when it isn't inside it.
@@ -118,6 +120,8 @@ export class Button extends FormControl(LitElement) {
 	@property({ type: String }) target?: string;
 	/** The link's relationship to its target; passed through untouched when set. */
 	@property({ type: String }) rel?: string;
+	/** The language of the link's destination, such as `es`; forwarded only on a real link. */
+	@property({ type: String }) hreflang?: string;
 	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
 ```
 
@@ -131,7 +135,7 @@ Each line is one public input. The patterns to notice:
 | `disabled`  | from `FormControl`, reflected: page CSS can match `gv-button[disabled]`; the button also sets it once it submits |
 | `name`      | `reflect: true`: the form data entry is named by the `name` attribute, as on a native control                    |
 | `value`     | `reflect: true, useDefault: true`: no attribute until set; removing it restores `''`, as on a native button      |
-| `href`      | switches the render to a link (Stop 8); `target` and `rel` only mean something with it                           |
+| `href`      | switches the render to a link (Stop 8); `target`, `rel` and `hreflang` only mean something with it               |
 | `ariaLabel` | **ARIA property**: `string \| null = null`, its attribute named explicitly, `?? nothing` in the template         |
 
 Properties come before `static styles`, and styles come before methods. That is the order in every
@@ -256,6 +260,7 @@ into a `<form>` in another component's shadow root (chapter 05).
 				href=${ifDefined(href)}
 				target=${ifDefined(linkAttribute(href, this.target))}
 				rel=${ifDefined(linkRel(href, this.target, this.rel))}
+				hreflang=${ifDefined(linkAttribute(href, this.hreflang))}
 				role=${disabled ? 'link' : nothing}
 				aria-disabled=${disabled ? 'true' : nothing}
 				aria-label=${this.ariaLabel ?? nothing}
@@ -284,7 +289,7 @@ into a `<form>` in another component's shadow root (chapter 05).
   around the button. `?disabled` adds or removes the native `disabled` attribute.
 - A disabled link drops `href`, which takes it out of the tab order, and says it is a disabled link
   with `role="link"` and `aria-disabled`. `linkAttribute` and `linkRel` return `undefined` without an
-  `href`, so `ifDefined` drops `target` and `rel` too.
+  `href`, so `ifDefined` drops `target`, `rel` and `hreflang` too.
 - The icon renders only when `icon` is set; `nothing` renders nothing otherwise.
 - `<slot></slot>${this._slots.has() ? nothing : this.text}` shows slotted content when there is some,
   and the `text` property when there is none. Both `<gv-button>Save</gv-button>` and

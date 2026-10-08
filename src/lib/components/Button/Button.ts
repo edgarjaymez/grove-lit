@@ -21,6 +21,8 @@ type ButtonType = 'button' | 'submit' | 'reset';
  * tree, so the button and its `<form>` must be in the same tree (a slot doesn't carry it across).
  *
  * With `href`, it renders a real link with the same look instead, and takes no part in its form.
+ * `target`, `rel` and `hreflang` are forwarded to that link only while it has an `href`, so a disabled
+ * link drops them too.
  *
  * @slot - The button text. Falls back to `text` when empty.
  * @attr {string} form - The id of the `<form>` this button belongs to, when it isn't inside it.
@@ -51,6 +53,8 @@ export class Button extends FormControl(LitElement) {
 	@property({ type: String }) target?: string;
 	/** The link's relationship to its target; passed through untouched when set. */
 	@property({ type: String }) rel?: string;
+	/** The language of the link's destination, such as `es`; forwarded only on a real link. */
+	@property({ type: String }) hreflang?: string;
 	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
 
 	static styles = [
@@ -320,6 +324,7 @@ export class Button extends FormControl(LitElement) {
 				href=${ifDefined(href)}
 				target=${ifDefined(linkAttribute(href, this.target))}
 				rel=${ifDefined(linkRel(href, this.target, this.rel))}
+				hreflang=${ifDefined(linkAttribute(href, this.hreflang))}
 				role=${disabled ? 'link' : nothing}
 				aria-disabled=${disabled ? 'true' : nothing}
 				aria-label=${this.ariaLabel ?? nothing}
