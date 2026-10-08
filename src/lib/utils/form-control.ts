@@ -68,6 +68,24 @@ const flatTreeForm = (el: Element): HTMLFormElement | null => {
 	return null;
 };
 
+/**
+ * Whether a disabled fieldset disables the element: one of its ancestor fieldsets has `disabled`, and the
+ * element isn't inside that fieldset's first legend. This is the platform's rule, minus the element's own
+ * `disabled` attribute, which the component's property already covers.
+ */
+const inDisabledFieldset = (el: Element) => {
+	for (
+		let fieldset = el.parentElement?.closest('fieldset');
+		fieldset;
+		fieldset = fieldset.parentElement?.closest('fieldset')
+	) {
+		if (!fieldset.disabled) continue;
+		const legend = [...fieldset.children].find((child) => child instanceof HTMLLegendElement);
+		if (!legend?.contains(el)) return true;
+	}
+	return false;
+};
+
 /** What the module-level Enter listener needs from a member, captured with protected access. */
 interface Member {
 	role(): FormRole;
@@ -197,7 +215,6 @@ export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 		/** @internal */
 		protected readonly internals = this.attachInternals();
 
-		private _formDisabled = false;
 		private _registered: HTMLFormElement | null = null;
 		private _submitting = false;
 		private _dispatching = false;
@@ -230,7 +247,7 @@ export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 
 		/** @internal */
 		protected get effectivelyDisabled() {
-			return this.disabled || (this.honoursFormDisabled() && this._formDisabled);
+			return this.disabled || (this.honoursFormDisabled() && inDisabledFieldset(this));
 		}
 
 		/** @internal What the control does in its form. */
@@ -273,9 +290,14 @@ export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 			this._syncMembership();
 		}
 
-		/** @internal */
-		formDisabledCallback(disabled: boolean) {
-			this._formDisabled = disabled;
+		/**
+		 * A fieldset around the element changed its disabled state. The platform also calls this when the
+		 * element's own `disabled` attribute is reflected, mid-update, where the request is dropped; the
+		 * render already reads the property then.
+		 *
+		 * @internal
+		 */
+		formDisabledCallback() {
 			this.requestUpdate();
 		}
 

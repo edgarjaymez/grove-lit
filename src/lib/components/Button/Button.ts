@@ -5,6 +5,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
+import { FormControl } from '../../utils/form-control.js';
+import type { FormRole } from '../../utils/form-control.js';
 import { SlotContent } from '../../utils/slot-content.js';
 
 type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost';
@@ -13,10 +15,15 @@ type ButtonSize = 'lg' | 'md' | 'sm';
 type ButtonType = 'button' | 'submit' | 'reset';
 
 /**
+ * A button that takes part in its form: `type="submit"` submits it and `type="reset"` resets it, after
+ * the click has finished propagating, so any listener can cancel. Form association follows the DOM
+ * tree, so the button and its `<form>` must be in the same tree (a slot doesn't carry it across).
+ *
  * @slot - The button text. Falls back to `text` when empty.
+ * @attr {string} form - The id of the `<form>` this button belongs to, when it isn't inside it.
  */
 @customElement('gv-button')
-export class Button extends LitElement {
+export class Button extends FormControl(LitElement) {
 	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
 
 	@property({ type: String }) text = '';
@@ -26,6 +33,10 @@ export class Button extends LitElement {
 	@property({ type: String }) icon?: string;
 	@property({ type: String }) type: ButtonType = 'button';
 	@property({ type: Boolean, reflect: true }) disabled = false;
+	/** With `type="submit"`, the form data name this button's `value` is submitted under. */
+	@property({ type: String, reflect: true }) name?: string;
+	/** Submitted under `name`, in the form data its own submission builds. */
+	@property({ type: String }) value = '';
 	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
 
 	static styles = [
@@ -246,6 +257,21 @@ export class Button extends LitElement {
 		`
 	];
 
+	/** @internal */
+	protected formRole(): FormRole {
+		return this.type === 'submit' || this.type === 'reset' ? this.type : null;
+	}
+
+	/** @internal */
+	protected renderedControl() {
+		return this.renderRoot.querySelector<HTMLElement>('.btn');
+	}
+
+	/** @internal */
+	protected submissionValue() {
+		return this.name ? this.value : null;
+	}
+
 	render() {
 		const hasIcon = Boolean(this.icon);
 		return html`
@@ -258,8 +284,8 @@ export class Button extends LitElement {
 					[`btn--${this.size}`]: true,
 					'btn--has-icon': hasIcon
 				})}
-				type=${this.type}
-				?disabled=${this.disabled}
+				type="button"
+				?disabled=${this.effectivelyDisabled}
 				aria-label=${this.ariaLabel ?? nothing}
 			>
 				${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}

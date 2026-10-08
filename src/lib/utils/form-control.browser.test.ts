@@ -302,8 +302,12 @@ describe('self-disable and release (#40 FR-28 to FR-33, #49 R6)', () => {
 
 	it('releases when the page sets disabled to false (FR-30)', async () => {
 		const { submitter } = await submitOnce();
+		await submitter.updateComplete;
+		expect(submitter.inner.disabled).toBe(true);
 		submitter.disabled = false;
 		expect(submitting(submitter)).toBe(false);
+		await submitter.updateComplete;
+		expect(submitter.inner.disabled).toBe(false);
 		submitter.disabled = true;
 		submitter.disabled = false;
 		expect(submitter.disabled).toBe(false);

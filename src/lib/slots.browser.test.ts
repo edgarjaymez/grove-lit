@@ -294,6 +294,28 @@ describe('phrasing-only slots take no form controls (#34 slot contract, #49 C6)'
 		expect(warn).not.toHaveBeenCalled();
 	});
 
+	it('warns about a form-associated gv-button in a phrasing-only slot', async () => {
+		render(
+			html`<gv-tooltip
+				><span slot="message">Saved. <gv-button>Undo</gv-button></span></gv-tooltip
+			>`,
+			host
+		);
+		await settle();
+		expect(warn).toHaveBeenCalledTimes(1);
+		expect(String(warn.mock.calls[0][0])).toContain(
+			'<gv-tooltip> slot "message" contains <gv-button>'
+		);
+	});
+
+	it('stays quiet for a gv-button in a container slot', async () => {
+		await mount(
+			html`<test-slot-container><gv-button type="submit">Send</gv-button></test-slot-container>`,
+			'test-slot-container'
+		);
+		expect(warn).not.toHaveBeenCalled();
+	});
+
 	it('stays quiet for a control in a container slot', async () => {
 		await mount(
 			html`<test-slot-container
