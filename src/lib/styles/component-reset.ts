@@ -5,11 +5,13 @@ import { css } from 'lit';
  * carries two host-level guarantees, which components (and consumers reusing this export) inherit:
  *
  * - `hidden` hides the element. `!important` lets the shadow rule beat a page `display` rule on the
- *   host; `until-found` keeps the browser's own behaviour.
+ *   host; `until-found` keeps the browser's own behaviour, which does nothing on an `inline` host.
  * - Under `prefers-reduced-motion: reduce` every transition and animation ends instantly. `0.01ms`
- *   (not `0s`) keeps `transitionend` firing. A component that wants a gentler alternative instead of
- *   none declares its own `!important` rule on a class selector inside the same media query; it is
- *   more specific than `*`, so it wins.
+ *   (not `0s`) keeps `transitionend` firing. Delays drop to `0s`, timers included, and an animation
+ *   keeps its last keyframe only with a `forwards` or `both` fill mode. A component that wants a
+ *   gentler alternative instead of none declares its own `!important` rule inside the same media
+ *   query, on a class selector (more specific than `*`) or on `:host(…)` (more specific than
+ *   `:host`), so it wins. Slotted light DOM is the page's and keeps its own transitions.
  */
 export const componentReset = css`
 	:host([hidden]:not([hidden='until-found'])) {

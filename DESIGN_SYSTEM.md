@@ -1146,13 +1146,17 @@ Every `gv-*` component adopts `componentReset` first in its shadow root, and so 
 
 ### Hidden
 
-`hidden` hides any Grove element, as it does on a `<div>`, and removing it brings the element back unchanged. The rule is `!important`, so it also wins against a page rule that sets `display` on the host (`gv-title { display: grid }`). That is stronger than on native elements, on purpose: `hidden` is always dependable. `hidden="until-found"` keeps the browser's own behaviour.
+`hidden` hides any Grove element, as it does on a `<div>`, and removing it brings the element back unchanged. The rule is `!important`, so it also wins against a page rule that sets `display` on the host (`gv-title { display: grid }`). That is stronger than on native elements, on purpose: `hidden` is always dependable. `hidden="until-found"` keeps the browser's own behaviour, `content-visibility: hidden`.
+
+`content-visibility` has no effect on an inline box, so `until-found` hides nothing on the four hosts that are `inline` by default: `gv-button`, `gv-checkbox`, `gv-icon-button` and `gv-todo-category-toggler`. Give the host a `display` such as `inline-block`, or put `hidden="until-found"` on a wrapper.
 
 ### Reduced Motion
 
-With `prefers-reduced-motion: reduce`, every transition and animation inside a Grove shadow root ends instantly, with the same end colours, shadows and visibility. Durations become `0.01ms` rather than `0s`, so `transitionend` still fires, delays drop to `0s`, and animations run once. Timers aren't motion: `gv-color-swatch`'s three-second "Copied!" hold keeps its length. The rule never reaches a page's own light DOM.
+With `prefers-reduced-motion: reduce`, every transition and animation inside a Grove shadow root ends instantly, with the same end colours, shadows and visibility. Durations become `0.01ms` rather than `0s`, so `transitionend` still fires, and delays drop to `0s`. Timers aren't motion: `gv-color-swatch`'s three-second "Copied!" hold keeps its length. The rule never reaches the page's own light DOM, and that includes content slotted into a Grove component: the page styles it, so it keeps its own transitions.
 
-A component that needs a gentler alternative instead of no transition at all declares its own `!important` rule on a class selector inside `@media (prefers-reduced-motion: reduce)`. It is more specific than the reset's `*`, so it wins.
+- **Delays.** Every `transition-delay` drops to `0s`, including one used as a timer, such as a hover-intent delay. Time a person needs to read or point belongs in script, or in the escape hatch below.
+- **Animations.** An animation plays once, in `0.01ms`. It ends on its last keyframe only with `animation-fill-mode: forwards` or `both`; otherwise the element shows its base style. A looping indicator such as a spinner stops, so give it a cue that isn't motion as well.
+- **The escape hatch.** A component that needs a gentler alternative instead of no transition at all declares its own `!important` rule inside `@media (prefers-reduced-motion: reduce)`. On a class selector it is more specific than the reset's `*`, so it wins. For a transition on the host, use `:host(…)`, which is more specific than the reset's `:host`.
 
 ### Focus
 
