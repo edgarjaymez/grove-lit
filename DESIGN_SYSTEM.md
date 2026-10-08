@@ -1245,6 +1245,7 @@ A Lit component that renders the `<form>` and its controls in the same template 
 
 ```ts
 @query('gv-button[type=submit]') private _send!: Button;
+@query('#status') private _status!: HTMLElement; // a status message with tabindex="-1"
 
 private async _onSubmit(event: SubmitEvent) {
 	event.preventDefault();
