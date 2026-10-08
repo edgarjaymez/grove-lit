@@ -181,7 +181,8 @@ There is one way: extend the `FormControl` mixin in `src/lib/utils/form-control.
 does; `gv-checkbox`, `gv-text-input` and `gv-textarea` will. Don't call `attachInternals()` in a
 component yourself. Say the control is `gv-field`.
 
-1. Extend the base and declare `disabled`, which the mixin reads:
+1. Extend the base. The mixin provides a reflected `disabled` property, so the component doesn't
+   declare one:
 
    ```ts
    import { FormControl } from '../../utils/form-control.js';
@@ -189,7 +190,6 @@ component yourself. Say the control is `gv-field`.
 
    @customElement('gv-field')
    export class Field extends FormControl(LitElement) {
-   	@property({ type: Boolean, reflect: true }) disabled = false;
    ```
 
 2. Override the hooks that apply, each marked `/** @internal */`:
@@ -216,6 +216,5 @@ gv-checkbox and gv-text-input have used its hooks.
 | Skip                             | What fails                                                                                                  |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | step 1 (own `attachInternals()`) | a second way to join forms: Enter, self-disable and the slotted-into-a-shadow-form warning skip the control |
-| `reflect: true` on `disabled`    | the platform's disabled state follows the attribute, so `:disabled`, form data and `el.click()` drift       |
 | `@internal` on the hooks         | the hooks show up in `custom-elements.json` as if pages could call them                                     |
 | step 5                           | the Astro types reject `form="checkout"`                                                                    |

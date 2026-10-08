@@ -15,7 +15,6 @@ import type { FormRole } from './form-control.js';
 @customElement('test-submitter')
 class TestSubmitter extends FormControl(LitElement) {
 	@property({ reflect: true }) type: 'button' | 'submit' | 'reset' = 'button';
-	@property({ type: Boolean, reflect: true }) disabled = false;
 	@property({ reflect: true }) name?: string;
 	@property() value = '';
 
@@ -43,8 +42,6 @@ class TestSubmitter extends FormControl(LitElement) {
 /** A text field that blocks implicit submission, like gv-text-input will. */
 @customElement('test-field')
 class TestField extends FormControl(LitElement) {
-	@property({ type: Boolean, reflect: true }) disabled = false;
-
 	protected formRole(): FormRole {
 		return 'field';
 	}
@@ -311,6 +308,14 @@ describe('self-disable and release (#40 FR-28 to FR-33, #49 R6)', () => {
 		submitter.disabled = true;
 		submitter.disabled = false;
 		expect(submitter.disabled).toBe(false);
+	});
+
+	it('releases when the page removes the disabled attribute', async () => {
+		const { submitter } = await submitOnce();
+		await submitter.updateComplete;
+		submitter.removeAttribute('disabled');
+		expect(submitter.disabled).toBe(false);
+		expect(submitting(submitter)).toBe(false);
 	});
 
 	it('stays disabled, no longer submitting, after false then true in one task', async () => {

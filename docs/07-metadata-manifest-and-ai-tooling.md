@@ -89,10 +89,11 @@ node scripts/check-manifest.mjs
    It learns attributes and properties from `@property`, and events, slots and CSS properties from the
    JSDoc tags.
    The globs also take `src/lib/utils/form-control.ts`, the `FormControl` mixin (chapter 03,
-   Stop 4), so `gv-button` lists the mixin and its public `form` getter as inherited. The mixin's
-   hooks carry `@internal`, which the analyzer skips; without it, a hook such as `disabled` would be
-   marked as inherited from the mixin on every component. `vite.config.ts` lists the same file in its
-   `dts()` include, so the published `Button.d.ts` can import the mixin's types.
+   Stop 4), so `gv-button` lists the mixin, its public `form` getter and its `disabled` property
+   and attribute as inherited. The mixin's hooks carry `@internal`, which the analyzer skips;
+   without it, a hook such as `formRole` would be marked as inherited from the mixin on every
+   component. `vite.config.ts` lists the same file in its `dts()` include, so the published
+   `Button.d.ts` can import the mixin's types.
    While it runs, a plugin from `scripts/manifest-types.mjs` fixes two gaps: it spells out type
    aliases (so `size` is typed `'lg' | 'md' | 'sm'`, not `ButtonSize`), and it drops `@state` fields,
    which are internal.

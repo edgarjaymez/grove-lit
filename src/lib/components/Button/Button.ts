@@ -35,7 +35,6 @@ export class Button extends FormControl(LitElement) {
 	@property({ type: String }) size: ButtonSize = 'md';
 	@property({ type: String }) icon?: string;
 	@property({ type: String }) type: ButtonType = 'button';
-	@property({ type: Boolean, reflect: true }) disabled = false;
 	/** With `type="submit"`, the form data name this button's `value` is submitted under. */
 	@property({ type: String, reflect: true }) name?: string;
 	/** Submitted under `name`, in the form data its own submission builds. */

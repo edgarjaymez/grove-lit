@@ -102,7 +102,6 @@ export class Button extends FormControl(LitElement) {
 	@property({ type: String }) size: ButtonSize = 'md';
 	@property({ type: String }) icon?: string;
 	@property({ type: String }) type: ButtonType = 'button';
-	@property({ type: Boolean, reflect: true }) disabled = false;
 	/** With `type="submit"`, the form data name this button's `value` is submitted under. */
 	@property({ type: String, reflect: true }) name?: string;
 	/** Submitted under `name`, in the form data its own submission builds. */
@@ -123,7 +122,7 @@ Each line is one public input. The patterns to notice:
 | `text`      | the **fallback** for the slot: shown only when no content is slotted                                             |
 | `icon?`     | **optional string**: typed `string \| undefined`, written with `ifDefined()` in the template                     |
 | `type`      | defaults to `'button'`, so a `gv-button` inside a form does not submit it by accident                            |
-| `disabled`  | `reflect: true`, so page CSS can match `gv-button[disabled]`; the button also sets it on itself after it submits |
+| `disabled`  | from `FormControl`, reflected: page CSS can match `gv-button[disabled]`; the button also sets it once it submits |
 | `name`      | `reflect: true`: the form data entry is named by the `name` attribute, as on a native control                    |
 | `href`      | switches the render to a link (Stop 8); `target` and `rel` only mean something with it                           |
 | `ariaLabel` | **ARIA property**: `string \| null = null`, its attribute named explicitly, `?? nothing` in the template         |

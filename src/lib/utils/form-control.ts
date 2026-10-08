@@ -1,4 +1,5 @@
-import type { LitElement, PropertyDeclaration } from 'lit';
+import type { LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
 import { warningsEnabled } from './dev.js';
 
 /** A class constructor, as TypeScript's mixin pattern needs it. */
@@ -178,6 +179,11 @@ const leave = (form: HTMLFormElement, el: Element) => {
  * @internal
  */
 export declare class FormControlInterface {
+	/**
+	 * Disables the control. A `<fieldset disabled>` around it disables it too, without changing this
+	 * property, unless the component's `honoursFormDisabled()` returns false.
+	 */
+	disabled: boolean;
 	/** The form this control belongs to, or null. */
 	readonly form: HTMLFormElement | null;
 	protected readonly internals: ElementInternals;
@@ -203,23 +209,41 @@ export declare class FormControlInterface {
  * Form association follows the DOM tree, not slots: a control slotted into a `<form>` in another
  * tree has no form. Outside production builds it says so once, on its first activation.
  *
- * The component declares the reactive `disabled` property and overrides the hooks for its role.
+ * The mixin owns the reactive `disabled` property, reflected to its attribute. The component overrides
+ * the hooks for its role.
  */
 export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 	class FormControlElement extends Base {
 		static formAssociated = true;
 
 		/** @internal */
-		declare disabled: boolean;
-
-		/** @internal */
 		protected readonly internals = this.attachInternals();
 
+		private _disabled = false;
 		private _registered: HTMLFormElement | null = null;
 		private _submitting = false;
 		private _dispatching = false;
 		private _disabledWritten = false;
 		private _selfWrite = false;
+
+		/**
+		 * Disables the control. A `<fieldset disabled>` around it disables it too, without changing this
+		 * property, unless the component's `honoursFormDisabled()` returns false.
+		 *
+		 * @default false
+		 */
+		@property({ type: Boolean, reflect: true })
+		get disabled(): boolean {
+			return this._disabled;
+		}
+		set disabled(value: boolean) {
+			// Every write runs this setter, attribute changes and same-value writes included, so it sees
+			// each one as it happens. Lit wraps it and requests the update itself.
+			this._disabled = value;
+			if (this._selfWrite) return;
+			if (this._dispatching) this._disabledWritten = true;
+			if (!value && this._submitting) this._release();
+		}
 
 		private readonly _onPageshow = (event: PageTransitionEvent) => {
 			if (event.persisted && this._submitting) this.disabled = false;
@@ -305,25 +329,6 @@ export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 		formResetCallback() {
 			if (this._submitting) this.disabled = false;
 			this.onFormReset();
-		}
-
-		/**
-		 * Lit's property setters call this synchronously on every write, attribute changes included, so
-		 * it sees each write to `disabled` as it happens.
-		 *
-		 * @internal
-		 */
-		override requestUpdate(
-			name?: PropertyKey,
-			oldValue?: unknown,
-			options?: PropertyDeclaration,
-			useNewValue?: boolean,
-			newValue?: unknown
-		) {
-			super.requestUpdate(name, oldValue, options, useNewValue, newValue);
-			if (name !== 'disabled' || this._selfWrite) return;
-			if (this._dispatching) this._disabledWritten = true;
-			if (!this.disabled && this._submitting) this._release();
 		}
 
 		private _syncMembership() {
