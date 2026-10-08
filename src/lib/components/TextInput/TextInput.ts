@@ -4,11 +4,21 @@ import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
+import {
+	HostLabelFallback,
+	describedBy,
+	descriptionNode,
+	invisibleName,
+	warnIfUnnamed
+} from '../../utils/accessible-name.js';
 
 type InputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number';
 type InputColor = 'brand' | 'gray';
 
 /**
+ * A single-line text field. `label` is its accessible name and `description` its accessible
+ * description. A page `<label for>` can't reach the input inside the shadow root.
+ *
  * @fires {CustomEvent<string>} gv-input - with the value, on every edit.
  * @fires {CustomEvent<string>} gv-change - with the value, when a change is committed.
  */
@@ -23,8 +33,12 @@ export class TextInput extends LitElement {
 	@property({ type: String, attribute: 'input-id' }) inputId: string | undefined;
 	@property({ type: String }) name: string | undefined;
 	@property({ type: String }) type: InputType = 'text';
-	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
-	@property({ type: String, attribute: 'aria-describedby' }) ariaDescribedby: string | null = null;
+	/** The field's accessible name. Never shown: show the visible label next to the field. */
+	@property({ type: String }) label?: string;
+	/** Read after the name, as the field's accessible description: hint or error text. Never shown. */
+	@property({ type: String }) description?: string;
+
+	private readonly _hostLabel = new HostLabelFallback(this, ['aria-label', 'aria-describedby']);
 
 	static styles = [
 		componentReset,
@@ -166,6 +180,10 @@ export class TextInput extends LitElement {
 		);
 	}
 
+	protected firstUpdated() {
+		warnIfUnnamed(this, () => invisibleName(this.label, this._hostLabel) !== undefined);
+	}
+
 	render() {
 		return html`
 			<input
@@ -184,11 +202,12 @@ export class TextInput extends LitElement {
 				type=${this.type}
 				aria-invalid=${ifDefined(this.error ? 'true' : undefined)}
 				aria-disabled=${this.disabled ? 'true' : nothing}
-				aria-label=${this.ariaLabel ?? nothing}
-				aria-describedby=${this.ariaDescribedby ?? nothing}
+				aria-label=${invisibleName(this.label, this._hostLabel) ?? nothing}
+				aria-describedby=${describedBy(this.description)}
 				@input=${this._handleInput}
 				@change=${this._handleChange}
 			/>
+			${descriptionNode(this.description)}
 		`;
 	}
 }

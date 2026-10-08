@@ -1,25 +1,60 @@
 import { LitElement, html, css, nothing } from 'lit';
+import type { PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
+import {
+	HostLabelFallback,
+	describedBy,
+	descriptionNode,
+	invisibleName,
+	warnIfUnnamed
+} from '../../utils/accessible-name.js';
+import { FormControl } from '../../utils/form-control.js';
 import { SlotContent } from '../../utils/slot-content.js';
 
 type CheckboxResponsive = 'default' | 'xl';
 
 /**
+ * A checkbox that takes part in its form: with `name`, a checked box submits `value`, and resetting the
+ * form restores the state it had when it first connected. A page `<label>` around it, or `for` its id,
+ * names it and toggles it.
+ *
+ * Its name is, in order: the slotted label text, a page `<label>`, then `label`.
+ *
  * @slot - The label text, shown next to the box. It sits inside the focusable control, so it names
  * the checkbox and a click on it toggles. Text and phrasing content only, never a form control.
+ * @attr {string} form - The id of the `<form>` this checkbox belongs to, when it isn't inside it.
  * @fires {CustomEvent<boolean>} gv-change - with the new `checked`.
  */
 @customElement('gv-checkbox')
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- listener overloads, see CheckboxEventMap
-export class Checkbox extends LitElement {
+export class Checkbox extends FormControl(LitElement) {
 	@property({ type: Boolean, reflect: true }) checked = false;
 	@property({ type: String }) responsive: CheckboxResponsive = 'default';
 	@property({ type: Boolean, reflect: true }) disabled = false;
+	/** The form data name a checked box submits `value` under. */
+	@property({ type: String, reflect: true }) name?: string;
+	/** Submitted under `name` while checked. */
+	@property({ type: String }) value = 'on';
+	/** The accessible name when no visible text or page `<label>` names the checkbox. Never shown. */
+	@property({ type: String }) label?: string;
+	/** Read after the name, as the checkbox's accessible description. Never shown. */
+	@property({ type: String }) description?: string;
 
 	private readonly _slots = new SlotContent(this, [''], { phrasingOnly: true });
+	private readonly _hostLabel = new HostLabelFallback(this);
+	private _defaultChecked?: boolean;
+
+	constructor() {
+		super();
+		// A page label's click lands on the host; the box's own clicks come from inside and toggle there.
+		this.addEventListener('click', (event) => {
+			if (event.composedPath()[0] !== this || event.defaultPrevented) return;
+			if (!this.effectivelyDisabled) this._toggle();
+		});
+	}
 
 	static styles = [
 		componentReset,
@@ -119,6 +154,42 @@ export class Checkbox extends LitElement {
 		`
 	];
 
+	/** @internal */
+	protected renderedControl() {
+		return this.renderRoot.querySelector<HTMLElement>('.control');
+	}
+
+	/** @internal */
+	protected hasVisibleName() {
+		return this._slots.hasText();
+	}
+
+	/** @internal */
+	protected onFormReset() {
+		this.checked = this._defaultChecked ?? false;
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		this._defaultChecked ??= this.checked;
+	}
+
+	protected firstUpdated() {
+		warnIfUnnamed(
+			this,
+			() =>
+				this.hasVisibleName() ||
+				this.hasPageLabel() ||
+				invisibleName(this.label, this._hostLabel) !== undefined
+		);
+	}
+
+	protected override updated(changed: PropertyValues) {
+		super.updated(changed);
+		if (changed.has('checked') || changed.has('value'))
+			this.internals.setFormValue(this.checked ? this.value : null);
+	}
+
 	private _toggle() {
 		this.checked = !this.checked;
 		this.dispatchEvent(
@@ -132,7 +203,11 @@ export class Checkbox extends LitElement {
 				type="button"
 				role="checkbox"
 				aria-checked=${this.checked ? 'true' : 'false'}
-				?disabled=${this.disabled}
+				aria-label=${this.hasVisibleName()
+					? nothing
+					: (this.pageLabelText() ?? invisibleName(this.label, this._hostLabel) ?? nothing)}
+				aria-describedby=${describedBy(this.description)}
+				?disabled=${this.effectivelyDisabled}
 				class="control gv-focusable"
 				@click=${this._toggle}
 			>
@@ -151,6 +226,7 @@ export class Checkbox extends LitElement {
 				</span>
 				${this._slots.has() ? html`<span class="label"><slot></slot></span>` : nothing}
 			</button>
+			${descriptionNode(this.description)}
 		`;
 	}
 }

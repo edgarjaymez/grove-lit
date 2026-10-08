@@ -117,7 +117,11 @@ export class ToDoListItem extends LitElement {
 	render() {
 		return html`
 			<div class="item" @click=${this._handleItemClick}>
-				<gv-checkbox ?checked=${this.isDone} @gv-change=${this._onCheckboxChange}></gv-checkbox>
+				<gv-checkbox
+					label=${this.heading}
+					?checked=${this.isDone}
+					@gv-change=${this._onCheckboxChange}
+				></gv-checkbox>
 				<div class="labels">
 					<p class=${classMap({ title: true, 'title--done': this.isDone })}>${this.heading}</p>
 					<div class="category-row">

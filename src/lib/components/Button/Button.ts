@@ -5,6 +5,13 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
+import {
+	HostLabelFallback,
+	describedBy,
+	descriptionNode,
+	invisibleName,
+	warnIfUnnamed
+} from '../../utils/accessible-name.js';
 import { FormControl } from '../../utils/form-control.js';
 import type { FormRole } from '../../utils/form-control.js';
 import { linkAttribute, linkRel } from '../../utils/link-attributes.js';
@@ -21,6 +28,9 @@ type ButtonType = 'button' | 'submit' | 'reset';
  * tree, so the button and its `<form>` must be in the same tree (a slot doesn't carry it across).
  *
  * With `href`, it renders a real link with the same look instead, and takes no part in its form.
+ *
+ * Its name is, in order: the slotted text or `text`, a page `<label>`, then `label`,
+ * which names an icon-only button.
  *
  * @slot - The button text. Falls back to `text` when empty.
  * @attr {string} form - The id of the `<form>` this button belongs to, when it isn't inside it.
@@ -46,7 +56,12 @@ export class Button extends FormControl(LitElement) {
 	@property({ type: String }) target?: '_blank' | '_self';
 	/** The link's relationship to its target; passed through untouched when set. */
 	@property({ type: String }) rel?: string;
-	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
+	/** The accessible name of an icon-only button, with no slotted text or `text`. Never shown. */
+	@property({ type: String }) label?: string;
+	/** Read after the name, as the button's accessible description. Never shown. */
+	@property({ type: String }) description?: string;
+
+	private readonly _hostLabel = new HostLabelFallback(this);
 
 	static styles = [
 		componentReset,
@@ -287,8 +302,23 @@ export class Button extends FormControl(LitElement) {
 		return !this._isLink;
 	}
 
+	/** @internal */
+	protected hasVisibleName() {
+		return this._slots.hasText() || Boolean(this.text.trim());
+	}
+
 	private get _isLink() {
 		return Boolean(this.href);
+	}
+
+	protected firstUpdated() {
+		warnIfUnnamed(
+			this,
+			() =>
+				this.hasVisibleName() ||
+				this.hasPageLabel() ||
+				invisibleName(this.label, this._hostLabel) !== undefined
+		);
 	}
 
 	render() {
@@ -307,29 +337,35 @@ export class Button extends FormControl(LitElement) {
 			${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}
 			<slot></slot>${this._slots.has() ? nothing : this.text}
 		`;
+		const name = this.hasVisibleName()
+			? undefined
+			: (this.pageLabelText() ?? invisibleName(this.label, this._hostLabel));
 		if (this._isLink) {
 			// A link can't be disabled natively: without href it leaves the tab order and goes nowhere.
 			const href = disabled ? undefined : this.href;
 			return html`<a
-				class=${classes}
-				href=${ifDefined(href)}
-				target=${ifDefined(linkAttribute(href, this.target))}
-				rel=${ifDefined(linkRel(href, this.target, this.rel))}
-				role=${disabled ? 'link' : nothing}
-				aria-disabled=${disabled ? 'true' : nothing}
-				aria-label=${this.ariaLabel ?? nothing}
-				>${content}</a
-			>`;
+					class=${classes}
+					href=${ifDefined(href)}
+					target=${ifDefined(linkAttribute(href, this.target))}
+					rel=${ifDefined(linkRel(href, this.target, this.rel))}
+					role=${disabled ? 'link' : nothing}
+					aria-disabled=${disabled ? 'true' : nothing}
+					aria-label=${name ?? nothing}
+					aria-describedby=${describedBy(this.description)}
+					>${content}</a
+				>${descriptionNode(this.description)}`;
 		}
 		return html`
 			<button
 				class=${classes}
 				type="button"
 				?disabled=${disabled}
-				aria-label=${this.ariaLabel ?? nothing}
+				aria-label=${name ?? nothing}
+				aria-describedby=${describedBy(this.description)}
 			>
 				${content}
 			</button>
+			${descriptionNode(this.description)}
 		`;
 	}
 }

@@ -58,7 +58,7 @@ const tabTo = async (target: Element) => {
 
 const CONTROLS = [
 	['gv-button', html`<gv-button text="Save"></gv-button>`],
-	['gv-icon-button', html`<gv-icon-button aria-label="Close"></gv-icon-button>`],
+	['gv-icon-button', html`<gv-icon-button label="Close"></gv-icon-button>`],
 	['gv-back-button', html`<gv-back-button></gv-back-button>`],
 	['gv-checkbox', html`<gv-checkbox></gv-checkbox>`],
 	[

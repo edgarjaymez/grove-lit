@@ -4,11 +4,21 @@ import { classMap } from 'lit/directives/class-map.js';
 import '../Icon/Icon.js';
 import { componentReset } from '../../styles/component-reset.js';
 import { focusRing } from '../../styles/focus-ring.js';
+import {
+	HostLabelFallback,
+	describedBy,
+	descriptionNode,
+	invisibleName,
+	warnIfUnnamed
+} from '../../utils/accessible-name.js';
 
 type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost';
 type IconButtonColor = 'accent' | 'gray';
 type IconButtonSize = 'lg' | 'md' | 'sm';
 
+/**
+ * An icon-only button. It has no visible text, so `label` is its accessible name.
+ */
 @customElement('gv-icon-button')
 export class IconButton extends LitElement {
 	@property({ type: String }) icon = 'tree';
@@ -16,7 +26,12 @@ export class IconButton extends LitElement {
 	@property({ type: String }) color: IconButtonColor = 'accent';
 	@property({ type: String }) size: IconButtonSize = 'lg';
 	@property({ type: Boolean, reflect: true }) disabled = false;
-	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
+	/** The accessible name. Required: the button shows only its icon. Never shown. */
+	@property({ type: String }) label?: string;
+	/** Read after the name, as the button's accessible description. Never shown. */
+	@property({ type: String }) description?: string;
+
+	private readonly _hostLabel = new HostLabelFallback(this);
 
 	static styles = [
 		componentReset,
@@ -216,6 +231,10 @@ export class IconButton extends LitElement {
 		`
 	];
 
+	protected firstUpdated() {
+		warnIfUnnamed(this, () => invisibleName(this.label, this._hostLabel) !== undefined);
+	}
+
 	render() {
 		return html`
 			<button
@@ -227,11 +246,12 @@ export class IconButton extends LitElement {
 					[`icon-btn--${this.size}`]: true
 				})}
 				?disabled=${this.disabled}
-				aria-disabled=${this.disabled}
-				aria-label=${this.ariaLabel ?? nothing}
+				aria-label=${invisibleName(this.label, this._hostLabel) ?? nothing}
+				aria-describedby=${describedBy(this.description)}
 			>
 				<gv-icon name=${this.icon} fill-in-hover></gv-icon>
 			</button>
+			${descriptionNode(this.description)}
 		`;
 	}
 }

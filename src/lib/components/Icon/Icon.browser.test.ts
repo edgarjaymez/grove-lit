@@ -120,17 +120,17 @@ describe('consumers expose no glyph (#24 FR-10 to FR-12)', () => {
 	it('hides the glyph in controls without changing their names', async () => {
 		await mount(html`
 			<gv-button icon="tree">Plant</gv-button>
-			<gv-icon-button aria-label="Plant a tree"></gv-icon-button>
+			<gv-icon-button label="Plant a tree"></gv-icon-button>
 			<gv-todo-category-toggler label="Category" count="3"></gv-todo-category-toggler>
 			<gv-todo-list-item heading="Water the tree" category="Garden"></gv-todo-list-item>
 		`);
 		// Before the fix gv-button and gv-icon-button each held an unnamed image. gv-button is named by
-		// its slotted text (#34).
+		// its slotted text (#34); gv-todo-list-item's checkbox by its heading (#50).
 		expect((await tree()).split('\n')).toEqual([
 			'- button "Plant"',
 			'- button "Plant a tree"',
 			'- button "3 Category"',
-			'- checkbox',
+			'- checkbox "Water the tree"',
 			'- paragraph: Water the tree',
 			'- paragraph: Garden'
 		]);
