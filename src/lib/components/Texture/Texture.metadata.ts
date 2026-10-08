@@ -5,12 +5,12 @@ export const TextureMetadata = {
 		name: 'Texture',
 		category: 'atoms',
 		description:
-			'Absolutely positioned SVG noise overlay that adds organic grain to surfaces. The grain colour follows the theme and can be tinted; its coarseness is tunable.',
+			'Absolutely positioned SVG noise overlay that adds organic grain to surfaces. The grain takes a colour family, as the Figma variants do, follows the theme, and can be tinted; its coarseness is tunable.',
 		type: 'display',
 		path: 'src/lib/components/Texture/Texture.ts',
-		version: '1.2.1',
+		version: '1.3.0',
 		created: '2026/02/18',
-		modified: '2026/09/29'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: null,
@@ -58,10 +58,16 @@ export const TextureMetadata = {
 </div>`
 			},
 			{
-				name: 'tinted',
+				name: 'in-family',
 				description:
-					'Grain in the surface’s own colour family, from a token, with a light-dark() pair when it must change with the theme',
-				composition: `<gv-texture opacity="0.55" tint="color-mix(in srgb, var(--color-accent-700) 12%, transparent)"></gv-texture>`
+					'Grain in the surface’s own colour family, so a green grain never reads as dirt on a violet surface',
+				composition: `<gv-texture opacity="0.55" color="accent"></gv-texture>`
+			},
+			{
+				name: 'custom-tint',
+				description:
+					'A one-off grain colour from Grove tokens, with a light-dark() pair when it must change with the theme',
+				composition: `<gv-texture tint="light-dark(color-mix(in srgb, var(--color-accent-800) 12%, transparent), color-mix(in srgb, var(--color-accent-100) 12%, transparent))"></gv-texture>`
 			},
 			{
 				name: 'coarse',
@@ -93,8 +99,7 @@ export const TextureMetadata = {
 			},
 			{
 				scenario: 'Using full opacity (1) on light surfaces',
-				reason:
-					'The green-tinted grain is too heavy on light backgrounds and dominates the surface',
+				reason: 'The default grain is too heavy on light backgrounds and dominates the surface',
 				alternative: 'Scale opacity down — 0.4 for Accent, 0.25 or lower for Ground'
 			}
 		]
@@ -118,21 +123,34 @@ export const TextureMetadata = {
 	},
 
 	variants: {
+		color: {
+			options: ['brand', 'accent', 'gray', 'information', 'danger', 'success'],
+			default: 'brand',
+			purpose: {
+				brand: 'The default grain, for brand and neutral surfaces.',
+				accent: 'Violet surfaces, where a green grain reads as dirt.',
+				gray: 'Gray surfaces.',
+				information: 'Information surfaces.',
+				danger: 'Danger surfaces.',
+				success: 'Success surfaces.',
+				tones:
+					'Each family is the Figma Texture variant: {track}/700 at 10 % by day, {track}/50 at 10 % at night (light-dark(); browsers without it keep the day value). Anything else means brand.'
+			}
+		},
 		tint: {
 			options: ['any CSS colour, including var() and light-dark()'],
-			default: 'theme default',
+			default: 'unset: the color family',
 			purpose: {
-				default:
-					'Unset: green at 10 % by day, brand-50 at 10 % at night (light-dark(); browsers without it keep the day value).',
+				default: 'Unset: the grain is the color family’s theme tone.',
 				custom:
-					'Painted as given, so include the alpha. Pass Grove tokens, e.g. color-mix(in srgb, var(--color-accent-700) 12%, transparent), or a light-dark() pair of them for a tint that follows the theme. An invalid colour, or a var() that does not resolve, falls back to the theme default instead of turning black.'
+					'Overrides color in every theme. Painted as given, so include the alpha. Pass Grove tokens, e.g. color-mix(in srgb, var(--color-accent-700) 12%, transparent), or a light-dark() pair of them for a tint that follows the theme. An invalid colour, or a var() that does not resolve, falls back to the color family’s default instead of turning black. So does a light-dark() tint in a browser without light-dark().'
 			}
 		},
 		frequency: {
 			options: ['positive number'],
 			default: 0.25,
 			purpose: {
-				default: 'The daytime grain.',
+				default: 'The daytime grain. Figma’s noise size is 1 / frequency: 0.25 is size 4.',
 				coarse:
 					'0.12: a coarser grain for dark, low-detail scenes. Anything that is not a positive number means 0.25.'
 			}

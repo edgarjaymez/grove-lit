@@ -3,16 +3,20 @@ import { html, nothing } from 'lit';
 import type { TemplateResult } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import './Texture.js';
+import type { TextureColor } from './Texture.js';
 
 interface Args {
 	opacity: number;
+	color?: TextureColor;
 	tint?: string;
 	frequency?: number;
 }
 
+const COLORS: TextureColor[] = ['brand', 'accent', 'gray', 'information', 'danger', 'success'];
+
 const SURFACE_WRAPPER = (
 	bg: string,
-	{ opacity, tint, frequency }: Args,
+	{ opacity, color, tint, frequency }: Args,
 	content: TemplateResult | typeof nothing = nothing
 ) => html`
 	<div
@@ -28,6 +32,7 @@ const SURFACE_WRAPPER = (
 	>
 		<gv-texture
 			opacity=${opacity}
+			color=${ifDefined(color)}
 			tint=${ifDefined(tint || undefined)}
 			frequency=${ifDefined(frequency)}
 		></gv-texture>
@@ -41,6 +46,7 @@ const meta: Meta<Args> = {
 	render: (args) => SURFACE_WRAPPER('var(--semantic-color-surface-brand-summit)', args),
 	argTypes: {
 		opacity: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+		color: { control: 'select', options: COLORS },
 		tint: { control: 'text' },
 		frequency: { control: { type: 'range', min: 0.05, max: 0.5, step: 0.01 } }
 	},
@@ -86,12 +92,42 @@ export const WithContent: Story = {
 		)
 };
 
-/** A grain in the surface's own colour family instead of the default green (#20). */
+/** A grain in the surface's own colour family instead of the default green (#20, #48). */
 export const Tinted: Story = {
+	render: (args) => SURFACE_WRAPPER('var(--semantic-color-surface-accent-terrace)', args),
+	args: { opacity: 0.55, color: 'accent' }
+};
+
+/** Every colour family on its own terrace, as the Figma variants. Switch the toolbar to Dark for the night tones. */
+export const Colors: Story = {
+	render: ({ opacity, frequency }) => html`
+		<div
+			style="display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: var(--soft-grid-4); margin: var(--soft-grid-8)"
+		>
+			${COLORS.map(
+				(color) => html`
+					<div
+						style="position: relative; overflow: hidden; height: 10rem; border-radius: var(--border-radius-2xl); background-color: var(--semantic-color-surface-${color}-terrace)"
+					>
+						<gv-texture
+							opacity=${opacity}
+							color=${color}
+							frequency=${ifDefined(frequency)}
+						></gv-texture>
+					</div>
+				`
+			)}
+		</div>
+	`,
+	args: { opacity: 0.55 }
+};
+
+/** A one-off tint from Grove tokens, paired in light-dark() so it changes with the theme. */
+export const CustomTint: Story = {
 	render: (args) => SURFACE_WRAPPER('var(--semantic-color-surface-accent-terrace)', args),
 	args: {
 		opacity: 0.55,
-		tint: 'color-mix(in srgb, var(--color-accent-700) 12%, transparent)'
+		tint: 'light-dark(color-mix(in srgb, var(--color-accent-800) 12%, transparent), color-mix(in srgb, var(--color-accent-100) 12%, transparent))'
 	}
 };
 

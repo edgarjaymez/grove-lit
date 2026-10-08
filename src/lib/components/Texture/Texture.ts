@@ -2,13 +2,38 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { componentReset } from '../../styles/component-reset.js';
+import type { GroveTrack } from '../../surfaces.js';
+
+export type TextureColor = GroveTrack;
 
 const DEFAULT_FREQUENCY = 0.25;
+
+const night = (track: TextureColor, fallback: string) =>
+	`color-mix(in srgb, var(--color-${track}-50, ${fallback}) 10%, transparent)`;
+
+/**
+ * The Figma Texture `color` variants. By day, {track}/700 at 10 %: Figma's own values, kept literal
+ * because they are also the fallback where light-dark() and color-mix() are missing. At night,
+ * {track}/50 at 10 %, the dark-theme rule in DESIGN_SYSTEM.md.
+ */
+const GRAIN: Record<TextureColor, { day: string; night: string }> = {
+	accent: { day: 'rgba(98, 24, 122, 0.1)', night: night('accent', 'oklch(92.52% 0.066 325)') },
+	brand: { day: 'rgba(38, 77, 40, 0.1)', night: night('brand', 'oklch(93% 0.035 145)') },
+	danger: { day: 'rgba(128, 4, 26, 0.1)', night: night('danger', 'oklch(91.75% 0.0421 23.14)') },
+	gray: { day: 'rgba(70, 66, 61, 0.1)', night: night('gray', 'oklch(93% 0.006 70)') },
+	information: {
+		day: 'rgba(0, 72, 113, 0.1)',
+		night: night('information', 'oklch(92.57% 0.0498 223)')
+	},
+	success: { day: 'rgba(0, 82, 56, 0.1)', night: night('success', 'oklch(93% 0.06 168)') }
+};
 
 @customElement('gv-texture')
 export class Texture extends LitElement {
 	@property({ type: Number }) opacity = 1;
-	/** Any CSS colour, including `var()` and `light-dark()`. Unset, the grain follows the theme. */
+	/** The grain's colour family, as Figma's `color` variant. Anything else means brand. */
+	@property({ type: String }) color: TextureColor = 'brand';
+	/** Any CSS colour, including `var()` and `light-dark()`; overrides `color` in every theme. */
 	@property({ type: String, reflect: true }) tint?: string;
 	/** The noise `baseFrequency`: lower is coarser. Anything but a positive number means 0.25. */
 	@property({ type: Number, reflect: true }) frequency?: number;
@@ -25,22 +50,19 @@ export class Texture extends LitElement {
 				z-index: 0;
 			}
 
-			/* The grain is painted with currentColor: the tint on feFlood, else the theme default here.
-			   A tint that is invalid, even at computed-value time (var(--missing)), inherits the default
-			   instead of turning black, because color is an inherited property. */
+			/* The grain is painted with currentColor: the tint on feFlood, else the colour's theme default
+			   here. A tint that is invalid, even at computed-value time (var(--missing)), inherits the
+			   default instead of turning black, because color is an inherited property. */
 			svg {
 				display: block;
 				width: 100%;
 				height: 100%;
-				color: rgba(38, 77, 40, 0.1);
+				color: var(--_grain-day);
 			}
 
 			@supports (color: light-dark(#000, #fff)) {
 				svg {
-					color: light-dark(
-						rgba(38, 77, 40, 0.1),
-						color-mix(in srgb, var(--color-brand-50, oklch(93% 0.035 145)) 10%, transparent)
-					);
+					color: light-dark(var(--_grain-day), var(--_grain-night));
 				}
 			}
 		`
@@ -59,12 +81,17 @@ export class Texture extends LitElement {
 	render() {
 		const frequency =
 			typeof this.frequency === 'number' && this.frequency > 0 ? this.frequency : DEFAULT_FREQUENCY;
+		const grain = Object.hasOwn(GRAIN, this.color) ? GRAIN[this.color] : GRAIN.brand;
 		return html`
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				aria-hidden="true"
-				style="opacity: ${this.opacity}"
+				style=${styleMap({
+					opacity: String(this.opacity),
+					'--_grain-day': grain.day,
+					'--_grain-night': grain.night
+				})}
 			>
 				<g filter="url(#grove-noise)">
 					<rect width="100%" height="100%" fill="black" />
