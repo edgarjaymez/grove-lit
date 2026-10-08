@@ -1,4 +1,4 @@
-import type { LitElement, PropertyDeclaration } from 'lit';
+import type { LitElement, PropertyDeclaration, PropertyValues } from 'lit';
 import { warningsEnabled } from './dev.js';
 
 /** A class constructor, as TypeScript's mixin pattern needs it. */
@@ -172,6 +172,74 @@ const leave = (form: HTMLFormElement, el: Element) => {
 	formMembers.delete(form);
 };
 
+/** Something that re-reads its page labels when the labels in its tree may have changed. */
+interface LabelReader {
+	syncLabels(): void;
+}
+
+const labelWatchers = new WeakMap<
+	Node,
+	{ observer: MutationObserver; readers: Set<LabelReader> }
+>();
+
+/**
+ * A label's text as it names its control: the control itself, and anything `hidden` or `aria-hidden`,
+ * add nothing; an image adds its `alt`.
+ */
+const labelText = (node: Node, control: Element): string => {
+	if (node === control) return '';
+	if (node.nodeType === Node.TEXT_NODE) return node.textContent ?? '';
+	if (!(node instanceof Element)) return '';
+	if (node.hasAttribute('hidden') || node.getAttribute('aria-hidden') === 'true') return '';
+	if (node instanceof HTMLImageElement) return node.alt;
+	return [...node.childNodes].map((child) => labelText(child, control)).join('');
+};
+
+const insideLabel = (node: Node) =>
+	(node instanceof Element ? node : node.parentElement)?.closest('label') != null;
+
+const touchesLabels = (record: MutationRecord) =>
+	record.type === 'attributes' ||
+	insideLabel(record.target) ||
+	[...record.addedNodes, ...record.removedNodes].some(
+		(node) =>
+			node instanceof HTMLLabelElement ||
+			(node instanceof Element && node.querySelector('label') !== null)
+	);
+
+/**
+ * One observer per tree root, shared by the controls in it: a label added, removed, re-pointed
+ * (`for`, `id`) or edited resyncs them.
+ */
+const watchLabels = (root: Node, reader: LabelReader) => {
+	let watcher = labelWatchers.get(root);
+	if (!watcher) {
+		const readers = new Set<LabelReader>();
+		const observer = new MutationObserver((records) => {
+			if (records.some(touchesLabels)) for (const r of readers) r.syncLabels();
+		});
+		observer.observe(root, {
+			subtree: true,
+			childList: true,
+			characterData: true,
+			attributes: true,
+			attributeFilter: ['for', 'id']
+		});
+		watcher = { observer, readers };
+		labelWatchers.set(root, watcher);
+	}
+	watcher.readers.add(reader);
+};
+
+const unwatchLabels = (root: Node, reader: LabelReader) => {
+	const watcher = labelWatchers.get(root);
+	if (!watcher) return;
+	watcher.readers.delete(reader);
+	if (watcher.readers.size) return;
+	watcher.observer.disconnect();
+	labelWatchers.delete(root);
+};
+
 /**
  * The members a component inherits from `FormControl`. Types only, so the manifest leaves it out.
  *
@@ -187,6 +255,10 @@ export declare class FormControlInterface {
 	protected submissionValue(): string | null;
 	protected honoursFormDisabled(): boolean;
 	protected onFormReset(): void;
+	protected hasVisibleName(): boolean;
+	protected hasPageLabel(): boolean;
+	protected pageLabelText(): string | undefined;
+	syncLabels(): void;
 	formAssociatedCallback(form: HTMLFormElement | null): void;
 	formDisabledCallback(disabled: boolean): void;
 	formResetCallback(): void;
@@ -203,11 +275,22 @@ export declare class FormControlInterface {
  * Form association follows the DOM tree, not slots: a control slotted into a `<form>` in another
  * tree has no form. Outside production builds it says so once, on its first activation.
  *
+ * A page `<label>` (wrapping, or `for` the host's id) names the control inside the shadow root, not the
+ * host. The host has no role, so it is never left named; the component renders the labels' text
+ * (`pageLabelText()`) as its control's name, unless its own visible text names it; and focus is
+ * delegated to it.
+ *
  * The component declares the reactive `disabled` property and overrides the hooks for its role.
  */
 export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 	class FormControlElement extends Base {
 		static formAssociated = true;
+
+		/** A label click and `focus()` on the host reach the control inside. */
+		static shadowRootOptions: ShadowRootInit = {
+			...(Base as unknown as { shadowRootOptions: ShadowRootInit }).shadowRootOptions,
+			delegatesFocus: true
+		};
 
 		/** @internal */
 		declare disabled: boolean;
@@ -220,6 +303,8 @@ export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 		private _dispatching = false;
 		private _disabledWritten = false;
 		private _selfWrite = false;
+		private _labelRoot: Node | null = null;
+		private _labelText?: string;
 
 		private readonly _onPageshow = (event: PageTransitionEvent) => {
 			if (event.persisted && this._submitting) this.disabled = false;
@@ -228,6 +313,9 @@ export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- a mixin's constructor (TS2545)
 		constructor(...args: any[]) {
 			super(...args);
+			// The control inside carries the role and the name; a named role-less host would be a second,
+			// generic copy (#21 FR-04).
+			this.internals.role = 'none';
 			members.set(this, {
 				role: () => this.formRole(),
 				control: () => this.renderedControl(),
@@ -273,16 +361,73 @@ export const FormControl = <T extends Constructor<LitElement>>(Base: T) => {
 		/** @internal Runs on every uncancelled reset of the form. */
 		protected onFormReset() {}
 
+		/** @internal Whether the control's own visible text names it, which page labels don't override. */
+		protected hasVisibleName() {
+			return false;
+		}
+
+		/** @internal Whether a page `<label>` names the control. */
+		protected hasPageLabel() {
+			return this._pageLabels().length > 0;
+		}
+
+		/**
+		 * The page labels' text, which the component renders as its control's `aria-label`. It is
+		 * copied rather than referenced: a checker that reads attributes (axe-core) can't follow an
+		 * element reference across the shadow boundary, and a wrapping label referenced from the control
+		 * inside it would name the control twice.
+		 *
+		 * @internal
+		 */
+		protected pageLabelText() {
+			return this._labelText;
+		}
+
+		/**
+		 * Re-reads the page labels that label the host after a change in its tree, and re-renders when
+		 * their text changed. None count while the control's own text names it.
+		 *
+		 * @internal
+		 */
+		syncLabels() {
+			if (this._readLabels() !== this._labelText) this.requestUpdate();
+		}
+
+		private _pageLabels() {
+			if (this.hasVisibleName()) return [];
+			return [...(this.internals.labels ?? [])].filter((node) => node instanceof Element);
+		}
+
+		private _readLabels() {
+			return (
+				this._pageLabels()
+					.map((label) => labelText(label, this).replace(/\s+/g, ' ').trim())
+					.filter(Boolean)
+					.join(' ') || undefined
+			);
+		}
+
 		connectedCallback() {
 			super.connectedCallback();
 			this._syncMembership();
 			if (this._submitting) window.addEventListener('pageshow', this._onPageshow);
+			this._labelRoot = this.getRootNode();
+			watchLabels(this._labelRoot, this);
+			if (this.hasUpdated) this.syncLabels();
 		}
 
 		disconnectedCallback() {
 			super.disconnectedCallback();
 			this._syncMembership();
 			window.removeEventListener('pageshow', this._onPageshow);
+			if (this._labelRoot) unwatchLabels(this._labelRoot, this);
+			this._labelRoot = null;
+		}
+
+		/** @internal */
+		protected override willUpdate(changed: PropertyValues) {
+			super.willUpdate(changed);
+			this._labelText = this._readLabels();
 		}
 
 		/** @internal */
