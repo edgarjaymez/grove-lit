@@ -164,12 +164,6 @@ const mount = async (template: unknown) => {
 4. Read inside the component through `el.shadowRoot`.
 5. Clear the host after each test.
 
-For behaviour that depends on real input, use **`userEvent`** from `vitest/browser`. It sends trusted
-clicks and keys through Playwright, as a person would; `el.click()` and `dispatchEvent` send
-untrusted ones. `Button.browser.test.ts` relies on it: `userEvent.click(inner)`,
-`userEvent.keyboard('{Enter}')`, `userEvent.keyboard('[Space]')`. Playwright waits for an element it
-considers disabled; pass `{ force: true }` to click one on purpose.
-
 `src/test/browser-setup.ts` loads the token CSS and registers the glyphs every component uses by
 default, so layout and icons are real.
 
@@ -179,12 +173,18 @@ through `commands` from `vitest/browser`:
 - **`emulateMedia`** sets reduced motion, colour scheme or forced colours for the page.
 - **`ariaSnapshot`** returns what the accessibility tree exposes for a selector.
 
+For behaviour that depends on real input, use **`userEvent`** from `vitest/browser`. It sends trusted
+clicks and keys through Playwright, as a person would; `el.click()` and `dispatchEvent` send
+untrusted ones. `Button.browser.test.ts` relies on it: `userEvent.click(inner)`,
+`userEvent.keyboard('{Enter}')`, `userEvent.keyboard('[Space]')`. Playwright waits for an element it
+considers disabled; pass `{ force: true }` to click one on purpose.
+
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
 
-The browser tests today: `events`, `slots`, `focus-ring`, `host-hidden`, `reduced-motion`, the
-`FormControl` mixin (`utils/form-control`, with small test elements of its own), and six components
-(`Button`, `FeedbackStrip`, `Icon`, `MenuItem`, `Texture`, `Title`).
+The `browser` project picks up every `src/**/*.browser.test.ts`, so a new browser test needs no
+entry here: a shared test sits next to the code it checks, a component's own test in its directory.
+`git ls-files '*.browser.test.ts'` lists them all.
 
 ### Tests that keep two copies in step
 
