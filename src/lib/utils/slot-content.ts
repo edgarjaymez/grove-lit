@@ -17,6 +17,9 @@ export const resetSlotWarnings = () => warned.clear();
  * Slots are containers by default and may hold controls. Pass `phrasingOnly` when the slots sit inside
  * an interactive element or a popup, or take phrasing content by design: outside production builds,
  * the component then logs one warning when a slot holds a form control.
+ *
+ * Containers are the default because DESIGN_SYSTEM.md (Content and Slots) lets every other slot hold
+ * controls, as a card body or a form layout will; today's components all opt in to `phrasingOnly`.
  */
 export class SlotContent implements ReactiveController {
 	private readonly _host: ReactiveControllerHost & HTMLElement;
