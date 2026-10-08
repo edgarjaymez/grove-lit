@@ -3,6 +3,7 @@ import { commands, userEvent } from 'vitest/browser';
 import { LitElement, css, html } from 'lit';
 import { componentReset } from '../index.js';
 import { groveTags } from '../../test/grove-tags.js';
+import { deepElements, frames, settleDeep } from '../../test/shadow.js';
 import { applyTheme, themes } from '../../test/themes.js';
 
 interface Timing {
@@ -102,16 +103,6 @@ const seconds = (list: string) =>
 /** Splits a computed list on its top-level commas (`cubic-bezier()` has commas of its own). */
 const items = (list: string) => list.split(/,(?![^(]*\))/).map((v) => v.trim());
 
-/** The host plus every element in its shadow tree, descending into nested Grove shadow roots. */
-const shadowElements = (host: Element): Element[] => {
-	const root = host.shadowRoot;
-	if (!root) return [host];
-	return [
-		host,
-		...[...root.querySelectorAll('*')].flatMap((el) => (el.shadowRoot ? shadowElements(el) : [el]))
-	];
-};
-
 /** The host plus its own shadow tree only, so a nested Grove element's fades aren't credited to its parent. */
 const ownElements = (host: Element) => [host, ...(host.shadowRoot?.querySelectorAll('*') ?? [])];
 
@@ -140,14 +131,10 @@ const transitionTimings = (el: Element): Timing[] => {
 };
 
 const mount = async (tag: string) => {
-	const el = document.createElement(tag) as HTMLElement & { updateComplete?: Promise<unknown> };
+	const el = document.createElement(tag);
 	document.body.append(el);
-	await el.updateComplete;
+	await settleDeep(document.body);
 	return el;
-};
-
-const frames = async (count: number) => {
-	for (let i = 0; i < count; i++) await new Promise((r) => requestAnimationFrame(r));
 };
 
 /** Whether `event` arrives within `ms`: long enough for a frame or two, far short of 300 ms. */
@@ -211,7 +198,8 @@ describe.each(themes)('with prefers-reduced-motion: reduce ($name)', (theme) => 
 
 	it.each(groveTags)('%s transitions and animates in at most 1 ms with no delay', async (tag) => {
 		const el = await mount(tag);
-		for (const node of shadowElements(el)) {
+		// The host plus its whole shadow tree, nested Grove shadow roots included.
+		for (const node of [el, ...(el.shadowRoot ? deepElements(el.shadowRoot) : [])]) {
 			for (const pseudo of [null, '::before', '::after']) {
 				const t = timings(node, pseudo);
 				const where = `${node.localName}${pseudo ?? ''}`;

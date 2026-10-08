@@ -1,9 +1,8 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { groveTags } from '../../test/grove-tags.js';
+import { deepElements, frames, settleDeep } from '../../test/shadow.js';
 import { applyTheme, themes } from '../../test/themes.js';
-
-type GroveElement = HTMLElement & { updateComplete?: Promise<unknown> };
 
 const FOCUSABLE = 'a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])';
 
@@ -25,19 +24,10 @@ const FIXTURE_ATTRS: Record<string, Record<string, string>> = {
 	'gv-menu-item': { href: '#' }
 };
 
-/** Waits for the element and every Grove element nested in its shadow tree to render. */
-const settle = async (host: Element): Promise<void> => {
-	await (host as GroveElement).updateComplete;
-	for (const el of host.shadowRoot?.querySelectorAll('*') ?? [])
-		if (el.shadowRoot) await settle(el);
-};
-
-const frame = () => new Promise((r) => requestAnimationFrame(r));
-
 /** Every focusable control in the shadow tree, nested Grove shadow roots included, in tree order. */
-const focusables = (host: Element): HTMLElement[] =>
-	[...(host.shadowRoot?.querySelectorAll<HTMLElement>('*') ?? [])].flatMap((el) =>
-		el.shadowRoot ? focusables(el) : el.matches(FOCUSABLE) ? [el] : []
+const focusables = (host: Element) =>
+	deepElements(host.shadowRoot!).filter(
+		(el): el is HTMLElement => !el.shadowRoot && el.matches(FOCUSABLE)
 	);
 
 const deepActiveElement = () => {
@@ -66,7 +56,7 @@ const tabOrder = async (controls: Element[]) =>
 const inOrder = (controls: Element[]) => controls.map((_, i) => i);
 
 const create = (tag: string) => {
-	const el = document.createElement(tag) as GroveElement;
+	const el = document.createElement(tag);
 	for (const [name, value] of Object.entries(FIXTURE_ATTRS[tag] ?? {}))
 		el.setAttribute(name, value);
 	return el;
@@ -76,7 +66,7 @@ const mount = async (tag: string, hidden = false, parent: Element = document.bod
 	const el = create(tag);
 	el.hidden = hidden;
 	parent.append(el);
-	await settle(el);
+	await settleDeep(parent);
 	return el;
 };
 
@@ -87,7 +77,7 @@ const stage = async (tag: string) => {
 	const empty = await commands.ariaSnapshot('#probe');
 	const el = create(tag);
 	document.getElementById('after')!.before(el);
-	await settle(el);
+	await settleDeep(document.getElementById('probe')!);
 	return { el, empty };
 };
 
@@ -157,16 +147,16 @@ describe.each(themes)('hidden on every gv-* element ($name)', (theme) => {
 		// server HTML is before the bundle runs. Appending it here is what upgrades it.
 		const inert = document.implementation.createHTMLDocument('');
 		inert.body.innerHTML = `<${tag} hidden></${tag}>`;
-		const el = inert.body.firstElementChild as GroveElement;
+		const el = inert.body.firstElementChild as HTMLElement;
 		expect(el.shadowRoot).toBeNull();
 
 		document.body.append(el);
 		// Upgraded and styled, not yet rendered.
 		expect(el.shadowRoot).not.toBeNull();
 		expect(getComputedStyle(el).display).toBe('none');
-		await settle(el);
+		await settleDeep(document.body);
 		expect(getComputedStyle(el).display).toBe('none');
-		await frame();
+		await frames();
 		expect(getComputedStyle(el).display).toBe('none');
 		expect(el.getClientRects().length).toBe(0);
 	});
