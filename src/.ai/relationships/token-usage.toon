@@ -1,93 +1,134 @@
-generated: "2026-07-10T20:23:44.621896+00:00"
-tokenUsage[91]{token,usedBy,count}:
+generated: "2026-10-07T21:39:34.892788+00:00"
+tokenUsage[132]{token,usedBy,count}:
   --border-radius-8xl,"Button,IconButton",2
+  --border-radius-base,Tooltip,1
   --border-radius-lg,ToDoCategoryToggler,1
+  --border-radius-md,Tooltip,1
+  --border-radius-none,BackButton,1
   --border-radius-sm,Checkbox,1
-  --border-width-base,"Button,Checkbox,IconButton",3
+  --border-width-base,"Button,Checkbox,FeedbackStrip,IconButton",4
   --border-width-heavy,TextInput,1
   --color-accent-50,Isotype,1
   --color-accent-500,Isotype,1
   --color-base-dark,"ColorSwatch,Isotype",2
   --color-base-light,"ColorSwatch,Isotype",2
-  --color-brand-50,Isotype,1
+  --color-brand-50,"Isotype,Texture",2
   --color-brand-500,Isotype,1
-  --color-brand-600,Checkbox,1
-  --color-gray-50,Checkbox,1
-  --color-gray-800,Checkbox,1
-  --drop-shadow-under-accent-summit,"Button,IconButton,ToDoCategoryToggler",3
+  --drop-shadow-under-accent-summit,"Button,IconButton,ToDoCategoryToggler,Tooltip",4
   --drop-shadow-under-accent-terrace,ToDoCategoryToggler,1
   --drop-shadow-under-brand-summit,ToDoCategoryToggler,1
   --drop-shadow-under-brand-terrace,ToDoCategoryToggler,1
-  --drop-shadow-under-gray-summit,"Button,IconButton,ToDoCategoryToggler",3
+  --drop-shadow-under-gray-summit,"Button,IconButton,ToDoCategoryToggler,Tooltip",4
   --drop-shadow-under-gray-terrace,ToDoCategoryToggler,1
   --drop-shadow-under-information-summit,ToDoCategoryToggler,1
   --drop-shadow-under-information-terrace,ToDoCategoryToggler,1
+  --font-size-2xs,Tooltip,1
   --font-size-base,ToDoListItem,1
   --font-size-xl,ToDoCategoryToggler,1
+  --font-size-xs,Tooltip,1
+  --grid-system-margin,FeedbackStrip,1
   --gv-icon-fill-display,Icon,1
   --gv-icon-regular-display,Icon,1
   --gv-isotype-size,Isotype,1
-  --letter-spacing-base,"Button,ColorSwatch,TextInput,ToDoCategoryToggler,ToDoListItem",5
+  --letter-spacing-base,"Button,Checkbox,ColorSwatch,FeedbackStrip,MenuItem,TextInput,Title,ToDoCategoryToggler,ToDoListItem,Tooltip",10
+  --missing,Texture,1
+  --ring-on-brand-terrace,MenuItem,1
   --semantic-color-border-around-accent-aurora,"Button,IconButton",2
-  --semantic-color-border-around-brand-aurora,TextInput,1
-  --semantic-color-border-around-brand-summit,TextInput,1
-  --semantic-color-border-around-brand-terrace,TextInput,1
-  --semantic-color-border-around-danger-summit,TextInput,1
-  --semantic-color-border-around-danger-terrace,TextInput,1
+  --semantic-color-border-around-brand-aurora,"Checkbox,TextInput",2
+  --semantic-color-border-around-brand-summit,"Checkbox,TextInput",2
+  --semantic-color-border-around-danger-aurora,TextInput,1
+  --semantic-color-border-around-danger-summit,"FeedbackStrip,TextInput",2
   --semantic-color-border-around-gray-aurora,"Button,Checkbox,IconButton,TextInput",4
-  --semantic-color-border-around-gray-summit,TextInput,1
+  --semantic-color-border-around-gray-summit,"Checkbox,TextInput",2
   --semantic-color-border-around-gray-terrace,TextInput,1
-  --semantic-color-border-around-ground,TextInput,1
-  --semantic-color-surface-accent-aurora,"Button,IconButton",2
-  --semantic-color-surface-accent-summit,"Button,IconButton,ToDoCategoryToggler",3
-  --semantic-color-surface-accent-terrace,"Button,IconButton,ToDoCategoryToggler",3
-  --semantic-color-surface-brand-aurora,"Checkbox,TextInput",2
-  --semantic-color-surface-brand-summit,"Checkbox,TextInput,ToDoCategoryToggler",3
-  --semantic-color-surface-brand-terrace,"TextInput,ToDoCategoryToggler",2
-  --semantic-color-surface-danger-terrace,TextInput,1
-  --semantic-color-surface-gray-aurora,"Button,IconButton,TextInput",3
-  --semantic-color-surface-gray-summit,"Button,IconButton,TextInput,ToDoCategoryToggler",4
-  --semantic-color-surface-gray-terrace,"Button,IconButton,TextInput,ToDoCategoryToggler",4
-  --semantic-color-surface-ground,"Checkbox,TextInput",2
-  --semantic-color-surface-information-summit,ToDoCategoryToggler,1
-  --semantic-color-surface-information-terrace,ToDoCategoryToggler,1
-  --semantic-color-text-on-accent-aurora-base,"Button,IconButton",2
-  --semantic-color-text-on-accent-summit-base,"Button,IconButton,ToDoCategoryToggler",3
-  --semantic-color-text-on-accent-summit-subtle,ToDoCategoryToggler,1
-  --semantic-color-text-on-accent-terrace-base,"Button,IconButton,ToDoCategoryToggler",3
+  --semantic-color-border-around-information-summit,FeedbackStrip,1
+  --semantic-color-border-around-success-summit,FeedbackStrip,1
+  --semantic-color-surface-accent-aurora,"Button,IconButton,Title",3
+  --semantic-color-surface-accent-summit,"Button,IconButton,Title,ToDoCategoryToggler,Tooltip",5
+  --semantic-color-surface-accent-terrace,"Button,IconButton,Title,ToDoCategoryToggler",4
+  --semantic-color-surface-brand-aurora,"Checkbox,TextInput,Title",3
+  --semantic-color-surface-brand-path,Title,1
+  --semantic-color-surface-brand-summit,"Checkbox,TextInput,Title,ToDoCategoryToggler",4
+  --semantic-color-surface-brand-terrace,"TextInput,Title,ToDoCategoryToggler",3
+  --semantic-color-surface-danger-aurora,Title,1
+  --semantic-color-surface-danger-summit,"FeedbackStrip,Title",2
+  --semantic-color-surface-danger-terrace,"TextInput,Title",2
+  --semantic-color-surface-gray-aurora,"Button,IconButton,TextInput,Title",4
+  --semantic-color-surface-gray-path,Title,1
+  --semantic-color-surface-gray-summit,"Button,IconButton,TextInput,Title,ToDoCategoryToggler,Tooltip",6
+  --semantic-color-surface-gray-terrace,"BackButton,Button,Checkbox,IconButton,TextInput,Title,ToDoCategoryToggler",7
+  --semantic-color-surface-ground,"Checkbox,TextInput,Title",3
+  --semantic-color-surface-information-aurora,Title,1
+  --semantic-color-surface-information-summit,"FeedbackStrip,Title,ToDoCategoryToggler",3
+  --semantic-color-surface-information-terrace,"Title,ToDoCategoryToggler",2
+  --semantic-color-surface-success-aurora,Title,1
+  --semantic-color-surface-success-summit,"FeedbackStrip,Title",2
+  --semantic-color-surface-success-terrace,Title,1
+  --semantic-color-text-on-accent-aurora-base,"Button,IconButton,Title",3
+  --semantic-color-text-on-accent-summit-base,"Button,IconButton,Title,ToDoCategoryToggler,Tooltip",5
+  --semantic-color-text-on-accent-summit-subtle,"ToDoCategoryToggler,Tooltip",2
+  --semantic-color-text-on-accent-terrace-base,"Button,IconButton,Title,ToDoCategoryToggler",4
   --semantic-color-text-on-accent-terrace-subtle,ToDoCategoryToggler,1
-  --semantic-color-text-on-brand-aurora-base,"Checkbox,TextInput",2
+  --semantic-color-text-on-brand-aurora-base,"Checkbox,TextInput,Title",3
   --semantic-color-text-on-brand-aurora-subtle,TextInput,1
-  --semantic-color-text-on-brand-summit-base,"Checkbox,TextInput,ToDoCategoryToggler",3
+  --semantic-color-text-on-brand-path-base,Title,1
+  --semantic-color-text-on-brand-summit-base,"Checkbox,TextInput,Title,ToDoCategoryToggler",4
   --semantic-color-text-on-brand-summit-subtle,"TextInput,ToDoCategoryToggler",2
-  --semantic-color-text-on-brand-terrace-base,"TextInput,ToDoCategoryToggler",2
-  --semantic-color-text-on-brand-terrace-subtle,"TextInput,ToDoCategoryToggler",2
-  --semantic-color-text-on-danger-terrace-base,TextInput,1
+  --semantic-color-text-on-brand-terrace-base,"MenuItem,TextInput,Title,ToDoCategoryToggler",4
+  --semantic-color-text-on-brand-terrace-emphasis,MenuItem,1
+  --semantic-color-text-on-brand-terrace-subtle,"MenuItem,TextInput,ToDoCategoryToggler",3
+  --semantic-color-text-on-danger-aurora-base,Title,1
+  --semantic-color-text-on-danger-summit-base,"FeedbackStrip,Title",2
+  --semantic-color-text-on-danger-summit-subtle,FeedbackStrip,1
+  --semantic-color-text-on-danger-terrace-base,"TextInput,Title",2
   --semantic-color-text-on-danger-terrace-subtle,TextInput,1
-  --semantic-color-text-on-gray-aurora-base,"Button,IconButton,TextInput",3
+  --semantic-color-text-on-gray-aurora-base,"Button,IconButton,TextInput,Title",4
   --semantic-color-text-on-gray-aurora-subtle,TextInput,1
-  --semantic-color-text-on-gray-summit-base,"Button,IconButton,TextInput,ToDoCategoryToggler",4
-  --semantic-color-text-on-gray-summit-subtle,"Checkbox,TextInput,ToDoCategoryToggler",3
-  --semantic-color-text-on-gray-terrace-base,"Button,IconButton,TextInput,ToDoCategoryToggler",4
+  --semantic-color-text-on-gray-path-base,Title,1
+  --semantic-color-text-on-gray-summit-base,"Button,IconButton,TextInput,Title,ToDoCategoryToggler,Tooltip",6
+  --semantic-color-text-on-gray-summit-subtle,"TextInput,ToDoCategoryToggler,Tooltip",3
+  --semantic-color-text-on-gray-terrace-base,"BackButton,Button,Checkbox,IconButton,TextInput,Title,ToDoCategoryToggler",7
   --semantic-color-text-on-gray-terrace-subtle,"TextInput,ToDoCategoryToggler",2
-  --semantic-color-text-on-ground-base,"ColorSwatch,ToDoListItem",2
+  --semantic-color-text-on-ground-base,"ColorSwatch,Title,ToDoListItem",3
   --semantic-color-text-on-ground-subtle,"ColorSwatch,ToDoListItem",2
-  --semantic-color-text-on-information-summit-base,ToDoCategoryToggler,1
-  --semantic-color-text-on-information-summit-subtle,ToDoCategoryToggler,1
-  --semantic-color-text-on-information-terrace-base,ToDoCategoryToggler,1
+  --semantic-color-text-on-information-aurora-base,Title,1
+  --semantic-color-text-on-information-summit-base,"FeedbackStrip,Title,ToDoCategoryToggler",3
+  --semantic-color-text-on-information-summit-subtle,"FeedbackStrip,ToDoCategoryToggler",2
+  --semantic-color-text-on-information-terrace-base,"Title,ToDoCategoryToggler",2
   --semantic-color-text-on-information-terrace-subtle,ToDoCategoryToggler,1
-  --soft-grid-0,ColorSwatch,1
-  --soft-grid-12,"Button,IconButton,TextInput,ToDoCategoryToggler",4
-  --soft-grid-16,"Button,ColorSwatch,ToDoCategoryToggler",3
-  --soft-grid-20,Button,1
-  --soft-grid-4,"Button,ColorSwatch,IconButton,ToDoCategoryToggler,ToDoListItem",5
-  --soft-grid-6,Button,1
-  --soft-grid-8,"Button,ColorSwatch,IconButton,TextInput,ToDoListItem",5
-  --typography-single-line-base-base,"Button,ColorSwatch,IconButton,ToDoListItem",4
+  --semantic-color-text-on-success-aurora-base,Title,1
+  --semantic-color-text-on-success-summit-base,"FeedbackStrip,Title",2
+  --semantic-color-text-on-success-summit-subtle,FeedbackStrip,1
+  --semantic-color-text-on-success-terrace-base,Title,1
+  --soft-grid-0,"ColorSwatch,Tooltip",2
+  --soft-grid-12,"Button,IconButton,TextInput,ToDoCategoryToggler,Tooltip",5
+  --soft-grid-16,"Button,ColorSwatch,FeedbackStrip,Title,ToDoCategoryToggler",5
+  --soft-grid-2,ColorSwatch,1
+  --soft-grid-20,"Button,Tooltip",2
+  --soft-grid-24,"BackButton,FeedbackStrip,MenuItem,Title",4
+  --soft-grid-32,"BackButton,ColorSwatch",2
+  --soft-grid-4,"Button,ColorSwatch,IconButton,ToDoCategoryToggler,ToDoListItem,Tooltip",6
+  --soft-grid-44,FeedbackStrip,1
+  --soft-grid-6,"Button,ColorSwatch,Tooltip",3
+  --soft-grid-8,"Button,Checkbox,ColorSwatch,IconButton,MenuItem,TextInput,ToDoListItem,Tooltip",8
+  --typography-multi-line-caption-emphasis,Tooltip,1
+  --typography-multi-line-footnote-base,Tooltip,1
+  --typography-multi-line-title-emphasis,Title,1
+  --typography-single-line-base-base,"Button,Checkbox,ColorSwatch,IconButton,MenuItem,ToDoListItem",6
+  --typography-single-line-base-base-letter-spacing,"Button,IconButton,MenuItem",3
+  --typography-single-line-base-emphasis,MenuItem,1
+  --typography-single-line-base-emphasis-letter-spacing,MenuItem,1
   --typography-single-line-caption-base,ColorSwatch,1
+  --typography-single-line-footnote-base,Tooltip,1
   --typography-single-line-label-base,"Button,IconButton",2
+  --typography-single-line-label-base-letter-spacing,"Button,IconButton",2
   --typography-single-line-label-emphasis,ColorSwatch,1
   --typography-single-line-subheading-base,ToDoCategoryToggler,1
-  --typography-single-line-subtle-base,"TextInput,ToDoListItem",2
-  --typography-single-line-subtle-emphasis,"Button,IconButton",2
+  --typography-single-line-subheading-emphasis,FeedbackStrip,1
+  --typography-single-line-subtle-base,"FeedbackStrip,MenuItem,TextInput,ToDoListItem",4
+  --typography-single-line-subtle-base-letter-spacing,MenuItem,1
+  --typography-single-line-subtle-emphasis,"Button,IconButton,MenuItem",3
+  --typography-single-line-subtle-emphasis-letter-spacing,"Button,IconButton,MenuItem",3
+  --typography-single-line-title-base,"BackButton,Title",2
+  --typography-single-line-title-base-letter-spacing,"BackButton,Title",2
   --typography-single-line-title-emphasis,ToDoCategoryToggler,1

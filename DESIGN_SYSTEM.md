@@ -1,6 +1,6 @@
 # Grove Design System
 
-**Version 1.1 — Light & Dark**
+**Version 1.1 — Light & Dark** · reconciled against `src/lib/tokens/tokens.css` on 2026-10-07 (package 0.45.0, token set `2025.10`). Where this document and `tokens.css` disagree on a token name or value, `tokens.css` wins.
 
 ---
 
@@ -47,9 +47,9 @@ Write like helping a colleague, not instructing a stranger. Use "you" freely. Sh
 
 **Display:** Cakra — Experimental display typeface with unique personality, contemporary vibe, bold cuts, geometric tension.
 
-**Body:** Switzer — Clean grotesque with understated character, professional without sterile, warm without soft.
+**Body:** Inclusive Sans — A text font designed for accessibility and readability, with the friendly personality of contemporary neo-grotesques.
 
-**Icons:** Phosphor — Available in Regular and Fill variants.
+**Icons:** Phosphor — SVG web components rendered through `gv-icon`, in Regular and Fill weights.
 
 ### Primary Colors
 
@@ -203,7 +203,7 @@ Primitive colors are the raw palette. All semantic colors derive from these prim
 | `danger/200` | `#FF8D8B` | Coral     |
 | `danger/300` | `#E66E6D` | Poppy     |
 | `danger/400` | `#C34F51` | Vermilion |
-| `danger/500` | `#9E2B32` | Rust      |
+| `danger/500` | `#A12F35` | Rust      |
 | `danger/600` | `#901D27` | Crimson   |
 | `danger/700` | `#80041A` | Carmine   |
 | `danger/800` | `#6F000C` | Burgundy  |
@@ -353,7 +353,7 @@ _Accent has no Path depth._
 | Depth   | Token                    | Hex       | Name    |
 | ------- | ------------------------ | --------- | ------- |
 | Terrace | `surface/danger/terrace` | `#FFC1BE` | Rose    |
-| Summit  | `surface/danger/summit`  | `#9E2B32` | Rust    |
+| Summit  | `surface/danger/summit`  | `#A12F35` | Rust    |
 | Aurora  | `surface/danger/aurora`  | `#80041A` | Carmine |
 
 _Danger has no Path depth._
@@ -456,9 +456,9 @@ Brand and Accent tracks should not contain Danger, Success, or Information track
 
 Aurora is the hover state for Summit elements, or a transient highlight over a resting surface. It is never a resting container and never the parent of another depth. Only Summit changes surface color on hover. Components that take a `surface` (the `GroveSurface` type) accept the aurora values for highlight sections.
 
-#### 8. Floating elements return to Ground.
+#### 8. Floating elements reset context.
 
-Modals, popovers, and tooltips reset context. They start fresh from Ground.
+Modals, popovers, and tooltips don't inherit the depth of whatever they float over. Modals and popovers start fresh from Ground. A tooltip is the exception by design: `gv-tooltip` is a small accent or gray **Summit** bubble with its summit drop shadow as the attention cue.
 
 ### UI Color Distribution
 
@@ -540,47 +540,47 @@ Both provide a single value per surface—no role hierarchy.
 
 ### Design Intent
 
-Grove's type system is built around two contrasting typefaces that never compete with each other: **Cakra** for expressive moments, **Switzer** for everything readable. The distinction is simple — if it serves communication, it's Switzer. If it expresses character, it's Cakra.
+Grove's type system is built around two contrasting typefaces that never compete with each other: **Cakra** for expressive moments, **Inclusive Sans** for everything readable. The distinction is simple — if it serves communication, it's Inclusive Sans. If it expresses character, it's Cakra.
 
 ### Font Pairing Rules
 
-| Family              | When to use                                                                               | When NOT to use                           |
-| ------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **Switzer** (sans)  | Body copy, UI labels, navigation, form fields, captions                                   | Full-page hero text, logotypes            |
-| **Cakra** (display) | Hero headings, section titles in marketing contexts, the `hero` and `display` type styles | Body paragraphs, form labels, button text |
+| Family                    | When to use                                                                               | When NOT to use                           |
+| ------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **Inclusive Sans** (sans) | Body copy, UI labels, navigation, form fields, captions                                   | Full-page hero text, logotypes            |
+| **Cakra** (display)       | Hero headings, section titles in marketing contexts, the `hero` and `display` type styles | Body paragraphs, form labels, button text |
 
-> **Rule:** Never use both Cakra and Switzer on adjacent lines within the same text block. The transition between expressive and functional is always at the component boundary, not mid-paragraph.
+> **Rule:** Never use both Cakra and Inclusive Sans on adjacent lines within the same text block. The transition between expressive and functional is always at the component boundary, not mid-paragraph.
 
 ### Level Selection Guide
 
 Use the composite typography tokens (via CSS classes) rather than assembling font-size + weight + line-height individually.
 
-| UI role                     | Recommended class        | Family  |
-| --------------------------- | ------------------------ | ------- |
-| Page hero / product name    | `.hero.singleline`       | Cakra   |
-| Tagline / campaign headline | `.display.singleline`    | Cakra   |
-| Page title, section heading | `.title.singleline`      | Switzer |
-| Card heading                | `.heading.singleline`    | Switzer |
-| Sub-section header          | `.subheading.singleline` | Switzer |
-| Body copy                   | `.base.multiline`        | Switzer |
-| Secondary / supportive text | `.subtle.multiline`      | Switzer |
-| Blockquote, callout         | `.quote.multiline`       | Switzer |
-| Form label, tag, chip       | `.label.singleline`      | Switzer |
-| Image caption, timestamp    | `.caption.singleline`    | Switzer |
-| Legal text, footnote        | `.footnote.singleline`   | Switzer |
+| UI role                     | Recommended class        | Family         |
+| --------------------------- | ------------------------ | -------------- |
+| Page hero / product name    | `.hero.singleline`       | Cakra          |
+| Tagline / campaign headline | `.display.singleline`    | Cakra          |
+| Page title, section heading | `.title.singleline`      | Inclusive Sans |
+| Card heading                | `.heading.singleline`    | Inclusive Sans |
+| Sub-section header          | `.subheading.singleline` | Inclusive Sans |
+| Body copy                   | `.base.multiline`        | Inclusive Sans |
+| Secondary / supportive text | `.subtle.multiline`      | Inclusive Sans |
+| Blockquote, callout         | `.quote.multiline`       | Inclusive Sans |
+| Form label, tag, chip       | `.label.singleline`      | Inclusive Sans |
+| Image caption, timestamp    | `.caption.singleline`    | Inclusive Sans |
+| Legal text, footnote        | `.footnote.singleline`   | Inclusive Sans |
 
 ### Single-line vs Multi-line
 
 The `.singleline` and `.multiline` suffixes control line-height:
 
-- **`.singleline`** — tight leading (1.0–1.1×). Use for headings, labels, buttons — anything that fits on one line and doesn't need breathing room between lines.
-- **`.multiline`** — looser leading (1.2–1.6×). Use for body copy, descriptions, anything that wraps across two or more lines.
+- **`.singleline`** — tight leading (1.0–1.33×). Use for headings, labels, buttons — anything that fits on one line and doesn't need breathing room between lines.
+- **`.multiline`** — looser leading (1.2–1.67×). Use for body copy, descriptions, anything that wraps across two or more lines.
 
 > **Rule:** Apply `.singleline` to interactive and heading elements. Apply `.multiline` to any text block that might exceed one line.
 
 ### Emphasis
 
-For Switzer levels (title through footnote), add `.emphasis` to increase font-weight to semibold. Use sparingly — only to signal hierarchy within a block, never decoratively.
+For Inclusive Sans levels (title through footnote), add `.emphasis` to raise the weight one step: semibold (600) for every level except `subtle`, whose base is extra-light (200) and whose emphasis is regular (400). Use sparingly — only to signal hierarchy within a block, never decoratively.
 
 ```html
 <span class="label singleline emphasis">Required</span>
@@ -588,9 +588,9 @@ For Switzer levels (title through footnote), add `.emphasis` to increase font-we
 
 `hero` and `display` (Cakra) have no emphasis variant. Cakra's single weight is already expressive enough.
 
-### Icon Fonts
+### Icons
 
-Phosphor comes in two variants: **Regular** (outline strokes) and **Fill** (solid fills).
+Icons are Phosphor SVG web components (`@phosphor-icons/webcomponents`), rendered through `gv-icon` — there is no icon font. The page registers each glyph module it uses. Phosphor comes in two weights: **Regular** (outline strokes) and **Fill** (solid fills); `gv-icon` shows Fill with the `is-filled` attribute, or when an ancestor flips its `--gv-icon-*-display` custom properties (hover fills in `gv-button`).
 
 | Variant | When to use                                    |
 | ------- | ---------------------------------------------- |
@@ -606,57 +606,58 @@ Never use Fill for inactive states — the solid weight implies action or select
 
 ### Font Families
 
-| Token                       | Value         | Usage                        |
-| --------------------------- | ------------- | ---------------------------- |
-| `font-family/sans-serif`    | Switzer       | Body text, UI elements       |
-| `font-family/serif`         | Cakra         | Display, headings, marketing |
-| `font-family/icons-regular` | Phosphor      | Icons (outline)              |
-| `font-family/icons-fill`    | Phosphor-Fill | Icons (solid)                |
+| Token                    | Value                                     | Usage                        |
+| ------------------------ | ----------------------------------------- | ---------------------------- |
+| `font-family/sans-serif` | `"Inclusive Sans", system-ui, sans-serif` | Body text, UI elements       |
+| `font-family/display`    | `"Cakra", serif`                          | Display, headings, marketing |
 
 ### Font Weights
 
-| Style  | Token                            | Value             |
-| ------ | -------------------------------- | ----------------- |
-| Normal | `font-weight/normal/extra-light` | Extralight        |
-| Normal | `font-weight/normal/regular`     | Regular           |
-| Normal | `font-weight/normal/semi-bold`   | Semibold          |
-| Italic | `font-weight/italic/extra-light` | Extralight Italic |
-| Italic | `font-weight/italic/regular`     | Italic            |
-| Italic | `font-weight/italic/semi-bold`   | Semibold Italic   |
+| Token                     | Value | Name       |
+| ------------------------- | ----- | ---------- |
+| `font-weight/extra-light` | 200   | Extralight |
+| `font-weight/regular`     | 400   | Regular    |
+| `font-weight/semi-bold`   | 600   | Semibold   |
+
+There are no italic weight tokens: italics come from `font-style: italic`, which `fonts.css` maps to the Inclusive Sans italic face.
 
 ### Font Size Scale (Digital)
 
-| Token            | Size  | Usage                      |
-| ---------------- | ----- | -------------------------- |
-| `font-size/2xs`  | 10px  | Fine print                 |
-| `font-size/xs`   | 12px  | Captions, labels           |
-| `font-size/sm`   | 14px  | Secondary text             |
-| `font-size/base` | 16px  | Body text                  |
-| `font-size/md`   | 20px  | Large body, small headings |
-| `font-size/lg`   | 24px  | Headings                   |
-| `font-size/xl`   | 32px  | Section headings           |
-| `font-size/2xl`  | 40px  | Page headings              |
-| `font-size/3xl`  | 80px  | Hero text                  |
-| `font-size/4xl`  | 240px | Display                    |
+The scale name and the type level are different things: body copy (`.base`) uses `font-size/md`, not `font-size/base`.
+
+| Token            | Size  | Usage                     |
+| ---------------- | ----- | ------------------------- |
+| `font-size/2xs`  | 10px  | `footnote` level          |
+| `font-size/xs`   | 12px  | `caption` level           |
+| `font-size/sm`   | 14px  | `label` level             |
+| `font-size/base` | 16px  | `subtle` level            |
+| `font-size/md`   | 20px  | `base` (body) and `quote` |
+| `font-size/lg`   | 24px  | `subheading` level        |
+| `font-size/xl`   | 32px  | `heading` level           |
+| `font-size/2xl`  | 40px  | `title` level             |
+| `font-size/3xl`  | 80px  | `display` level           |
+| `font-size/4xl`  | 240px | `hero` level              |
 
 ### Font Size Scale (Print)
 
+Values are soft-grid `rem` steps (shown here in px at 16px root), not points.
+
 | Token            | Size  |
 | ---------------- | ----- |
-| `font-size/2xs`  | 6pt   |
-| `font-size/xs`   | 6pt   |
-| `font-size/sm`   | 8pt   |
-| `font-size/base` | 8pt   |
-| `font-size/md`   | 12pt  |
-| `font-size/lg`   | 16pt  |
-| `font-size/xl`   | 24pt  |
-| `font-size/2xl`  | 32pt  |
-| `font-size/3xl`  | 64pt  |
-| `font-size/4xl`  | 192pt |
+| `font-size/2xs`  | 6px   |
+| `font-size/xs`   | 6px   |
+| `font-size/sm`   | 8px   |
+| `font-size/base` | 8px   |
+| `font-size/md`   | 12px  |
+| `font-size/lg`   | 16px  |
+| `font-size/xl`   | 24px  |
+| `font-size/2xl`  | 32px  |
+| `font-size/3xl`  | 64px  |
+| `font-size/4xl`  | 192px |
 
 ### Line Height
 
-Two modes: **single-line** (labels, buttons) and **multi-line** (paragraphs).
+Two modes: **single-line** (labels, buttons) and **multi-line** (paragraphs). The tokens are unitless ratios; the px values below are those ratios times the matching font size.
 
 #### Single-line (Digital)
 
@@ -670,8 +671,8 @@ Two modes: **single-line** (labels, buttons) and **multi-line** (paragraphs).
 | `line-height/single-line/lg`   | 28px  |
 | `line-height/single-line/xl`   | 36px  |
 | `line-height/single-line/2xl`  | 44px  |
-| `line-height/single-line/3xl`  | 88px  |
-| `line-height/single-line/4xl`  | 264px |
+| `line-height/single-line/3xl`  | 80px  |
+| `line-height/single-line/4xl`  | 240px |
 
 #### Multi-line (Digital)
 
@@ -690,12 +691,12 @@ Two modes: **single-line** (labels, buttons) and **multi-line** (paragraphs).
 
 ### Letter Spacing
 
-| Token                        | Value | Usage                        |
-| ---------------------------- | ----- | ---------------------------- |
-| `letter-spacing/tight`       | -2px  | Display text, Cakra headings |
-| `letter-spacing/normal`      | 0px   | Default                      |
-| `letter-spacing/loose`       | 2px   | All caps labels              |
-| `letter-spacing/extra-loose` | 4px   | Spaced headings              |
+| Token                        | Value | Usage                                |
+| ---------------------------- | ----- | ------------------------------------ |
+| `letter-spacing/tight`       | -2px  | Available; no type level uses it     |
+| `letter-spacing/base`        | 0px   | Default — every Inclusive Sans level |
+| `letter-spacing/loose`       | 2px   | `display` level                      |
+| `letter-spacing/extra-loose` | 4px   | `hero` level                         |
 
 ---
 
@@ -738,7 +739,7 @@ Landing grids use wider margins to give content more breathing room and center t
 | Mobile  | 0px       |
 | Tablet  | 768px     |
 | Laptop  | 1280px    |
-| Desktop | 1560px    |
+| Desktop | 1536px    |
 
 ### Cross-references
 
@@ -806,7 +807,7 @@ Two grid types: **system** (applications) and **landing** (marketing pages).
 | Margin   | 32px   | 64px    |
 | Gutter   | 20px   | 32px    |
 
-#### Desktop (≥ 1560px)
+#### Desktop (≥ 1536px)
 
 | Property | System | Landing |
 | -------- | ------ | ------- |
@@ -850,7 +851,7 @@ Two grid types: **system** (applications) and **landing** (marketing pages).
 
 ## Shadows
 
-Shadows come in three depths, each using two layers for a softer, more natural appearance. Shadows use the track's own color family for cohesive integration.
+Shadows come in two depths (Summit and Terrace), each using two layers for a softer, more natural appearance. Shadows use the track's own color family for cohesive integration.
 
 ### Design Intent
 
@@ -860,30 +861,32 @@ Only use shadows on **Terrace and Summit** surfaces. Ground-level elements don't
 
 ### When to Use Each Depth
 
-| Depth       | CSS class                     | Visual weight   | Use for                                       |
-| ----------- | ----------------------------- | --------------- | --------------------------------------------- |
-| **Summit**  | `drop-shadow-{track}-summit`  | Tight, balanced | Cards, panels, buttons, form inputs           |
-| **Terrace** | `drop-shadow-{track}-terrace` | Wide, airy      | Modals, sheets, floating containers, popovers |
+| Depth       | CSS class                           | Visual weight   | Use for                                       |
+| ----------- | ----------------------------------- | --------------- | --------------------------------------------- |
+| **Summit**  | `drop-shadow-under-{track}-summit`  | Tight, balanced | Cards, panels, buttons, form inputs           |
+| **Terrace** | `drop-shadow-under-{track}-terrace` | Wide, airy      | Modals, sheets, floating containers, popovers |
 
 Available tracks: `brand`, `accent`, `gray`, `information`, `danger`, `success`
 
 ### Rules
 
 - **Don't combine shadows with heavy borders** on the same element — choose one signal of elevation, not both.
-- **Match the shadow track to the surface track** — a brand Summit button uses `drop-shadow-brand-*`, not `drop-shadow-gray-*`.
+- **Match the shadow track to the surface track** — a brand Summit button uses `drop-shadow-under-brand-*`, not `drop-shadow-under-gray-*`.
 - **Don't shadow Ground elements** — a flat page background doesn't need a shadow.
 
 ### Usage (CSS class)
 
+The classes live in `effects.css` (part of `grove.css`) and style the light DOM. Inside a component's shadow root, use the `--drop-shadow-under-{track}-{depth}` token instead; a focusable control sets it through its private `--_drop` property so the focus ring can stack on top.
+
 ```html
 <!-- Card on a surface -->
-<div class="drop-shadow-gray-summit">...</div>
+<div class="drop-shadow-under-gray-summit">...</div>
 
 <!-- Modal -->
-<div class="drop-shadow-gray-terrace">...</div>
+<div class="drop-shadow-under-gray-terrace">...</div>
 
 <!-- Brand button -->
-<button class="drop-shadow-brand-summit">...</button>
+<button class="drop-shadow-under-brand-summit">...</button>
 ```
 
 ### Cross-references
@@ -895,12 +898,12 @@ Available tracks: `brand`, `accent`, `gray`, `information`, `danger`, `success`
 
 | Depth   | Layer | Offset X/Y  | Blur | Spread | Opacity |
 | ------- | ----- | ----------- | ---- | ------ | ------- |
-| Summit  | 1     | 4px / 4px   | 16px | 2px    | 4%      |
+| Summit  | 1     | 4px / 4px   | 8px  | 2px    | 4%      |
 | Summit  | 2     | 1px / 1px   | 4px  | 1px    | 12%     |
 | Terrace | 1     | 16px / 16px | 32px | 4px    | 4%      |
 | Terrace | 2     | 4px / 4px   | 16px | 2px    | 8%      |
 
-All other tracks follow the same structure with their own hue. At night, shadows become a moonlit rim — see [Dark Theme](#dark-theme--the-grove-at-night).
+Terrace shadows have this structure on every track, in the track's own hue. Summit differs: every track other than brand uses a stronger Summit shadow — layer 1 `8px / 8px`, blur `16px`, spread `4px`, `8%`; layer 2 `2px / 2px`, blur `8px`, spread `2px`, `24%`. At night, shadows become a moonlit rim — see [Dark Theme](#dark-theme--the-grove-at-night).
 
 ---
 
@@ -908,18 +911,20 @@ All other tracks follow the same structure with their own hue. At night, shadows
 
 ### Collection Overview
 
-| Collection       | Modes                         | Description                                 |
-| ---------------- | ----------------------------- | ------------------------------------------- |
-| `color`          | Value                         | Primitive color palette                     |
-| `semantic-color` | Light, Dark                   | Surface, text-on, border-around, divider-on |
-| `typography`     | Digital, Print                | Font size, line height, letter spacing      |
-| `font-family`    | —                             | Typeface definitions                        |
-| `font-weight`    | Value                         | Weight names                                |
-| `soft-grid`      | —                             | Spacing scale                               |
-| `grid`           | Base, Tablet, Laptop, Desktop | Layout grid                                 |
-| `border-radius`  | —                             | Corner radius scale                         |
-| `border-width`   | —                             | Stroke width scale                          |
-| `shadow`         | Light, Dark                   | Drop shadows and focus rings                |
+| Collection                                   | Modes                                 | Description                                                               |
+| -------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------- |
+| `color`                                      | Value                                 | Primitive color palette                                                   |
+| `semantic-color`                             | Light, Dark                           | Surface, text-on, border-around, divider-on                               |
+| `typography`                                 | —                                     | Composite type levels (family, size, weight, line height, letter spacing) |
+| `font-size`, `line-height`, `letter-spacing` | Digital, Print (the `media` modifier) | The scales the composites read                                            |
+| `font-family`                                | —                                     | Typeface definitions                                                      |
+| `font-weight`                                | Value                                 | Weight names                                                              |
+| `soft-grid`                                  | —                                     | Spacing scale                                                             |
+| `grid`                                       | Mobile, Tablet, Laptop, Desktop       | Layout grid                                                               |
+| `breakpoints`                                | —                                     | Min-widths for tablet, laptop, desktop                                    |
+| `border-radius`                              | —                                     | Corner radius scale                                                       |
+| `border-width`                               | —                                     | Stroke width scale                                                        |
+| `dropShadowUnder`, `ringOn`                  | Light, Dark                           | Drop shadows and focus rings (`effects/`)                                 |
 
 ### Naming Convention
 
@@ -929,11 +934,13 @@ All other tracks follow the same structure with their own hue. At night, shadows
 
 **Examples:**
 
-- `color/brand/500/value` → Primitive green
-- `surface/brand/terrace` → Semantic surface
-- `text-on/brand/terrace/base` → Text on surface
-- `typography/font-size/base` → 16px
-- `shadow/brand/terrace/layer-1/blur` → Shadow property
+- `color.brand.500` → `--color-brand-500` (primitive green)
+- `semanticColor.surface.brand.terrace` → `--semantic-color-surface-brand-terrace`
+- `semanticColor.textOn.brand.terrace.base` → `--semantic-color-text-on-brand-terrace-base`
+- `fontSize.base` → `--font-size-base` (16px)
+- `dropShadowUnder.brand.terrace` → `--drop-shadow-under-brand-terrace` (both layers in one value)
+
+DTCG groups are camelCase (`softGrid`, `fontFamily.sansSerif`, `letterSpacing.extraLoose`); Terrazzo writes them as kebab-case custom properties. This document's slash notation (`font-size/base`) is shorthand for the same path.
 
 ### File Structure
 
@@ -949,7 +956,7 @@ src/lib/tokens/{group}/{collection}.{mode}.tokens.json
 - `text/font-size.digital.tokens.json`
 - `spacing/grid.tablet.tokens.json`
 
-`main.resolver.json` combines them through two modifiers — `theme` (light, dark) and `breakpoint` — and Terrazzo compiles the result into `tokens.css` (`pnpm build-tokens`). Never edit `tokens.css` by hand.
+`main.resolver.json` combines them through three modifiers — `theme` (light, dark), `breakpoint` (mobile, tablet, laptop, desktop) and `media` (digital, print) — and Terrazzo compiles the result into `tokens.css` (`pnpm build-tokens`). Never edit `tokens.css` by hand.
 
 ---
 
@@ -1068,13 +1075,14 @@ At night the grove keeps its shape: the same tracks, depths, text roles and comp
 | `text-on/X/terrace/emphasis`                                    | `base/dark`                                               | `base/light`                                              |
 | `text-on/X/{terrace, path}/{unvisited-link, visited-link}` ¹    | `accent/800` / `information/800` (Path: `900`–`950`)      | `accent/100` / `information/100`                          |
 | ★ `text-on/X/{summit, aurora}/{base, subtle}`                   | `base/light` / `X/50` (was `X/50` / `X/100`)              | `base/light` / `X/50`                                     |
-| `border-around/{ground, X/terrace, X/path, X/summit, X/aurora}` | `gray/100` / `200` / `300` / `700` / `900`                | `gray/900` / `700` / `600` / `400` / `300`                |
-| `divider-on/{ground, X/terrace, X/path, X/summit, X/aurora}`    | `gray/200` / `300` / `400` / `50` / `100`                 | `gray/700` / `600` / `500` / `100` / `50`                 |
-| `selected-text-on/{ground, X/terrace, X/summit, X/aurora}` ²    | `accent/100` / `accent/500` / `accent/100` / `accent/100` | `accent/800` / `accent/700` / `accent/800` / `accent/800` |
+| `border-around/{ground, X/terrace, X/path, X/summit, X/aurora}` | `gray/100` / `X/200` / `X/300` / `X/700` / `X/900`        | `gray/900` / `X/700` / `X/600` / `X/400` / `X/300`        |
+| `divider-on/{ground, X/terrace, X/path, X/summit, X/aurora}`    | `gray/200` / `X/300` / `X/400` / `X/50` / `X/100`         | `gray/700` / `X/600` / `X/500` / `X/100` / `X/50`         |
+| `selected-text-on/{ground, X/terrace, X/summit, X/aurora}` ²³   | `accent/100` / `accent/500` / `accent/100` / `accent/100` | `accent/800` / `accent/700` / `accent/800` / `accent/800` |
 | `ring-on` colour — Ground, Terrace, Path / Summit ²             | `accent/500` / `accent/100`                               | `accent/300` / `accent/100`                               |
 
 ¹ Where a track is itself a link colour, that link borrows brand instead: the accent track's unvisited link and the information track's visited link (`brand/800` by day, `brand/100` at night).
 ² The accent track uses `brand` in place of `accent`.
+³ A `selected-text-on` summit token exists only for the brand and gray tracks (no path variant either); the other tracks have ground, terrace and aurora.
 
 #### Shadows at night
 
@@ -1142,7 +1150,7 @@ Every `gv-*` component adopts `componentReset` first in its shadow root, and so 
 
 ### Reduced Motion
 
-With `prefers-reduced-motion: reduce`, every transition and animation inside a Grove shadow root ends instantly, with the same end colours, shadows and visibility. Durations become `0.01ms` rather than `0s`, so `transitionend` still fires, and delays drop to `0s`. Timers aren't motion: `gv-color-swatch`'s three-second "Copied!" hold keeps its length. The rule never reaches a page's own light DOM.
+With `prefers-reduced-motion: reduce`, every transition and animation inside a Grove shadow root ends instantly, with the same end colours, shadows and visibility. Durations become `0.01ms` rather than `0s`, so `transitionend` still fires, delays drop to `0s`, and animations run once. Timers aren't motion: `gv-color-swatch`'s three-second "Copied!" hold keeps its length. The rule never reaches a page's own light DOM.
 
 A component that needs a gentler alternative instead of no transition at all declares its own `!important` rule on a class selector inside `@media (prefers-reduced-motion: reduce)`. It is more specific than the reset's `*`, so it wins.
 
@@ -1159,9 +1167,9 @@ Every focusable Grove control draws the focus ring of the **surface it sits on**
 | Aurora                      | the ring of the resting surface underneath |
 
 - **Declaring a surface.** Paint a section with a `.gv-surface-{surface}` class from `grove.css` (background, text and ring together), or set `--gv-focus-ring: var(--ring-on-…)` next to your own background. Surface names follow the `GroveSurface` type in token spelling. The property inherits into every Grove control inside, nested components included, and the innermost declaration wins.
-- **Defaults.** With no declaration, controls use the Ground ring; `gv-menu-item` uses the Brand Terrace ring its parent paints. A `[data-theme]` island starts again from its own Ground ring.
+- **Defaults.** With no declaration, controls use the Ground ring; `gv-menu-item` uses the Brand Terrace ring its parent paints, through its private `--_ring-default` property. A `[data-theme]` island starts again from its own Ground ring.
 - **Aurora.** Aurora is a transient highlight, so its classes don't declare a ring. Over an aurora section a control keeps the resting surface's ring. The terrace and path rings fall below 3:1 against their track's aurora fill (recorded, not gated, in `contrast.test.ts`).
-- **Drop shadows.** Controls with a drop shadow keep it: the ring is drawn over it.
+- **Drop shadows.** Controls with a drop shadow keep it: the ring is drawn over it. A component sets its shadow through the private `--_drop` property, never `box-shadow` directly, because the ring rule writes `box-shadow` and would replace it.
 - **Forced colours.** The ring is a box-shadow, which forced colours remove; a transparent outline in the same rule then shows in the system colour.
 - **Never suppress it.** No component sets `outline: none`, and a test enforces it. Custom components can adopt the `focusRing` fragment and the `gv-focusable` class.
 
@@ -1172,6 +1180,7 @@ Text-bearing components take their text as content, projected through a `<slot>`
 | Component           | Slot                           | Fallback property    |
 | ------------------- | ------------------------------ | -------------------- |
 | `gv-button`         | default                        | `text`               |
+| `gv-checkbox`       | default, inside the control    | none                 |
 | `gv-title`          | default, inside the `h{level}` | `heading`            |
 | `gv-menu-item`      | default, inside the link       | `label`              |
 | `gv-feedback-strip` | `heading`, `message`           | `heading`, `message` |
