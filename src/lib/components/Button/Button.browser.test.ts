@@ -1,9 +1,10 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { userEvent } from 'vitest/browser';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { commands, userEvent } from 'vitest/browser';
 import { LitElement, html, render } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import './Button.js';
 import type { Button } from './Button.js';
+import { applyTheme, themes } from '../../../test/themes.js';
 
 /** A page shell around a slotted light-DOM form: supported (#49 C2). */
 @customElement('test-form-shell')
@@ -60,6 +61,7 @@ class TestLitForm extends LitElement {
 }
 
 const host = document.body.appendChild(document.createElement('div'));
+host.id = 'button-host';
 
 /** Submissions never navigate the test page; the counts come from listeners on each form. */
 document.addEventListener('submit', (e) => e.preventDefault());
@@ -95,6 +97,19 @@ const recordSubmits = (form: HTMLFormElement) => {
 	);
 	return log;
 };
+
+/** Records, once each click has finished dispatching, whether anything cancelled it at the anchor. */
+const recordLinkClicks = (anchor: HTMLElement) => {
+	const prevented: boolean[] = [];
+	anchor.addEventListener('click', (e) => setTimeout(() => prevented.push(e.defaultPrevented)));
+	return prevented;
+};
+
+/** Link tests follow #hash links in place; each one leaves the page at the URL it started on. */
+const startUrl = location.href;
+afterEach(() => {
+	if (location.href !== startUrl) history.replaceState(history.state, '', startUrl);
+});
 
 /** Focuses a field the way a user would, then presses Enter. */
 const enterIn = async (field: HTMLElement) => {
@@ -620,6 +635,246 @@ describe('supported compositions (#49 C2)', () => {
 				['intent', 'publish']
 			]
 		]);
+	});
+});
+
+describe('link mode (#14)', () => {
+	beforeAll(() => commands.emulateMedia({ reducedMotion: 'reduce' }));
+	afterAll(async () => {
+		await commands.emulateMedia({ reducedMotion: 'no-preference' });
+		await applyTheme(themes[0]);
+	});
+
+	const STYLE_KEYS = [
+		'backgroundColor',
+		'color',
+		'borderTopColor',
+		'borderTopStyle',
+		'borderTopWidth',
+		'borderRadius',
+		'boxShadow',
+		'paddingTop',
+		'paddingLeft',
+		'height',
+		'width',
+		'fontSize',
+		'fontWeight',
+		'letterSpacing',
+		'textDecorationLine',
+		'opacity'
+	] as const;
+	const look = (el: Button) => {
+		const cs = getComputedStyle(inner(el));
+		return Object.fromEntries(STYLE_KEYS.map((key) => [key, cs[key]]));
+	};
+
+	it('renders exactly one <a> with href, and the button without it (FR-01, FR-02)', async () => {
+		const { buttons } = await mount(html`
+			<gv-button href="/contact">Get in touch</gv-button>
+			<gv-button>Save</gv-button>
+		`);
+		const [link, button] = buttons;
+		expect(link.shadowRoot!.querySelectorAll('a')).toHaveLength(1);
+		expect(link.shadowRoot!.querySelector('button')).toBeNull();
+		expect(inner(link).getAttribute('href')).toBe('/contact');
+		expect(button.shadowRoot!.querySelectorAll('button')).toHaveLength(1);
+		expect(button.shadowRoot!.querySelector('a')).toBeNull();
+		link.href = undefined;
+		await link.updateComplete;
+		expect(link.shadowRoot!.querySelector('a')).toBeNull();
+	});
+
+	it('gives both modes the same classes for every variant, colour and size (FR-03)', async () => {
+		const combos = ['filled', 'tonal', 'outlined', 'ghost'].flatMap((variant) =>
+			['accent', 'gray'].flatMap((color) =>
+				['lg', 'md', 'sm'].map((size) => ({ variant, color, size }))
+			)
+		);
+		const { buttons } = await mount(
+			combos.map(
+				({ variant, color, size }) => html`
+					<gv-button variant=${variant} color=${color} size=${size} icon="tree">Go</gv-button>
+					<gv-button variant=${variant} color=${color} size=${size} icon="tree" href="#go"
+						>Go</gv-button
+					>
+				`
+			)
+		);
+		for (let i = 0; i < buttons.length; i += 2)
+			expect(inner(buttons[i + 1]).className, combos[i / 2].variant).toBe(
+				inner(buttons[i]).className
+			);
+	});
+
+	it('adds rel="noopener noreferrer" to target="_blank" without rel, and passes rel through (FR-04, FR-05)', async () => {
+		const { buttons } = await mount(html`
+			<gv-button href="https://example.com" target="_blank">New tab</gv-button>
+			<gv-button href="https://example.com" target="_self">Same tab</gv-button>
+			<gv-button href="https://example.com">No target</gv-button>
+			<gv-button href="https://example.com" target="_blank" rel="external">Explicit</gv-button>
+		`);
+		const attrs = buttons.map((el) => [
+			inner(el).getAttribute('target'),
+			inner(el).getAttribute('rel')
+		]);
+		expect(attrs).toEqual([
+			['_blank', 'noopener noreferrer'],
+			['_self', null],
+			[null, null],
+			['_blank', 'external']
+		]);
+		buttons[0].target = undefined;
+		await buttons[0].updateComplete;
+		expect(inner(buttons[0]).hasAttribute('rel')).toBe(false);
+	});
+
+	it('renders a disabled link without href, out of the tab order, going nowhere (FR-06)', async () => {
+		const { buttons } = await mount(html`
+			<button type="button">Before</button>
+			<gv-button href="#disabled-target" target="_blank" disabled>Docs</gv-button>
+			<gv-button href="#after">After</gv-button>
+		`);
+		const [disabled, after] = buttons;
+		const anchor = inner(disabled);
+		expect(anchor.hasAttribute('href')).toBe(false);
+		expect(anchor.hasAttribute('target')).toBe(false);
+		expect(anchor.hasAttribute('rel')).toBe(false);
+		expect(anchor.getAttribute('aria-disabled')).toBe('true');
+		expect(anchor.getAttribute('role')).toBe('link');
+		expect(await commands.ariaSnapshot('#button-host')).toContain('link "Docs" [disabled]');
+		host.querySelector('button')!.focus();
+		await userEvent.keyboard('{Tab}');
+		expect(after.shadowRoot!.activeElement).toBe(inner(after));
+		await userEvent.click(anchor, { force: true });
+		await nextTask();
+		expect(location.href).toBe(startUrl);
+	});
+
+	it('restores href, focus and navigation when disabled is cleared (FR-07)', async () => {
+		const { button } = await mount(html`<gv-button href="#restored" disabled>Docs</gv-button>`);
+		button.disabled = false;
+		await button.updateComplete;
+		const anchor = inner(button);
+		expect(anchor.getAttribute('href')).toBe('#restored');
+		expect(anchor.hasAttribute('aria-disabled')).toBe(false);
+		expect(anchor.hasAttribute('role')).toBe(false);
+		anchor.focus();
+		expect(button.shadowRoot!.activeElement).toBe(anchor);
+		const prevented = recordLinkClicks(anchor);
+		await userEvent.click(anchor);
+		await nextTask();
+		expect(prevented).toEqual([false]);
+		expect(location.hash).toBe('#restored');
+	});
+
+	it('renders no type in link mode (FR-08)', async () => {
+		const { button } = await mount(html`<gv-button href="#x" type="submit">Docs</gv-button>`);
+		expect(inner(button).hasAttribute('type')).toBe(false);
+	});
+
+	it('follows Enter, not Space, and never cancels the click itself (FR-09, FR-10)', async () => {
+		const { button } = await mount(html`<gv-button href="#keyboard">Docs</gv-button>`);
+		const prevented = recordLinkClicks(inner(button));
+		inner(button).focus();
+		await userEvent.keyboard('[Space]');
+		await nextTask();
+		expect(prevented).toEqual([]);
+		await userEvent.keyboard('{Enter}');
+		await nextTask();
+		expect(prevented).toEqual([false]);
+		expect(location.hash).toBe('#keyboard');
+	});
+
+	it('has the anchor as its only focusable element (FR-11)', async () => {
+		const { button } = await mount(html`<gv-button href="#x" icon="tree">Docs</gv-button>`);
+		const focusable = button.shadowRoot!.querySelectorAll(
+			'a[href], button, input, select, textarea, [tabindex]'
+		);
+		expect([...focusable]).toEqual([inner(button)]);
+	});
+
+	for (const theme of themes)
+		it(`looks the same as the button in every variant and colour in ${theme.name} (FR-DT1)`, async () => {
+			await applyTheme(theme);
+			const pairs = ['filled', 'tonal', 'outlined', 'ghost'].flatMap((variant) =>
+				['accent', 'gray'].map((color) => ({ variant, color }))
+			);
+			const { buttons } = await mount(
+				pairs.map(
+					({ variant, color }) => html`
+						<gv-button variant=${variant} color=${color}>Go</gv-button>
+						<gv-button variant=${variant} color=${color} href="#go">Go</gv-button>
+					`
+				)
+			);
+			for (let i = 0; i < buttons.length; i += 2)
+				expect(look(buttons[i + 1]), `${pairs[i / 2].variant} ${pairs[i / 2].color}`).toEqual(
+					look(buttons[i])
+				);
+		});
+
+	it('dims a disabled link like a disabled button, with no hover change (FR-DT3)', async () => {
+		await applyTheme(themes[0]);
+		const { buttons } = await mount(html`
+			<gv-button disabled>Off</gv-button>
+			<gv-button href="#off" disabled>Off</gv-button>
+		`);
+		const [button, link] = buttons;
+		expect(look(link)).toEqual(look(button));
+		expect(look(link).opacity).toBe('0.5');
+		const resting = look(link);
+		await userEvent.hover(inner(link));
+		expect(look(link)).toEqual(resting);
+	});
+});
+
+describe('link mode in a form (#49 L1 to L3)', () => {
+	it('stays a working link inside a disabled fieldset (L1)', async () => {
+		const { form, button } = await mount(html`
+			<form>
+				<fieldset disabled>
+					<button type="button">Before</button>
+					<gv-button href="#help">Help</gv-button>
+				</fieldset>
+			</form>
+		`);
+		const log = recordSubmits(form);
+		expect(button.matches(':disabled')).toBe(true);
+		expect(inner(button).getAttribute('href')).toBe('#help');
+		expect(inner(button).classList.contains('btn--disabled')).toBe(false);
+		inner(button).focus();
+		expect(button.shadowRoot!.activeElement).toBe(inner(button));
+		const prevented = recordLinkClicks(inner(button));
+		// Playwright counts the anchor as disabled through its :disabled host; a user can click it.
+		await userEvent.click(inner(button), { force: true });
+		await nextTask();
+		expect(prevented).toEqual([false]);
+		expect(location.hash).toBe('#help');
+		expect(log).toHaveLength(0);
+	});
+
+	it('never submits and is never the Enter default, whatever its type (L2)', async () => {
+		const { form, buttons } = await mount(html`
+			<form>
+				<input name="first" />
+				<input name="second" />
+				<gv-button href="#docs" type="submit">Docs</gv-button>
+				<gv-button type="submit">Send</gv-button>
+			</form>
+		`);
+		const [link, send] = buttons;
+		const log = recordSubmits(form);
+		link.click();
+		await nextTask();
+		expect(log).toHaveLength(0);
+		await enterIn(form.querySelector('input')!);
+		expect(log).toHaveLength(1);
+		expect([link.disabled, send.disabled]).toEqual([false, true]);
+	});
+
+	it('is still listed in form.elements (L3)', async () => {
+		const { form, button } = await mount(html`<form><gv-button href="#x">Docs</gv-button></form>`);
+		expect([...form.elements]).toContain(button);
 	});
 });
 
