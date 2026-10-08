@@ -1204,7 +1204,9 @@ Text-bearing components take their text as content, projected through a `<slot>`
 
 ### Forms and Slots
 
-Grove controls take part in forms the way native controls do: they are form-associated custom elements, built on one shared base. `gv-button` is the first; `gv-checkbox`, `gv-text-input` and `gv-textarea` follow on the same base.
+Grove controls take part in forms the way native controls do: they are form-associated custom elements, built on one shared base. `gv-button` and `gv-checkbox` use it; `gv-text-input` and `gv-textarea` follow on the same base.
+
+**`gv-checkbox` in a form.** With `name`, a checked box submits `value` (default `on`), and an unchecked one submits nothing, as a native checkbox does. `form.reset()` restores the checked state it had when it first connected (the `checked` attribute reflects the current state, so it can't be the default) and fires no `gv-change`. Enter toggles it and never submits the form.
 
 **The rule.** Form association follows the DOM tree, not slots. A control belongs to the `<form>` it sits in, or to the one its `form="id"` names, in its own tree. A slot only changes where the control is shown, so a control slotted into a `<form>` that another component renders in its shadow root has no form.
 
@@ -1262,6 +1264,45 @@ private async _onSubmit(event: SubmitEvent) {
 Without that last line, a form used more than once without a page load (search, filters, "add item") keeps a dead button. `form.querySelector(':state(submitting)')` finds the button too.
 
 **Links in forms.** A `gv-button` with `href` is a link: it never submits, resets or handles Enter, whatever its `type`. It is still listed in `form.elements`, and inside a `<fieldset disabled>` it stays a working link while its host matches `:disabled`, so style its disabled look with `gv-button[disabled]`, not `:disabled`.
+
+### Names and Descriptions
+
+Every Grove control is named and described on the element inside its shadow root that takes focus. The host has no role and is never left carrying the name, so the name is exposed once, on the node with the control's role.
+
+**Where the name comes from**, in order:
+
+1. **Visible text** in the control: slotted text, or the fallback property (`text` on `gv-button`). An icon, or content that is `hidden` or `aria-hidden`, is not text.
+2. **A page `<label>`**, wrapping the control or pointing at its id with `for`, for form-associated controls (`gv-button`, `gv-checkbox`). It names the control and a click on it activates the control, as for a native one.
+3. **`label`**: the name of a control with no visible text, such as an icon-only button. It is the accessible name only and is never shown.
+
+| Control             | Visible text                                      | Page `<label>` | `label`               | `description` |
+| ------------------- | ------------------------------------------------- | -------------- | --------------------- | ------------- |
+| `gv-button`         | slot, then `text`                                 | yes            | icon-only             | yes           |
+| `gv-icon-button`    | none                                              | no             | required              | yes           |
+| `gv-checkbox`       | slot                                              | yes            | without text          | yes           |
+| `gv-text-input`     | none                                              | not yet (#51)  | required              | yes           |
+| `gv-todo-list-item` | its `heading` names its checkbox, through `label` | no             | no                    | no            |
+| `gv-back-button`    | none                                              | no             | defaults to "Go back" | no            |
+
+Visible text always wins, so a name never differs from what the control shows (WCAG 2.5.3 Label in Name). A page label wins over `label`.
+
+```html
+<gv-button>Save changes</gv-button>
+<gv-icon-button icon="x" label="Close"></gv-icon-button>
+<gv-checkbox id="terms" name="terms"></gv-checkbox>
+<label for="terms">I agree to the <a href="/terms">terms</a></label>
+<gv-text-input label="Email" description="We only use it to reply"></gv-text-input>
+```
+
+**Descriptions.** `description` is read after the name. It renders as a `hidden` element in the shadow root, referenced by the control's `aria-describedby`, so it describes without being read a second time as page text. To describe a control with a visual `gv-tooltip`, pass the tooltip's text as `description` and mark the bubble `aria-hidden="true"`.
+
+**What doesn't cross the shadow boundary.** ids are looked up in their own tree, so `aria-labelledby`, `aria-describedby` and `<label for>` aimed at a host never reach the control inside, except page labels for form-associated controls, which Grove wires itself. An `aria-label` on a host names a role-less generic element. Use `label` and `description` instead.
+
+**Migrating from `aria-label`.** `gv-button`, `gv-icon-button` and `gv-text-input` used to copy a host `aria-label` to the control. For one minor after `label` replaced it, a host `aria-label` on those three and on `gv-checkbox` still names a control that has no visible text and no `label`, and outside production builds the first such host of each tag logs a warning. The host keeps the attribute, and its generic copy of the name, until you move it to `label`. `gv-text-input`'s host `aria-describedby` never reached the input; it warns, and `description` replaces it.
+
+**Missing names.** Outside production builds, a control that still has no name two seconds after the page has loaded logs one warning per tag.
+
+**One exception.** `gv-menu-item`'s `label` is its visible fallback text, not an invisible name. A follow-up renames it `text`, as on `gv-button`.
 
 ---
 

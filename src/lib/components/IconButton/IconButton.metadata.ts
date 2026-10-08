@@ -7,9 +7,9 @@ export const IconButtonMetadata = {
 		description: 'Icon-only button for triggering actions where a text label is not needed',
 		type: 'interactive',
 		path: 'src/lib/components/IconButton/IconButton.ts',
-		version: '1.1.0',
+		version: '1.2.0',
 		created: '2026/03/07',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -27,32 +27,38 @@ export const IconButtonMetadata = {
 			'floating-compact-actions'
 		],
 
-		requiredProps: ['icon', 'aria-label'],
+		requiredProps: ['icon', 'label'],
 
 		commonPatterns: [
 			{
 				name: 'toolbar-action',
 				description: 'Compact action in a toolbar or action row',
-				composition: `<gv-icon-button icon="tree" size="sm" variant="ghost" color="gray" aria-label="Underline text"></gv-icon-button>`
+				composition: `<gv-icon-button icon="tree" size="sm" variant="ghost" color="gray" label="Underline text"></gv-icon-button>`
 			},
 			{
 				name: 'card-close',
 				description: 'Dismiss or close a card, modal, or panel',
-				composition: `<gv-icon-button icon="tree" size="md" variant="ghost" color="gray" aria-label="Close"></gv-icon-button>`
+				composition: `<gv-icon-button icon="tree" size="md" variant="ghost" color="gray" label="Close"></gv-icon-button>`
 			},
 			{
 				name: 'primary-icon-cta',
 				description: 'Prominent icon action where color draws attention',
-				composition: `<gv-icon-button icon="tree" size="lg" variant="filled" color="accent" aria-label="Add item"></gv-icon-button>`
+				composition: `<gv-icon-button icon="tree" size="lg" variant="filled" color="accent" label="Add item"></gv-icon-button>`
 			}
 		],
 
 		antiPatterns: [
 			{
-				scenario: 'Omitting aria-label',
+				scenario: 'Omitting label',
 				reason: 'Icon-only buttons have no visible text — screen readers have nothing to announce',
 				alternative:
-					'Always pass a descriptive aria-label matching the action (e.g. aria-label="Delete item")'
+					'Always pass a descriptive label matching the action (e.g. label="Delete item")'
+			},
+			{
+				scenario: 'Naming it with aria-label or aria-labelledby on the host',
+				reason:
+					"The host has no role, so a host aria-label names a generic element as well as the button, and ids don't cross the shadow boundary. A host aria-label still names the button for one minor, with a development warning.",
+				alternative: 'Use label for the name and description for extra text'
 			},
 			{
 				scenario: 'Using IconButton for navigation',
@@ -129,14 +135,17 @@ export const IconButtonMetadata = {
 	accessibility: {
 		role: 'button',
 		keyboardSupport: 'Native browser support — Space/Enter to activate',
-		screenReader: 'No visible text — aria-label is mandatory for an accessible name',
+		screenReader:
+			'Announced as a button named by label, then its description. label is the only name: the button shows no text.',
 		focusManagement:
 			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
 			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',
-			'aria-label is required on every instance — treat it as a required prop',
-			'Disabled state uses both the HTML disabled attribute and aria-disabled for maximum AT compatibility',
+			'label is required on every instance. It is the accessible name only and never shown.',
+			'description is read after the name. It is a hidden element in the shadow root, wired with aria-describedby, so it is not read twice. To pair the button with a visual gv-tooltip, pass the same text as description and mark the tooltip aria-hidden="true".',
+			'A page <label> does not name it: gv-icon-button is not a form control.',
+			'Disabled uses the native disabled attribute, which exposes the disabled state.',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
 		]
 	},
@@ -145,6 +154,6 @@ export const IconButtonMetadata = {
 		priority: 'high',
 		keywords: ['icon button', 'icon-only', 'toolbar', 'close', 'action', 'compact', 'utility'],
 		context:
-			'Use when an action is well-understood from its icon alone and a text label would clutter the UI. Always pair with aria-label.'
+			'Use when an action is well-understood from its icon alone and a text label would clutter the UI. Always set label.'
 	}
 } satisfies ComponentMetadata;

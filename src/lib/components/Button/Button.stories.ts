@@ -17,6 +17,8 @@ interface Args {
 	href: string;
 	target: '' | '_blank' | '_self';
 	rel: string;
+	label: string;
+	description: string;
 }
 
 const meta: Meta<Args> = {
@@ -34,7 +36,9 @@ const meta: Meta<Args> = {
 		value,
 		href,
 		target,
-		rel
+		rel,
+		label,
+		description
 	}) => html`
 		<span
 			style="background-color: var(--semantic-color-surface-ground); padding: 16px; display: inline-block"
@@ -52,6 +56,8 @@ const meta: Meta<Args> = {
 				href=${ifDefined(href || undefined)}
 				target=${ifDefined(target || undefined)}
 				rel=${ifDefined(rel || undefined)}
+				label=${ifDefined(label || undefined)}
+				description=${ifDefined(description || undefined)}
 			></gv-button>
 		</span>
 	`,
@@ -67,7 +73,12 @@ const meta: Meta<Args> = {
 		value: { control: 'text' },
 		href: { control: 'text' },
 		target: { control: 'select', options: ['', '_blank', '_self'] },
-		rel: { control: 'text' }
+		rel: { control: 'text' },
+		label: {
+			control: 'text',
+			description: 'The name of an icon-only button, with no text. Never shown.'
+		},
+		description: { control: 'text', description: 'Read after the name. Never shown.' }
 	},
 	args: {
 		text: 'Button',
@@ -80,7 +91,9 @@ const meta: Meta<Args> = {
 		value: '',
 		href: '',
 		target: '',
-		rel: ''
+		rel: '',
+		label: '',
+		description: ''
 	}
 };
 export default meta;
@@ -95,6 +108,8 @@ export const Gray: Story = { args: { color: 'gray' } };
 export const Large: Story = { args: { size: 'lg' } };
 export const Small: Story = { args: { size: 'sm' } };
 export const WithIcon: Story = { args: { icon: 'tree' } };
+/** No visible text: `label` names the button and is never shown. */
+export const IconOnly: Story = { args: { icon: 'tree', text: '', label: 'Plant a tree' } };
 export const Disabled: Story = { args: { disabled: true } };
 
 /** The text as content: it names the button and is in the server HTML. */

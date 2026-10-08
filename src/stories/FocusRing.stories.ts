@@ -34,9 +34,9 @@ interface Args {
 /* The swatch's copy tooltips float 80px to its left, hence the gutter. */
 const controls = html`
 	<gv-button data-focus="button">Save</gv-button>
-	<gv-icon-button data-focus="icon-button" aria-label="Close" icon="x"></gv-icon-button>
+	<gv-icon-button data-focus="icon-button" label="Close" icon="x"></gv-icon-button>
 	<gv-back-button data-focus="back-button"></gv-back-button>
-	<gv-checkbox data-focus="checkbox"></gv-checkbox>
+	<gv-checkbox data-focus="checkbox" label="Remember me"></gv-checkbox>
 	<div style="padding-left: var(--soft-grid-80)">
 		<gv-color-swatch
 			data-focus="color-swatch"
@@ -53,7 +53,7 @@ const controls = html`
 		count="3"
 	></gv-todo-category-toggler>
 	<gv-menu-item data-focus="menu-item" href="#">Home</gv-menu-item>
-	<gv-text-input data-focus="text-input" placeholder="Name"></gv-text-input>
+	<gv-text-input data-focus="text-input" label="Name" placeholder="Name"></gv-text-input>
 `;
 
 /**

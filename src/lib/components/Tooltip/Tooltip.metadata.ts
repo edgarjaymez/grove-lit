@@ -9,9 +9,9 @@ export const TooltipMetadata = {
 		description:
 			'A floating hint bubble at summit depth, carrying the summit drop shadow as its attention cue. The simple type is a single nowrap line of icon + message; the complete type stacks an emphasized heading over a wrapping message. Accent and gray swap the surface, both text roles, and the shadow together. The is-pressed flag drops the shadow so the bubble reads as pushed down against the surface. It is the bubble only — it does not anchor, position, open, or close itself.',
 		type: 'display',
-		version: '1.2.0',
+		version: '1.3.0',
 		created: '2026/09/16',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -21,7 +21,7 @@ export const TooltipMetadata = {
 
 	usage: {
 		useCases: [
-			'icon-button-label',
+			'icon-button-description',
 			'copy-to-clipboard-confirmation',
 			'truncated-text-reveal',
 			'inline-term-definition',
@@ -63,9 +63,18 @@ export const TooltipMetadata = {
 			{
 				name: 'anchored-by-the-consumer',
 				description:
-					'The consumer owns placement and visibility. Wrap the trigger in a positioned container and point aria-describedby at the bubble.',
+					"The consumer owns placement and visibility. A Grove trigger takes the tooltip's text as its description: ids can't reach the button inside its shadow root. The bubble is then visual only, so it is aria-hidden and not read twice.",
 				composition: `<span style="position: relative">
-  <gv-icon-button icon="copy" aria-describedby="copy-tip"></gv-icon-button>
+  <gv-icon-button icon="copy" label="Copy" description="Copy hex"></gv-icon-button>
+  <gv-tooltip aria-hidden="true" type="simple" icon="copy" message="Copy hex"></gv-tooltip>
+</span>`
+			},
+			{
+				name: 'native-trigger',
+				description:
+					'A native trigger in the same tree as the bubble points aria-describedby at its id.',
+				composition: `<span style="position: relative">
+  <button type="button" aria-describedby="copy-tip">Copy</button>
   <gv-tooltip id="copy-tip" type="simple" icon="copy" message="Copy hex"></gv-tooltip>
 </span>`
 			}
@@ -163,11 +172,13 @@ export const TooltipMetadata = {
 		keyboardSupport:
 			'None — the bubble is not focusable. The consumer keeps focus on the trigger and toggles the bubble from there (including dismissal on Escape).',
 		screenReader:
-			'Announced as the accessible description of its trigger when the trigger sets aria-describedby to the tooltip id. The icon is aria-hidden, so heading and message carry the text.',
+			"Read as its trigger's accessible description: through the trigger's description for a Grove control, or aria-describedby to the tooltip id for a native trigger in the same tree. The icon is aria-hidden, so heading and message carry the text.",
 		wcag: 'AA',
 		notes: [
 			'role="tooltip" is set on the host in connectedCallback unless the consumer already set a role.',
-			'The consumer must wire aria-describedby from the trigger to the tooltip id — the component cannot do it.',
+			'The consumer wires the description. A Grove trigger (gv-button, gv-icon-button, gv-checkbox, gv-text-input) takes the same text as description, and the bubble gets aria-hidden="true". A native trigger in the same tree points aria-describedby at the tooltip id.',
+			'aria-describedby on a Grove host does nothing: the id is looked up in the page, but the control that needs it is inside the shadow root.',
+			'A tooltip describes; it never names. An icon-only trigger still needs its own label.',
 			'The decorative gv-icon is aria-hidden="true"; never put meaning in the icon alone.',
 			'Never pass a title attribute — it is a global HTML attribute and would render a native browser tooltip on the host.',
 			'The consuming app must register the glyph it names (see the phosphor field), e.g. @phosphor-icons/webcomponents/PhCopy for icon="copy".',

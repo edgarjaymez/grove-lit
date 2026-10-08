@@ -154,10 +154,10 @@ values in `${…}`. The prefix before an expression decides what it binds to
 | `@event=${fn}`    | an event listener   | `@click=${this._toggle}` (`Checkbox.ts`)     |
 
 **`nothing`** is a special value: in an attribute it removes the attribute, and in content it renders
-nothing at all. Button uses it to drop `aria-label` when no label is set:
+nothing at all. Button uses it to drop `aria-label` when visible text names the button:
 
 ```ts
-aria-label=${this.ariaLabel ?? nothing}
+aria-label=${name ?? nothing}
 ```
 
 Listeners bound with `@` are automatically bound to the component, so `this` inside `_toggle` is the
@@ -243,8 +243,9 @@ design decision, not a routine change:
 ## Where to see it in Button.ts
 
 - `@customElement('gv-button')` registers the tag; `HTMLElementTagNameMap` types it.
-- Thirteen `@property` fields; `disabled` and `name` reflect; `ariaLabel` names its attribute
-  `aria-label`.
+- Fourteen `@property` fields; `disabled` and `name` reflect. None is named after an ARIA attribute:
+  `label` and `description` carry the name and description, so the built-in `ariaLabel` reflection
+  on the host is left alone.
 - `render()` uses a content binding, an attribute binding, `?disabled`, `classMap`, `ifDefined` and
   `nothing`.
 - It overrides no lifecycle hooks itself. Its base, the `FormControl` mixin, extends

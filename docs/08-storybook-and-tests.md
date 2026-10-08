@@ -171,11 +171,19 @@ considers disabled; pass `{ force: true }` to click one on purpose.
 `src/test/browser-setup.ts` loads the token CSS and registers the glyphs every component uses by
 default, so layout and icons are real.
 
-Two custom commands, defined in `vite.config.ts` and typed in `src/test/commands.d.ts`, are available
-through `commands` from `vitest/browser`:
+Three custom commands, defined in `vite.config.ts` and typed in `src/test/commands.d.ts`, are
+available through `commands` from `vitest/browser`:
 
 - **`emulateMedia`** sets reduced motion, colour scheme or forced colours for the page.
-- **`ariaSnapshot`** returns what the accessibility tree exposes for a selector.
+- **`ariaSnapshot`** returns Playwright's YAML view of the accessibility tree for a selector. It is
+  Playwright's own name computation: good for structure, but it never shows a named role-less host,
+  and it misses names set through element references (`ariaLabelledByElements`) across a shadow
+  boundary.
+- **`axNodes`** returns Chrome's own accessibility nodes for a selector and everything under it,
+  shadow roots included, read over the DevTools protocol: role, name, description, and states such
+  as `focusable`, `checked` and `disabled`. Assert names and descriptions with it
+  (`src/lib/names.browser.test.ts`). `src/test/ax-nodes.browser.test.ts` pins the cases where the two
+  disagree.
 
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.

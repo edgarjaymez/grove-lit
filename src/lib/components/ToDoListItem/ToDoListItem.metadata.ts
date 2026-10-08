@@ -9,9 +9,9 @@ export const ToDoListItemMetadata = {
 		description:
 			'A to-do list entry composed of an interactive checkbox and a two-line label (heading + a category row with a leading Phosphor icon). Toggling the checkbox marks the item as done, applying strikethrough styling to both text lines; the category icon switches from filled (active) to outline (done).',
 		type: 'interactive',
-		version: '2.0.0',
+		version: '2.1.0',
 		created: '2026/05/31',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: 'icon',
@@ -113,15 +113,17 @@ export const ToDoListItemMetadata = {
 	},
 
 	accessibility: {
-		role: 'Inherits from gv-checkbox (role="checkbox") for the toggle; surrounding text is presentational',
+		role: 'One checkbox (the internal gv-checkbox), named by heading; the host has no role and no name',
 		keyboardSupport:
-			'Tab focuses the internal checkbox; Space toggles it — standard checkbox keyboard behavior',
+			'Tab focuses the internal checkbox; Space or Enter toggles it. A click elsewhere on the row toggles too, as a pointer convenience.',
 		screenReader:
-			'The checkbox announces its checked state via aria-checked; title and category text are read as adjacent content',
+			'The checkbox is named by heading, the same text the row shows (2.5.3 Label in Name), and announces its checked state. The category is read as adjacent text, and the glyph is decorative.',
 		focusManagement:
 			'Focus is managed by the internal gv-checkbox element; the list item host itself is not focusable',
 		wcag: 'AA',
 		notes: [
+			'heading is passed to the checkbox as its label, so a long title clamped to two lines is still read in full.',
+			'heading="" leaves the checkbox unnamed; set a heading on every item.',
 			'State changes dispatch a gv-change CustomEvent (bubbles: true, composed: true) with detail: boolean — listen with addEventListener("gv-change", (e) => use(e.detail))'
 		]
 	},

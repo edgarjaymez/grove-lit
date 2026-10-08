@@ -9,12 +9,14 @@ interface Args {
 	value: string;
 	placeholder: string;
 	type: 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number';
+	label: string;
+	description: string;
 }
 
 const meta: Meta<Args> = {
 	title: 'Components/gv-text-input',
 	tags: ['autodocs'],
-	render: ({ color, error, disabled, value, placeholder, type }) => html`
+	render: ({ color, error, disabled, value, placeholder, type, label, description }) => html`
 		<span
 			style="background-color: var(--semantic-color-surface-ground); padding: 16px; display: inline-block; width: 300px"
 		>
@@ -25,6 +27,8 @@ const meta: Meta<Args> = {
 				value=${value}
 				placeholder=${placeholder}
 				type=${type}
+				label=${label}
+				description=${description}
 			></gv-text-input>
 		</span>
 	`,
@@ -36,6 +40,11 @@ const meta: Meta<Args> = {
 		type: {
 			control: 'select',
 			options: ['text', 'email', 'password', 'search', 'tel', 'url', 'number']
+		},
+		label: { control: 'text', description: 'The accessible name. Never shown.' },
+		description: {
+			control: 'text',
+			description: 'Hint or error text, read after the name. Never shown.'
 		}
 	},
 	args: {
@@ -44,7 +53,9 @@ const meta: Meta<Args> = {
 		disabled: false,
 		value: '',
 		placeholder: 'Enter text…',
-		type: 'text'
+		type: 'text',
+		label: 'Full name',
+		description: ''
 	}
 };
 export default meta;
@@ -62,7 +73,7 @@ export const Gray: Story = {
 };
 
 export const Error: Story = {
-	args: { error: true, placeholder: 'Invalid value' }
+	args: { error: true, placeholder: 'Invalid value', description: 'Enter your full name' }
 };
 
 export const Disabled: Story = {

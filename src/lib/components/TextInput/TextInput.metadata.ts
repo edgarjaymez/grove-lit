@@ -8,9 +8,9 @@ export const TextInputMetadata = {
 			'Single-line text field with bottom-border styling. Supports brand and gray color tracks, error state, and disabled state. Renders a native <input> element for full browser and assistive-technology compatibility.',
 		type: 'input',
 		path: 'src/lib/components/TextInput/TextInput.ts',
-		version: '1.3.0',
+		version: '1.4.0',
 		created: '2026/05/20',
-		modified: '2026/09/28'
+		modified: '2026/10/08'
 	},
 	phosphor: {
 		prop: null,
@@ -33,14 +33,15 @@ export const TextInputMetadata = {
 		commonPatterns: [
 			{
 				name: 'labeled-form-field',
-				description: 'Standard labeled input — always pair with a <label> for accessibility',
-				composition: `<label for="name-input">Full name</label>\n<gv-text-input input-id="name-input" placeholder="Jane Smith"></gv-text-input>`
+				description:
+					'Show the label text next to the field and pass the same text as label: it names the inner input, and is never shown',
+				composition: `<span class="field-label">Full name</span>\n<gv-text-input label="Full name" placeholder="Jane Smith"></gv-text-input>`
 			},
 			{
 				name: 'error-field',
 				description:
-					'Validation error — pair with a message element linked via aria-describedby so screen readers announce the error',
-				composition: `<label for="email-input">Email</label>\n<gv-text-input input-id="email-input" error aria-describedby="email-error"></gv-text-input>\n<span id="email-error">Enter a valid email address</span>`
+					'Validation error — show the message and pass the same text as description, so screen readers read it after the name',
+				composition: `<gv-text-input label="Email" error description="Enter a valid email address"></gv-text-input>\n<span class="field-error">Enter a valid email address</span>`
 			},
 			{
 				name: 'gray-track',
@@ -66,8 +67,13 @@ export const TextInputMetadata = {
 				scenario: 'Using TextInput without a label',
 				reason:
 					'Screen readers have no accessible name for the field — users cannot understand what to type',
-				alternative:
-					'Always pair with a <label for="..."> or an explicit aria-label prop on the TextInput'
+				alternative: 'Always set label, with the same text shown next to the field'
+			},
+			{
+				scenario: 'A page <label for>, aria-label, aria-labelledby or aria-describedby on the host',
+				reason:
+					"The input is in the shadow root: ids don't cross the boundary, and the host has no role, so a host aria-label names a generic element. A host aria-label still names the input for one minor, with a development warning. Page labels arrive when gv-text-input becomes form-associated (#51).",
+				alternative: 'Use label for the name and description for hint or error text'
 			},
 			{
 				scenario: 'Using TextInput for multi-line content',
@@ -128,7 +134,7 @@ export const TextInputMetadata = {
 			options: [true, false],
 			default: false,
 			purpose: {
-				true: 'Signals validation failure — overrides the color track with danger tokens. Always pair with a visible error message linked via aria-describedby.',
+				true: 'Signals validation failure — overrides the color track with danger tokens. Always show an error message and pass the same text as description.',
 				false: 'Normal field state.'
 			}
 		},
@@ -152,13 +158,13 @@ export const TextInputMetadata = {
 		role: 'textbox',
 		keyboardSupport: 'Native browser support — Tab to focus, type to input, Shift+Tab to move back',
 		screenReader:
-			'Associates accessible name via <label for> or aria-label; announces aria-invalid when error=true; links error message via aria-describedby',
+			'Announces a textbox named by label, then its description (hint or error text); announces aria-invalid when error=true. The host itself is never named.',
 		focusManagement:
 			"The inner <input> draws the Grove focus ring on :focus-visible, which for a text field includes a click: the surrounding surface's --gv-focus-ring, else --ring-on-ground. It follows the theme, falls back to a system-colour outline under forced colours, and in the error state is the only focus cue.",
 		wcag: 'AA',
 		notes: [
-			'Always pair with a <label> element or aria-label prop — use input-id (not id) on the custom element to set the inner <input> id for <label for="..."> association',
-			'When error=true, link a visible error message via aria-describedby so assistive technologies announce it',
+			'Always set label. A page <label for> cannot reach the inner input, input-id included: the id lives in the shadow root.',
+			'When error=true, pass the visible error message as description so assistive technologies read it after the name',
 			'aria-invalid is set automatically when error=true — do not set it manually',
 			'Disabled state is implemented via readonly + aria-disabled="true" (not the native disabled attribute) so the field stays focusable and is announced by assistive technology as disabled; it is not editable',
 			'Honours prefers-reduced-motion: reduce — every state change lands instantly with the same end state (componentReset).'
@@ -182,6 +188,6 @@ export const TextInputMetadata = {
 			'filter'
 		],
 		context:
-			'Use for any single-line text entry in a form or UI. Default color=brand fits most surfaces. Switch to color=gray when the parent background is brand-colored or the field should feel neutral. Set error=true with a linked aria-describedby message for validation feedback. Always wrap with a <label> or provide aria-label.'
+			'Use for any single-line text entry in a form or UI. Default color=brand fits most surfaces. Switch to color=gray when the parent background is brand-colored or the field should feel neutral. Set error=true and pass the visible message as description for validation feedback. Always set label.'
 	}
 } satisfies ComponentMetadata;

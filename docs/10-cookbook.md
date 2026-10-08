@@ -120,8 +120,8 @@ The `storybook` test project picks up the new stories automatically.
 1. Create `<Name>.browser.test.ts` next to the component.
 2. Import the component for its side effect and its type.
 3. Render into a host element with Lit's `render`, and `await el.updateComplete`.
-4. Assert on `el.shadowRoot`, on layout (`getBoundingClientRect()`), or on the accessibility tree
-   (`commands.ariaSnapshot`).
+4. Assert on `el.shadowRoot`, on layout (`getBoundingClientRect()`), or on the accessibility tree:
+   `commands.axNodes` for names and descriptions, `commands.ariaSnapshot` for structure.
 5. Clear the host in `afterEach`.
 6. `pnpm vitest run --project browser src/lib/components/<Name>/<Name>.browser.test.ts`
 
@@ -178,7 +178,7 @@ maintainer to regenerate it, and commit the result on its own.
 ## 14 · Make a control take part in forms
 
 There is one way: extend the `FormControl` mixin in `src/lib/utils/form-control.ts`. `gv-button`
-does; `gv-checkbox`, `gv-text-input` and `gv-textarea` will. Don't call `attachInternals()` in a
+and `gv-checkbox` do; `gv-text-input` and `gv-textarea` will. Don't call `attachInternals()` in a
 component yourself. Say the control is `gv-field`.
 
 1. Extend the base and declare `disabled`, which the mixin reads:
@@ -200,6 +200,15 @@ component yourself. Say the control is `gv-field`.
    - `onFormReset()`: put the initial value back.
    - `honoursFormDisabled()`: `false` only for something that stays usable in a disabled fieldset,
      like a link.
+   - `hasVisibleName()`: `true` while the control's own text names it, so page labels don't
+     override it. Read slotted text with `SlotContent.hasText()`.
+
+   The mixin already keeps the host role-less (`internals.role = 'none'`), delegates focus, and
+   reads the text of the page's `<label>`s for the host into `pageLabelText()`, re-rendering when it
+   changes. Render it as the control's `aria-label` ahead of `label`. A control whose label click
+   should do more than focus, such as a checkbox that toggles, handles a click whose
+   `composedPath()[0]` is the host itself.
+
 3. A field reports its value with `this.internals.setFormValue(value)` and its validity with
    `this.internals.setValidity(flags, message, anchor)`, anchored to the inner native element.
 4. Render the inner native control with `?disabled=${this.effectivelyDisabled}` and nothing
@@ -219,3 +228,29 @@ gv-checkbox and gv-text-input have used its hooks.
 | `reflect: true` on `disabled`    | the platform's disabled state follows the attribute, so `:disabled`, form data and `el.click()` drift       |
 | `@internal` on the hooks         | the hooks show up in `custom-elements.json` as if pages could call them                                     |
 | step 5                           | the Astro types reject `form="checkout"`                                                                    |
+
+## 15 · Name a control
+
+Name and describe a control on the element inside its shadow root that takes focus, never on the
+host. The rule is in `DESIGN_SYSTEM.md` › Names and Descriptions; the helpers are in
+`src/lib/utils/accessible-name.ts`.
+
+1. Declare `label` (the invisible name) and `description`, both optional strings. Never declare a
+   property named after an ARIA attribute.
+2. In `render()`, set `aria-label=${name ?? nothing}` on the focusable element, where `name` is
+   `undefined` while visible text names the control, else the page labels' text for a form control
+   (`this.pageLabelText()`), else `invisibleName(this.label, fallback)`.
+3. Add `aria-describedby=${describedBy(this.description)}` to the same element and
+   `${descriptionNode(this.description)}` next to it.
+4. Call `warnIfUnnamed(this, () => …)` from `firstUpdated()` with everything that can name it.
+5. A form control gets page labels from `FormControl` (recipe 14): implement `hasVisibleName()`.
+6. Assert the name with `commands.axNodes()`, which reads Chrome's own accessibility tree, in
+   `src/lib/names.browser.test.ts`: the role's name, the description, and that no `gv-*` host is
+   named. `ariaSnapshot` is Playwright's re-implementation and never shows a named host.
+
+| Skip                             | What fails                                                            |
+| -------------------------------- | --------------------------------------------------------------------- |
+| step 1 (an `ariaLabel` property) | it shadows the built-in reflection; the host stays named as a generic |
+| step 2's visible-text check      | `label` overrides what the control shows (2.5.3 Label in Name)        |
+| step 3's `descriptionNode`       | `aria-describedby` points at nothing                                  |
+| step 6 with `ariaSnapshot`       | a named role-less host goes unnoticed                                 |

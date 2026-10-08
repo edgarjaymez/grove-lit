@@ -8,7 +8,7 @@ export const ButtonMetadata = {
 			'Primary interactive element for triggering actions. Supports visual hierarchy through style and color variants, optional leading icon, and three sizes. In a form, type="submit" and type="reset" act on it; with href it renders a real link with the same look.',
 		type: 'interactive',
 		path: 'src/lib/components/Button/Button.ts',
-		version: '1.3.0',
+		version: '1.4.0',
 		created: '2026/03/08',
 		modified: '2026/10/08'
 	},
@@ -84,6 +84,12 @@ export const ButtonMetadata = {
 				composition: `<gv-button href="https://example.com/case" target="_blank" variant="outlined">Read the case</gv-button>`
 			},
 			{
+				name: 'icon-only',
+				description:
+					'An icon with no visible text: label is the accessible name and is never shown. Prefer gv-icon-button for icon-only actions.',
+				composition: `<gv-button icon="share-network" variant="ghost" color="gray" label="Share"></gv-button>`
+			},
+			{
 				name: 'disabled-link',
 				description:
 					'A link that is not available yet: rendered without href, out of the tab order, announced as a disabled link',
@@ -150,6 +156,18 @@ export const ButtonMetadata = {
 				reason:
 					'In a disabled fieldset the host matches :disabled, but a link-mode gv-button stays a working link',
 				alternative: 'Target the disabled attribute, gv-button[disabled]'
+			},
+			{
+				scenario: 'Naming it with aria-label or aria-labelledby on the host',
+				reason:
+					"The host has no role, so a host aria-label names a generic element as well, and ids don't cross the shadow boundary. A host aria-label still names an icon-only button for one minor, with a development warning; it never overrides visible text.",
+				alternative: 'Use visible text, a page <label>, or label for an icon-only button'
+			},
+			{
+				scenario: 'label next to visible text',
+				reason:
+					'Visible text always wins, so label is ignored there; a name that differed from the text would also fail 2.5.3 Label in Name',
+				alternative: 'Put extra context in description instead'
 			},
 			{
 				scenario: 'Long or multi-clause text labels',
@@ -238,13 +256,17 @@ export const ButtonMetadata = {
 		role: 'button; link with href',
 		keyboardSupport:
 			'Native: Space and Enter activate a button, Enter follows a link. Enter in a text field submits through the default gv-button.',
-		screenReader: 'Announces button role with visible text content as the accessible name',
+		screenReader:
+			'Announces button (or link) role named by, in order, its visible text (slot or text), a page <label>, then label; then its description. The host itself is never named.',
 		focusManagement:
 			'Focus is native to the internal element, which draws the Grove focus ring on :focus-visible (the focusRing fragment). The ring comes from the surrounding surface (a .gv-surface-* class or --gv-focus-ring), else --ring-on-ground; under forced colours a system-colour outline shows instead. Do not suppress it.',
 		wcag: 'AA',
 		notes: [
 			'The host app must register the glyph it renders: see the phosphor field for the default and fixed glyphs, plus any it names through the icon attribute.',
 			'The slotted text, or the text prop, is the accessible name: keep it descriptive and action-oriented',
+			'With only an icon, set label: it is the accessible name and is never shown. An icon or aria-hidden content in the slot is not text, so label still applies.',
+			'description is read after the name, from a hidden element in the shadow root.',
+			'Form-associated, so a page <label for> names an icon-only button; focus is delegated, so focus() on the host reaches it.',
 			'A disabled button sets disabled on its inner <button>, which leaves the tab order. A disabled link renders without href, with role="link" and aria-disabled="true", and leaves the tab order too.',
 			'When the button disables itself after a submission, focus leaves its inner <button> for the page body. A page that handles the submission moves focus to its status message, and sets disabled = false when the request settles.',
 			'In a <fieldset disabled>, a link-mode gv-button stays a working link, as a native <a> does.',
@@ -268,6 +290,6 @@ export const ButtonMetadata = {
 			'call-to-action'
 		],
 		context:
-			'Use for any user-initiated action. Choose style and color based on visual hierarchy: filled accent for primary, tonal for secondary, outlined/ghost for tertiary. Add icon for reinforcement, never as the sole label. Use href for navigation. In a <form>, type="submit" and "reset" act on it; keep the button in the same tree as the <form>, and re-enable it after handling submit yourself.'
+			'Use for any user-initiated action. Choose style and color based on visual hierarchy: filled accent for primary, tonal for secondary, outlined/ghost for tertiary. Add icon for reinforcement; for an icon-only action prefer gv-icon-button, or set label. Use href for navigation. In a <form>, type="submit" and "reset" act on it; keep the button in the same tree as the <form>, and re-enable it after handling submit yourself.'
 	}
 } satisfies ComponentMetadata;

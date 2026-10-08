@@ -113,20 +113,24 @@ export class Button extends FormControl(LitElement) {
 	@property({ type: String }) target?: '_blank' | '_self';
 	/** The link's relationship to its target; passed through untouched when set. */
 	@property({ type: String }) rel?: string;
-	@property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
+	/** The accessible name of an icon-only button, with no slotted text or `text`. Never shown. */
+	@property({ type: String }) label?: string;
+	/** Read after the name, as the button's accessible description. Never shown. */
+	@property({ type: String }) description?: string;
 ```
 
 Each line is one public input. The patterns to notice:
 
-| Property    | Pattern                                                                                                          |
-| ----------- | ---------------------------------------------------------------------------------------------------------------- |
-| `text`      | the **fallback** for the slot: shown only when no content is slotted                                             |
-| `icon?`     | **optional string**: typed `string \| undefined`, written with `ifDefined()` in the template                     |
-| `type`      | defaults to `'button'`, so a `gv-button` inside a form does not submit it by accident                            |
-| `disabled`  | `reflect: true`, so page CSS can match `gv-button[disabled]`; the button also sets it on itself after it submits |
-| `name`      | `reflect: true`: the form data entry is named by the `name` attribute, as on a native control                    |
-| `href`      | switches the render to a link (Stop 8); `target` and `rel` only mean something with it                           |
-| `ariaLabel` | **ARIA property**: `string \| null = null`, its attribute named explicitly, `?? nothing` in the template         |
+| Property      | Pattern                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `text`        | the **fallback** for the slot: shown only when no content is slotted                                             |
+| `icon?`       | **optional string**: typed `string \| undefined`, written with `ifDefined()` in the template                     |
+| `type`        | defaults to `'button'`, so a `gv-button` inside a form does not submit it by accident                            |
+| `disabled`    | `reflect: true`, so page CSS can match `gv-button[disabled]`; the button also sets it on itself after it submits |
+| `name`        | `reflect: true`: the form data entry is named by the `name` attribute, as on a native control                    |
+| `href`        | switches the render to a link (Stop 8); `target` and `rel` only mean something with it                           |
+| `label`       | the **invisible name** of an icon-only button; visible text always wins, and it is never shown                   |
+| `description` | read after the name, from a `hidden` element in the shadow root (`descriptionNode`)                              |
 
 Properties come before `static styles`, and styles come before methods. That is the order in every
 component.
@@ -242,6 +246,7 @@ into a `<form>` in another component's shadow root (chapter 05).
 			${hasIcon ? html`<gv-icon name=${ifDefined(this.icon)} fill-in-hover></gv-icon>` : nothing}
 			<slot></slot>${this._slots.has() ? nothing : this.text}
 		`;
+		const name = this.hasVisibleName() ? undefined : invisibleName(this.label, this._hostLabel);
 		if (this._isLink) {
 			// A link can't be disabled natively: without href it leaves the tab order and goes nowhere.
 			const href = disabled ? undefined : this.href;
@@ -252,19 +257,22 @@ into a `<form>` in another component's shadow root (chapter 05).
 				rel=${ifDefined(linkRel(href, this.target, this.rel))}
 				role=${disabled ? 'link' : nothing}
 				aria-disabled=${disabled ? 'true' : nothing}
-				aria-label=${this.ariaLabel ?? nothing}
+				aria-label=${name ?? nothing}
+				aria-describedby=${describedBy(this.description)}
 				>${content}</a
-			>`;
+			>${descriptionNode(this.description)}`;
 		}
 		return html`
 			<button
 				class=${classes}
 				type="button"
 				?disabled=${disabled}
-				aria-label=${this.ariaLabel ?? nothing}
+				aria-label=${name ?? nothing}
+				aria-describedby=${describedBy(this.description)}
 			>
 				${content}
 			</button>
+			${descriptionNode(this.description)}
 		`;
 	}
 ```
@@ -283,6 +291,13 @@ into a `<form>` in another component's shadow root (chapter 05).
 - `<slot></slot>${this._slots.has() ? nothing : this.text}` shows slotted content when there is some,
   and the `text` property when there is none. Both `<gv-button>Save</gv-button>` and
   `<gv-button text="Save"></gv-button>` work.
+- `name` is the inner element's `aria-label`, only when no visible text names the button
+  (`hasVisibleName()`, which reads slotted _text_: an icon alone doesn't count). It is `label`, or for
+  one minor a legacy host `aria-label` (`invisibleName`). A page `<label>`'s text comes first, from
+  `pageLabelText()`, which `FormControl` keeps in step with the page. See `DESIGN_SYSTEM.md` › Names
+  and Descriptions.
+- `describedBy` and `descriptionNode` (`src/lib/utils/accessible-name.ts`) add the description: an
+  `aria-describedby` to a `hidden` element next to the control, rendered only when there is one.
 
 ## Stop 9 · The tag map
 

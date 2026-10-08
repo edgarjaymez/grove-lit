@@ -125,7 +125,9 @@ A reviewer will check these. Most are enforced by a tool; the tool is named wher
 - Private custom properties `--_*`; public ones `--gv-*` with a `@cssprop` tag.
 - Multi-word properties name their attribute in kebab-case (`attribute: 'is-selected'`).
 - `disabled` and toggled states use `reflect: true`.
-- ARIA properties are `string | null = null`; optional strings use `ifDefined()`.
+- Never declare a property named after an ARIA attribute (`ariaLabel`, `aria-describedby`): it
+  shadows the built-in reflection and leaves the host named. Name controls with `label` and describe
+  them with `description` (`src/lib/utils/accessible-name.ts`). Optional strings use `ifDefined()`.
 - Never a property called `title`; use `heading` and `message`.
 - Imports end in `.js`; child components are imported for their side effect.
 - Every file ends with the `HTMLElementTagNameMap` entry.
