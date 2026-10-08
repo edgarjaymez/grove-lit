@@ -17,7 +17,7 @@
 	},
 	"scripts": {
 		"build": "pnpm build-tokens && vite build && pnpm build-manifest",
-		"build-manifest": "cem analyze --config custom-elements-manifest.config.mjs && node scripts/generate-framework-types.mjs && node scripts/check-manifest.mjs",
+		"build-manifest": "cem analyze --config custom-elements-manifest.config.mjs && node scripts/generate-framework-types.mjs && node scripts/check-manifest.mjs && node scripts/check-dist.mjs",
 		"prepack": "pnpm build && publint",
 		"record-release": "node scripts/record-release.mjs",
 		"check-ledger": "node scripts/check-ledger.mjs",
