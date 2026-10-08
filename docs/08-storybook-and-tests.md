@@ -153,6 +153,10 @@ const mount = async (template: unknown) => {
 4. Read inside the component through `el.shadowRoot`.
 5. Clear the host after each test.
 
+`src/test/shadow.ts` is for tests that look into nested shadow roots: `deepElements()` lists every
+element below a root, walking each open shadow root right after its host; `settleDeep()` waits until
+all of them have updated and no new one appears; `frames()` waits a number of animation frames.
+
 `src/test/browser-setup.ts` loads the token CSS and registers the glyphs every component uses by
 default, so layout and icons are real. Its glyph list must match the components' `phosphor`
 metadata; `metadata.test.ts` fails when it drifts.
@@ -165,10 +169,6 @@ through `commands` from `vitest/browser`:
 
 `src/test/themes.ts` gives a `themes` list and `applyTheme()`, for tests that must hold in light,
 dark and OS dark.
-
-`src/test/shadow.ts` is for tests that look into nested shadow roots: `deepElements()` lists every
-element below a root, walking each open shadow root right after its host; `settleDeep()` waits until
-all of them have updated and no new one appears; `frames()` waits a number of animation frames.
 
 The `browser` project picks up every `src/**/*.browser.test.ts`, so a new browser test needs no
 entry here: a shared test sits next to the code it checks, a component's own test in its directory.
