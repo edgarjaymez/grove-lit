@@ -1,25 +1,17 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import { groveTags } from '../../test/grove-tags.js';
 import type { ComponentMetadata } from './metadata.js';
 
-// Importing every component module registers it; its exported class then names its tag.
-const modules = import.meta.glob<Record<string, unknown>>(
-	['./*/*.ts', '!./*/*.stories.ts', '!./*/*.metadata.ts', '!./*/*.test.ts'],
-	{ eager: true }
-);
-const metadataModules = import.meta.glob<Record<string, ComponentMetadata>>('./*/*.metadata.ts', {
+const modules = import.meta.glob<Record<string, ComponentMetadata>>('./*/*.metadata.ts', {
 	eager: true
 });
-
-const tagOf = (metadataPath: string) =>
-	Object.values(modules[metadataPath.replace('.metadata.ts', '.ts')] ?? {})
-		.map((value) =>
-			typeof value === 'function' ? customElements.getName(value as CustomElementConstructor) : null
-		)
-		.find(Boolean);
-
-const components = Object.entries(metadataModules).flatMap(([path, module]) =>
-	Object.entries(module).map(([name, meta]) => ({ name, meta, tag: tagOf(path) }))
+/** Each component's metadata, by the class name its tag registers. */
+const metadata = new Map(
+	Object.values(modules)
+		.flatMap((module) => Object.values(module))
+		.map((meta) => [meta.component.name, meta])
 );
+const metaOf = (tag: string) => metadata.get(customElements.get(tag)!.name)!;
 
 const host = document.body.appendChild(document.createElement('div'));
 afterEach(() => host.replaceChildren());
@@ -63,25 +55,26 @@ const variantAttributes = (meta: ComponentMetadata) =>
 	);
 
 describe('the phosphor metadata matches what each component draws (#47)', () => {
-	it('maps every metadata file to a registered tag', () => {
-		expect(components).toHaveLength(15);
-		expect(components.filter(({ tag }) => !tag).map(({ name }) => name)).toEqual([]);
+	it('pairs every registered tag with one metadata file', () => {
+		const names = groveTags.map((tag) => customElements.get(tag)!.name).sort();
+		expect(names).toEqual([...metadata.keys()].sort());
 	});
 
-	it.each(components)('$name draws exactly its default and fixed glyphs', async ({ meta, tag }) => {
+	it.each(groveTags)('<%s> draws exactly its default and fixed glyphs', async (tag) => {
+		const meta = metaOf(tag);
 		const drawn = new Set<string>();
 		for (const attributes of [[], ...variantAttributes(meta).map((pair) => [pair])])
-			for (const glyph of await glyphsOf(tag!, attributes)) drawn.add(glyph);
+			for (const glyph of await glyphsOf(tag, attributes)) drawn.add(glyph);
 		const declared = [meta.phosphor.default, ...meta.phosphor.fixed].filter((g) => g !== null);
 		expect([...drawn].sort()).toEqual([...new Set(declared)].sort());
 	});
 
 	customElements.define('ph-metadata-probe', class extends HTMLElement {});
 
-	it.each(components.filter(({ meta }) => meta.phosphor.prop !== null))(
-		'$name draws the glyph its prop attribute names',
-		async ({ meta, tag }) => {
-			const drawn = await glyphsOf(tag!, [[meta.phosphor.prop!, 'metadata-probe']]);
+	it.each(groveTags.filter((tag) => metaOf(tag).phosphor.prop !== null))(
+		'<%s> draws the glyph its prop attribute names',
+		async (tag) => {
+			const drawn = await glyphsOf(tag, [[metaOf(tag).phosphor.prop!, 'metadata-probe']]);
 			expect([...drawn]).toContain('metadata-probe');
 		}
 	);

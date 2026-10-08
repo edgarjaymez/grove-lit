@@ -65,7 +65,15 @@ Example markup in metadata is written in **attribute names**, the way HTML would
 
 - there are metadata files for all 15 components;
 - every glyph named in `phosphor` exists in the Phosphor package;
+- the glyph imports in the `Home.mdx` recipe pair each component with exactly the `default` and
+  `fixed` glyphs its `phosphor` field declares, and `src/test/browser-setup.ts` registers exactly
+  that set;
 - example snippets use attribute names (`is-selected`), never camelCase property names (`isSelected`).
+
+`src/lib/components/glyphs.browser.test.ts` (browser project) renders every component with no glyph
+attribute, and once per variant value, and requires the glyphs it draws to be exactly `default` plus
+`fixed`. It also checks that `prop` is the attribute that changes the glyph. When you change a
+component's default glyph, these two tests name every copy left to update.
 
 ## The custom elements manifest
 
@@ -76,12 +84,13 @@ framework tooling read it. Grove ships it at `dist/custom-elements.json` and poi
 
 ### How it is built
 
-`pnpm build-manifest` (the last step of `pnpm build`) runs three things in order:
+`pnpm build-manifest` (the last step of `pnpm build`) runs four things in order:
 
 ```sh
 cem analyze --config custom-elements-manifest.config.mjs
 node scripts/generate-framework-types.mjs
 node scripts/check-manifest.mjs
+node scripts/check-dist.mjs
 ```
 
 1. **The analyzer** (`@custom-elements-manifest/analyzer`) reads the component sources listed in
@@ -95,6 +104,10 @@ node scripts/check-manifest.mjs
    projects (`@edgarjaymez/grove/astro` in `package.json` exports).
 3. **`check-manifest.mjs`** compares the manifest with the sources and **fails the build** if they
    disagree.
+4. **`check-dist.mjs`** fails the build when no `dist/*.js` reads `process.env.NODE_ENV`. The
+   development warnings (`src/lib/utils/dev.ts`) stay on unless the consumer's bundler replaces that
+   expression with `"production"`. If Grove's own build replaced it, the library would decide for
+   every consumer. Never add `process.env.NODE_ENV` to the `define` in `vite.config.ts`.
 
 ### JSDoc tags the manifest reads
 

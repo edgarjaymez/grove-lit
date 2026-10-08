@@ -21,8 +21,9 @@
    - `unplugin-dts` writes the `.d.ts` type files, rooted at `src/lib`;
    - a small `copy-static-assets` plugin copies `tokens.css`, `fonts/`, every
      `src/lib/styles/*.css` and `components-since.json` into `dist/`.
-3. **`pnpm build-manifest`** writes the manifest and Astro types and runs the manifest check
-   (chapter 07). A component that breaks the manifest rules fails the build here.
+3. **`pnpm build-manifest`** writes the manifest and Astro types and runs the manifest and dist
+   checks (chapter 07). A component that breaks the manifest rules, or a build that compiles out
+   `process.env.NODE_ENV`, fails here.
 
 ### What `dist/` holds
 
