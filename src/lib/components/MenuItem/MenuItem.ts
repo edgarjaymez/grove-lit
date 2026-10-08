@@ -65,9 +65,11 @@ export class MenuItem extends LitElement {
 			/* Sizes — the row font drives gv-icon's 1em glyph sizing. */
 			.item--md {
 				font: var(--typography-single-line-base-base);
+				letter-spacing: var(--typography-single-line-base-base-letter-spacing);
 			}
 			.item--sm {
 				font: var(--typography-single-line-subtle-base);
+				letter-spacing: var(--typography-single-line-subtle-base-letter-spacing);
 			}
 
 			.label {
@@ -79,9 +81,11 @@ export class MenuItem extends LitElement {
 			/* Label emphasis when active. */
 			.item--md.item--active .label {
 				font: var(--typography-single-line-base-emphasis);
+				letter-spacing: var(--typography-single-line-base-emphasis-letter-spacing);
 			}
 			.item--sm.item--active .label {
 				font: var(--typography-single-line-subtle-emphasis);
+				letter-spacing: var(--typography-single-line-subtle-emphasis-letter-spacing);
 			}
 
 			/* Colors — order matters: active+hover must come last. */

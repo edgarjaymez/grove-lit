@@ -71,8 +71,14 @@ export const WithContent: Story = {
 			html`<div
 				style="position: relative; color: var(--semantic-color-text-on-brand-summit-base); letter-spacing: var(--letter-spacing-base)"
 			>
-				<h2 style="font: var(--typography-single-line-heading-emphasis)">Grain behind content</h2>
-				<p style="font: var(--typography-multi-line-base-base)">
+				<h2
+					style="font: var(--typography-single-line-heading-emphasis); letter-spacing: var(--typography-single-line-heading-emphasis-letter-spacing)"
+				>
+					Grain behind content
+				</h2>
+				<p
+					style="font: var(--typography-multi-line-base-base); letter-spacing: var(--typography-multi-line-base-base-letter-spacing)"
+				>
 					Positioned content placed after the texture paints above it.
 					<a href="#" style="color: inherit">A link stays clickable.</a>
 				</p>
